@@ -1,0 +1,67 @@
+{
+  "name": "web3",
+  "namespace": "aion",
+  "version": "0.0.1",
+  "description": "aion js rpc api",
+  "main": "./index.js",
+  "directories": {
+    "lib": "./lib"
+  },
+  "browser": {
+    "xmlhttprequest": "./lib/utils/browser-xhr.js"
+  },
+  "dependencies": {
+    "bignumber.js": "git+https://github.com/MikeMcl/bignumber.js.git",
+    "crypto-js": "*",
+    "utf8": "*",
+    "xhr2": "*",
+    "xmlhttprequest": "*",
+    "request": "*",
+    "moment": "*"
+  },
+  "devDependencies": {
+    "browserify": "*",
+    "exorcist": "*",
+    "del": "*",
+    "gulp": "*",
+    "gulp-jshint": "*",
+    "gulp-rename": "*",
+    "gulp-streamify": "*",
+    "gulp-uglify": "*",
+    "jshint": "*",
+    "vinyl-source-stream": "*",
+    "colors": "*",
+    "repl": "*",
+    "chai": "*",
+    "mocha": "*",
+    "gulp-tar": "*",
+    "gulp-gzip": "*"
+  },
+  "scripts": {
+    "build": "gulp build",
+    "watch": "gulp watch",
+    "lint": "jshint *.js lib"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aionnetwork/aion_web3.git"
+  },
+  "homepage": "https://github.com/aionnetwork/aion_web3",
+  "bugs": {
+    "url": "https://github.com/aionnetwork/aion_web3/issues"
+  },
+  "keywords": [
+    "aion",
+    "javascript",
+    "api"
+  ],
+  "author": "aionnetwork",
+  "authors": [
+    {
+      "name": "chris",
+      "email": "aion.6368726973@gmail.com",
+      "url": "https://github.com/aion-6368726973"
+    }
+  ],
+  "license": "LGPL-3.0"
+}
