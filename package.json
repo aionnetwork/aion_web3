@@ -1,8 +1,8 @@
 {
-  "name": "web3",
+  "name": "aion-web3",
   "namespace": "aion",
   "version": "0.0.1",
-  "description": "aion js rpc api",
+  "description": "aion js api",
   "main": "./index.js",
   "directories": {
     "lib": "./lib"
