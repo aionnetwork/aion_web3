@@ -1,26 +1,24 @@
-'use strict';
+var path = require('path');
+var fs = require('fs');
+var del = require('del');
+var moment = require('moment');
+var gulp = require('gulp');
+var tar = require('gulp-tar');
+var gzip = require('gulp-gzip');
+var browserify = require('browserify');
+var jshint = require('gulp-jshint');
+var uglify = require('gulp-uglify');
+var rename = require('gulp-rename');
+var source = require('vinyl-source-stream');
+var exorcist = require('exorcist');
+var streamify = require('gulp-streamify');
 
-const path = require('path');
-const fs = require('fs');
-const del = require('del');
-const moment = require('moment');
-const gulp = require('gulp');
-const tar = require('gulp-tar');
-const gzip = require('gulp-gzip');
-const browserify = require('browserify');
-const jshint = require('gulp-jshint');
-const uglify = require('gulp-uglify');
-const rename = require('gulp-rename');
-const source = require('vinyl-source-stream');
-const exorcist = require('exorcist');
-const streamify = require('gulp-streamify');
+var DEST = path.join(__dirname, 'dist/');
+var src = 'index';
+var dst = 'web3';
+var lightDst = 'web3-light';
 
-const DEST = path.join(__dirname, 'dist/');
-const src = 'index';
-const dst = 'web3';
-const lightDst = 'web3-light';
-
-const browserifyOptions = {
+var browserifyOptions = {
     debug: true,
     insertGlobalVars: false, 
     detectGlobals: false,
@@ -74,7 +72,7 @@ gulp.task('watch', function() {
 });
 
 gulp.task('release', function () {
-    const version = JSON.parse(fs.readFileSync('./package.json')).version;
+    var version = JSON.parse(fs.readFileSync('./package.json')).version;
     gulp.src([
         'example/**/*.js',
         'example/**/*.sol',
