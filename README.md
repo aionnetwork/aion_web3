@@ -34,12 +34,18 @@ npm install
 gulp build
 ```
 
+or
+
+```bash
+npm install --save aion-web3
+```
+
 ## Usage
 This application programming interface can be used to perform different operation on the Aion blockchain.
 Some example uses cases are available in the project wiki.
 
 * Web use: include `dist/web3.min.js` in your html file
-* Node use: `require('path_to_aion_web3_folder')`
+* Node use: `var Web3 = require('aion-web3')`
 
 ## Application Development
 ```js
