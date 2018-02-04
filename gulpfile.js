@@ -84,6 +84,7 @@ gulp.task('release', function () {
         'LICENSE_WEB3JS',
         'README.md',
         'index.js',
+        'console.js',
         'package-init.js',
         'package.json'
     ], {base: "aion_web3"})
