@@ -6,7 +6,7 @@ const log = core.log;
 
 describe("basic tests", () => {
   it("should deploy the contract", async () => {
-    const response = await core.unlockAccount(config.userAddress, "PLAT4life", 314159);
+    const response = await core.unlockAccount(config.userAddress, config.password, 314159);
     
     const source = fs.readFileSync("token.sol", "utf-8");
     const compiled = await core.compile(source);

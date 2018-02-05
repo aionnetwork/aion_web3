@@ -8,7 +8,7 @@ const log = require('./core.js').log;
 const unlock = async () => {
   let unlocked = false;
   try {
-    await core.unlockAccount(config.userAddress, "PLAT4life", 314159);
+    await core.unlockAccount(config.userAddress, config.password, 314159);
   } catch (e) {
     // do nothing here
   }
