@@ -3314,7 +3314,7 @@ var inputCallFormatter = function (options){
         options.to = inputAddressFormatter(options.to);
     }
 
-    ['gasPrice', 'gas', 'value', 'nonce'].filter(function (key) {
+    ['nrgPrice', 'nrg', 'value', 'nonce'].filter(function (key) {
         return options[key] !== undefined;
     }).forEach(function(key){
         options[key] = utils.fromDecimal(options[key]);
@@ -3339,7 +3339,7 @@ var inputTransactionFormatter = function (options){
         options.to = inputAddressFormatter(options.to);
     }
 
-    ['gasPrice', 'gas', 'value', 'nonce'].filter(function (key) {
+    ['nrgPrice', 'nrg', 'value', 'nonce'].filter(function (key) {
         return options[key] !== undefined;
     }).forEach(function(key){
         options[key] = utils.fromDecimal(options[key]);
@@ -3361,8 +3361,8 @@ var outputTransactionFormatter = function (tx){
     if(tx.transactionIndex !== null)
         tx.transactionIndex = utils.toDecimal(tx.transactionIndex);
     tx.nonce = utils.toDecimal(tx.nonce);
-    tx.gas = utils.toDecimal(tx.gas);
-    tx.gasPrice = utils.toBigNumber(tx.gasPrice);
+    tx.nrg = utils.toDecimal(tx.nrg);
+    tx.nrgPrice = utils.toBigNumber(tx.nrgPrice);
     tx.value = utils.toBigNumber(tx.value);
     return tx;
 };
@@ -3379,8 +3379,8 @@ var outputTransactionReceiptFormatter = function (receipt){
         receipt.blockNumber = utils.toDecimal(receipt.blockNumber);
     if(receipt.transactionIndex !== null)
         receipt.transactionIndex = utils.toDecimal(receipt.transactionIndex);
-    receipt.cumulativeGasUsed = utils.toDecimal(receipt.cumulativeGasUsed);
-    receipt.gasUsed = utils.toDecimal(receipt.gasUsed);
+    receipt.cumulativeNrgUsed = utils.toDecimal(receipt.cumulativeNrgUsed);
+    receipt.nrgUsed = utils.toDecimal(receipt.nrgUsed);
 
     if(utils.isArray(receipt.logs)) {
         receipt.logs = receipt.logs.map(function(log){
@@ -3401,8 +3401,8 @@ var outputTransactionReceiptFormatter = function (receipt){
 var outputBlockFormatter = function(block) {
 
     // transform to number
-    block.gasLimit = utils.toDecimal(block.gasLimit);
-    block.gasUsed = utils.toDecimal(block.gasUsed);
+    block.nrgLimit = utils.toDecimal(block.nrgLimit);
+    block.nrgUsed = utils.toDecimal(block.nrgUsed);
     block.size = utils.toDecimal(block.size);
     block.timestamp = utils.toDecimal(block.timestamp);
     if(block.number !== null)
