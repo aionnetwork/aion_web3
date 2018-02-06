@@ -9,6 +9,7 @@ var browserify = require('browserify');
 var jshint = require('gulp-jshint');
 var uglify = require('gulp-uglify');
 var rename = require('gulp-rename');
+var replace = require('gulp-replace');
 var source = require('vinyl-source-stream');
 var exorcist = require('exorcist');
 var streamify = require('gulp-streamify');
@@ -25,6 +26,12 @@ var browserifyOptions = {
     bundleExternal: true
 };
 
+gulp.task('version', [], function(){
+    gulp.src('./lib/web3.js')
+    .pipe(replace(/var version = \'([\.0-9]*)\'/, 'var version = \''+ JSON.parse(fs.readFileSync('./package.json')).version + '\''))
+    .pipe(gulp.dest('./lib'));
+});
+
 gulp.task('lint', [], function(){
     return gulp.src(['./*.js', './lib/*.js'])
         .pipe(jshint())
@@ -39,7 +46,7 @@ gulp.task('browser', ['clean'], function () {
     return browserify(browserifyOptions)
         .require('./' + src + '.js', {expose: 'web3'})
         .ignore('bignumber.js')
-        .require('./lib/utils/browser-bn.js', {expose: 'bignumber.js'}) // fake bignumber.js
+        .require('./lib/utils/browser-bn.js', {expose: 'bignumber.js'})
         .add('./' + src + '.js')
         .bundle()
         .pipe(exorcist(path.join( DEST, lightDst + '.js.map')))
@@ -65,26 +72,25 @@ gulp.task('node', ['clean'], function () {
         .pipe(gulp.dest( DEST ));
 });
 
-gulp.task('build', ['lint', 'clean', 'browser', 'node']);
+gulp.task('build', ['lint', 'clean', 'version', 'browser', 'node']);
 
 gulp.task('watch', function() {
     gulp.watch(['./lib/*.js'], ['lint', 'build']);
 });
 
-gulp.task('release', function () {
+gulp.task('release', ['build'], function () {
     var version = JSON.parse(fs.readFileSync('./package.json')).version;
     gulp.src([
+        'gulpfile.js',
+        'lib/**/*.js',
         'example/**/*.js',
         'example/**/*.sol',
-        'lib/**/*.js',
         'test/**/*.js',
         'test/**/*.sol',
-        'gulpfile.js',
         'LICENSE',
-        'LICENSE_WEB3JS',
         'README.md',
-        'index.js',
         'console.js',
+        'index.js',
         'package-init.js',
         'package.json'
     ], {base: "aion_web3"})
