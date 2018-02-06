@@ -28,7 +28,6 @@
     "gulp-rename": "*",
     "gulp-streamify": "*",
     "gulp-uglify": "*",
-    "gulp-replace": "*",
     "jshint": "*",
     "vinyl-source-stream": "*",
     "colors": "*",
