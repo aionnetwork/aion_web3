@@ -1,0 +1,22 @@
+.nc-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.Body {
+  padding-top: 20px;
+}
+
+.aion-logo {
+	height: 30px;
+	margin-bottom: -3px;
+}
+
+.logo-text, .pt-navbar-divider {
+	vertical-align: super;
+}
+
+.example {
+	margin-top: 30px;
+}

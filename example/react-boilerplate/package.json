@@ -1,0 +1,29 @@
+{
+  "name": "aion-web3-boilerplate",
+  "version": "0.0.1",
+  "dependencies": {
+    "@blueprintjs/core": "^1.32.0",
+    "aion-web3": "*",
+    "react": "^16.0.0",
+    "react-addons-css-transition-group": "^15.6.2",
+    "react-dom": "^16.0.0",
+    "react-scripts": "1.0.17"
+  },
+  "scripts": {
+    "start": "NODE_PATH=src react-scripts start",
+    "build": "NODE_PATH=src react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  },
+  "author": "aionnetwork",
+  "authors": [
+    {
+      "name": "ali",
+      "email": "ali@aion.network"
+    },
+    {
+      "name": "erik",
+      "email": "sneanone@gmail.com"
+    }
+  ]
+}
