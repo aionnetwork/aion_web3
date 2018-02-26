@@ -32,7 +32,6 @@ Promise.all([
         code = res[1].Types.code
     const options = {from:acc, data:code, gas: 10000000, gasPrice:1}
 
-
     web3.eth.contract(abi).new(options, (err, contract)=>{
         if(err)
             console.log('[err] ' + err) 
