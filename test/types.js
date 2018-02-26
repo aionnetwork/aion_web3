@@ -30,7 +30,7 @@ Promise.all([
         name = res[1].name,
         abi = res[1].Types.info.abiDefinition,
         code = res[1].Types.code
-    const options = {from:acc, data:code, gas: 1000000, gasPrice:100}
+    const options = {from:acc, data:code, gas: 10000000, gasPrice:1}
 
 
     web3.eth.contract(abi).new(options, (err, contract)=>{
