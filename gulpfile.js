@@ -13,6 +13,7 @@ var replace = require('gulp-replace');
 var source = require('vinyl-source-stream');
 var exorcist = require('exorcist');
 var streamify = require('gulp-streamify');
+var envify = require('envify/custom');
 
 var DEST = path.join(__dirname, 'dist/');
 var src = 'index';
@@ -42,12 +43,17 @@ gulp.task('clean', ['lint'], function(cb){
     del([ DEST ]).then(cb.bind(null, null));
 });
 
+/*
 gulp.task('browser', ['clean'], function () {
     return browserify(browserifyOptions)
         .require('./' + src + '.js', {expose: 'web3'})
         .ignore('bignumber.js')
         .require('./lib/utils/browser-bn.js', {expose: 'bignumber.js'})
         .add('./' + src + '.js')
+        .transform(envify({
+            NODE_ENV: 'development',
+            debug: false
+        }))
         .bundle()
         .pipe(exorcist(path.join( DEST, lightDst + '.js.map')))
         .pipe(source(lightDst + '.js'))
@@ -56,6 +62,7 @@ gulp.task('browser', ['clean'], function () {
         .pipe(rename(lightDst + '.min.js'))
         .pipe(gulp.dest( DEST ));
 });
+*/
 
 gulp.task('node', ['clean'], function () {
     return browserify(browserifyOptions)
@@ -63,6 +70,10 @@ gulp.task('node', ['clean'], function () {
         .require('bignumber.js')
         .add('./' + src + '.js')
         .ignore('crypto')
+        .transform(envify({
+            NODE_ENV: 'development',
+            debug: false
+        }))
         .bundle()
         .pipe(exorcist(path.join( DEST, dst + '.js.map')))
         .pipe(source(dst + '.js'))
@@ -72,7 +83,7 @@ gulp.task('node', ['clean'], function () {
         .pipe(gulp.dest( DEST ));
 });
 
-gulp.task('build', ['lint', 'clean', 'version', 'browser', 'node']);
+gulp.task('build', ['lint', 'clean', 'version', 'node']);
 
 gulp.task('watch', function() {
     gulp.watch(['./lib/*.js'], ['lint', 'build']);

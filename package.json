@@ -13,11 +13,12 @@
   "dependencies": {
     "bignumber.js": "git+https://github.com/MikeMcl/bignumber.js.git",
     "crypto-js": "*",
+    "envify": "^4.1.0",
+    "moment": "*",
+    "request": "*",
     "utf8": "*",
     "xhr2": "*",
-    "xmlhttprequest": "*",
-    "request": "*",
-    "moment": "*"
+    "xmlhttprequest": "*"
   },
   "devDependencies": {
     "browserify": "*",
