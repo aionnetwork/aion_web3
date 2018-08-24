@@ -1,2 +1,5 @@
 node_modules
 packages/**/node_modules/
+packages/aion-lib
+packages/aion-rlp
+tmp.js

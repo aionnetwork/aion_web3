@@ -22,6 +22,14 @@ var exec = require('child_process').exec;
 var DEST = path.join(__dirname, 'dist/');
 
 var packages = [{
+    fileName: 'aion-lib',
+    expose: 'aionLib',
+    src: './packages/aion-lib/src/index.js'
+}, {
+    fileName: 'aion-rlp',
+    expose: 'aionRlp',
+    src: './packages/aion-rlp/index.js'
+}, {
     fileName: 'web3',
     expose: 'Web3',
     src: './packages/web3/src/index.js',
@@ -149,7 +157,7 @@ gulp.task('bower', gulp.series('version', function (cb) {
 }));
 
 gulp.task('lint', function () {
-    return gulp.src(['./*.js', './lib/*.js'])
+    return gulp.src(['./lib/*.js'])
         .pipe(jshint())
         .pipe(jshint.reporter('default'));
 });

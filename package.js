@@ -1,9 +1,9 @@
 /* jshint ignore:start */
 Package.describe({
-    name: 'ethereum:web3',
-    version: '1.0.0-beta.35',
-    summary: 'Ethereum JavaScript API, middleware to talk to a ethreum node over RPC',
-    git: 'https://github.com/ethereum/ethereum.js',
+    name: 'aion:aion-web3',
+    version: '1.0.0-alpha',
+    summary: 'aion-compatible web3',
+    git: 'https://github.com/aionnetwork/aion_web3.js',
     // By default, Meteor will default to using README.md for documentation.
     // To avoid submitting documentation, set this field to null.
     documentation: 'README.md'
