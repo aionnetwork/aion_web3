@@ -26,10 +26,6 @@ var packages = [{
     expose: 'aionLib',
     src: './packages/aion-lib/src/index.js'
 }, {
-    fileName: 'aion-rlp',
-    expose: 'aionRlp',
-    src: './packages/aion-rlp/index.js'
-}, {
     fileName: 'web3',
     expose: 'Web3',
     src: './packages/web3/src/index.js',

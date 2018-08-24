@@ -8,7 +8,7 @@
   "main": "src/index.js",
   "dependencies": {
     "aion-lib": "1.0.0-alpha",
-    "aion-rlp": "1.0.0-alpha",
+    "aion-rlp": "^0.0.1",
     "aion-web3-core": "1.0.0-alpha",
     "aion-web3-core-helpers": "1.0.0-alpha",
     "aion-web3-core-method": "1.0.0-alpha",
