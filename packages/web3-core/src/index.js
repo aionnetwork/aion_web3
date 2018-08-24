@@ -23,7 +23,7 @@
 "use strict";
 
 
-var requestManager = require('web3-core-requestmanager');
+var requestManager = require('aion-web3-core-requestmanager');
 var extend = require('./extend.js');
 
 module.exports = {

@@ -23,38 +23,29 @@
 "use strict";
 
 var _ = require("underscore");
-var core = require('web3-core');
-var Method = require('web3-core-method');
+var core = require('aion-web3-core');
+var Method = require('aion-web3-core-method');
 var Promise = require('any-promise');
-var Account = require("eth-lib/lib/account");
-var Hash = require("eth-lib/lib/hash");
-var RLP = require("eth-lib/lib/rlp");
-var Nat = require("eth-lib/lib/nat");
-var Bytes = require("eth-lib/lib/bytes");
-var cryp = (typeof global === 'undefined') ? require('crypto-browserify') : require('crypto');
-var scryptsy = require('scrypt.js');
 var uuid = require('uuid');
-var utils = require('web3-utils');
-var helpers = require('web3-core-helpers');
+var utils = require('aion-web3-utils');
+var toBuffer = utils.toBuffer;
+var helpers = require('aion-web3-core-helpers');
+var aionLib = require('aion-lib');
+var blake2b256 = aionLib.crypto.blake2b256;
+var nacl = aionLib.crypto.nacl;
+var scryptsy = aionLib.crypto.scrypt;
+var cryp = aionLib.crypto.node;
+var Buffer = aionLib.formats.Buffer;
+var toBuffer = aionLib.formats.toBuffer;
+var bufferToZeroXHex = aionLib.formats.bufferToZeroXHex;
+var rlp = require('aion-rlp');
+var AionLong = rlp.AionLong;
+var BN = require('bn.js');
+var aionPubSigLen = aionLib.accounts.aionPubSigLen;
 
 var isNot = function(value) {
     return (_.isUndefined(value) || _.isNull(value));
 };
-
-var trimLeadingZero = function (hex) {
-    while (hex && hex.startsWith('0x0')) {
-        hex = '0x' + hex.slice(3);
-    }
-    return hex;
-};
-
-var makeEven = function (hex) {
-    if(hex.length % 2 === 1) {
-        hex = hex.replace('0x', '0x0');
-    }
-    return hex;
-};
-
 
 var Accounts = function Accounts() {
     var _this = this;
@@ -121,18 +112,30 @@ Accounts.prototype._addAccountFunctions = function (account) {
     return account;
 };
 
+// replaces ethlib/lib/account.js#fromPrivate
+var createAionAccount = function (opts) {
+    var account = aionLib.accounts.createKeyPair({
+        privateKey: opts.privateKey,
+        entropy: opts.entropy
+    });
+    account.address = aionLib.accounts.createA0Address(account.publicKey);
+    return account;
+};
+
 Accounts.prototype.create = function create(entropy) {
-    return this._addAccountFunctions(Account.create(entropy || utils.randomHex(32)));
+    return this._addAccountFunctions(createAionAccount({entropy: entropy}));
 };
 
 Accounts.prototype.privateKeyToAccount = function privateKeyToAccount(privateKey) {
-    return this._addAccountFunctions(Account.fromPrivate(privateKey));
+    return this._addAccountFunctions(createAionAccount({privateKey: privateKey}));
 };
 
 Accounts.prototype.signTransaction = function signTransaction(tx, privateKey, callback) {
     var _this = this,
         error = false,
         result;
+
+    var account = this.privateKeyToAccount(privateKey);
 
     callback = callback || function () {};
 
@@ -168,39 +171,44 @@ Accounts.prototype.signTransaction = function signTransaction(tx, privateKey, ca
             transaction.to = tx.to || '0x';
             transaction.data = tx.data || '0x';
             transaction.value = tx.value || '0x';
-            transaction.chainId = utils.numberToHex(tx.chainId);
+            transaction.value = tx.timestamp || Math.floor(Date.now() / 1000);
+            transaction.chainId = utils.numberToHex(tx.chainId || 1);
 
-            var rlpEncoded = RLP.encode([
-                Bytes.fromNat(transaction.nonce),
-                Bytes.fromNat(transaction.gasPrice),
-                Bytes.fromNat(transaction.gas),
+            var rlpEncoded = rlp.encode([
+                transaction.nonce,
                 transaction.to.toLowerCase(),
-                Bytes.fromNat(transaction.value),
+                transaction.value,
                 transaction.data,
-                Bytes.fromNat(transaction.chainId || "0x1"),
-                "0x",
-                "0x"]);
+                transaction.timestamp,
+                new AionLong(new BN(transaction.gasPrice)),
+                new AionLong(new BN(transaction.gas)),
+                new AionLong(new BN(transaction.chainId))
+            ]);
 
+            // hash encoded message
+            var hash = blake2b256(rlpEncoded);
 
-            var hash = Hash.keccak256(rlpEncoded);
+            // sign with nacl
+            var signature = toBuffer(nacl.sign.detached(hash, account.privateKey));
 
-            var signature = Account.makeSigner(Nat.toNumber(transaction.chainId || "0x1") * 2 + 35)(Hash.keccak256(rlpEncoded), privateKey);
+            // verify nacl signature
+            if (nacl.sign.detached.verify(hash, signature, account.publicKey) === false) {
+                throw new Error('Could not verify signature.');
+            }
 
-            var rawTx = RLP.decode(rlpEncoded).slice(0, 6).concat(Account.decodeSignature(signature));
+            // aion-specific signature scheme
+            var aionPubSig = Buffer.concat([account.publicKey, signature], aionPubSigLen);
 
-            rawTx[6] = makeEven(trimLeadingZero(rawTx[6]));
-            rawTx[7] = makeEven(trimLeadingZero(rawTx[7]));
-            rawTx[8] = makeEven(trimLeadingZero(rawTx[8]));
+            // add the aion pub-sig
+            var rawTx = rlp.decode(rlpEncoded).concat(aionPubSig);
 
-            var rawTransaction = RLP.encode(rawTx);
+            // re-encode with signature included
+            var rawTransaction = rlp.encode(rawTx);
 
-            var values = RLP.decode(rawTransaction);
             result = {
-                messageHash: hash,
-                v: trimLeadingZero(values[6]),
-                r: trimLeadingZero(values[7]),
-                s: trimLeadingZero(values[8]),
-                rawTransaction: rawTransaction
+                messageHash: bufferToZeroXHex(hash),
+                signature: bufferToZeroXHex(aionPubSig),
+                rawTransaction: bufferToZeroXHex(rawTransaction)
             };
 
         } catch(e) {
@@ -233,58 +241,45 @@ Accounts.prototype.signTransaction = function signTransaction(tx, privateKey, ca
 
 /* jshint ignore:start */
 Accounts.prototype.recoverTransaction = function recoverTransaction(rawTx) {
-    var values = RLP.decode(rawTx);
-    var signature = Account.encodeSignature(values.slice(6,9));
-    var recovery = Bytes.toNumber(values[6]);
-    var extraData = recovery < 35 ? [] : [Bytes.fromNumber((recovery - 35) >> 1), "0x", "0x"];
-    var signingData = values.slice(0,6).concat(extraData);
-    var signingDataHex = RLP.encode(signingData);
-    return Account.recover(Hash.keccak256(signingDataHex), signature);
+    return this.recover(null, rlp.decode(rawTx).pop());
 };
 /* jshint ignore:end */
 
 Accounts.prototype.hashMessage = function hashMessage(data) {
     var message = utils.isHexStrict(data) ? utils.hexToBytes(data) : data;
     var messageBuffer = Buffer.from(message);
-    var preamble = "\x19Ethereum Signed Message:\n" + message.length;
+    var preamble = "\Aion Signed Message:\n" + message.length;
     var preambleBuffer = Buffer.from(preamble);
     var ethMessage = Buffer.concat([preambleBuffer, messageBuffer]);
-    return Hash.keccak256s(ethMessage);
+    return utils.blake2b256(ethMessage);
 };
 
 Accounts.prototype.sign = function sign(data, privateKey) {
+    var account = this.privateKeyToAccount(privateKey);
+    var publicKey = account.publicKey;
     var hash = this.hashMessage(data);
-    var signature = Account.sign(hash, privateKey);
-    var vrs = Account.decodeSignature(signature);
+    var signature = toBuffer(
+        nacl.sign.detached(
+            toBuffer(hash),
+            toBuffer(privateKey)
+        )
+    );
+    // address + message signature
+    var aionPubSig = Buffer.concat(
+        [toBuffer(publicKey), toBuffer(signature)],
+        aionPubSigLen
+    );
     return {
         message: data,
         messageHash: hash,
-        v: vrs[0],
-        r: vrs[1],
-        s: vrs[2],
-        signature: signature
+        signature: bufferToZeroXHex(aionPubSig)
     };
 };
 
-Accounts.prototype.recover = function recover(message, signature, preFixed) {
-    var args = [].slice.apply(arguments);
-
-
-    if (_.isObject(message)) {
-        return this.recover(message.messageHash, Account.encodeSignature([message.v, message.r, message.s]), true);
-    }
-
-    if (!preFixed) {
-        message = this.hashMessage(message);
-    }
-
-    if (args.length >= 4) {
-        preFixed = args.slice(-1)[0];
-        preFixed = _.isBoolean(preFixed) ? !!preFixed : false;
-
-        return this.recover(message, Account.encodeSignature(args.slice(1, 4)), preFixed); // v, r, s
-    }
-    return Account.recover(message, signature);
+Accounts.prototype.recover = function recover(message, signature) {
+    var sig = signature || (message && message.signature);
+    var publicKey = toBuffer(sig).slice(0, nacl.sign.publicKeyLength);
+    return aionLib.accounts.createA0Address(publicKey);
 };
 
 // Taken from https://github.com/ethereumjs/ethereumjs-wallet
@@ -322,7 +317,7 @@ Accounts.prototype.decrypt = function (v3Keystore, password, nonStrict) {
 
     var ciphertext = new Buffer(json.crypto.ciphertext, 'hex');
 
-    var mac = utils.sha3(Buffer.concat([ derivedKey.slice(16, 32), ciphertext ])).replace('0x','');
+    var mac = utils.blake2b256(Buffer.concat([ derivedKey.slice(16, 32), ciphertext ])).replace('0x','');
     if (mac !== json.crypto.mac) {
         throw new Error('Key derivation failed - possibly wrong password');
     }
@@ -369,7 +364,7 @@ Accounts.prototype.encrypt = function (privateKey, password, options) {
 
     var ciphertext = Buffer.concat([ cipher.update(new Buffer(account.privateKey.replace('0x',''), 'hex')), cipher.final() ]);
 
-    var mac = utils.sha3(Buffer.concat([ derivedKey.slice(16, 32), new Buffer(ciphertext, 'hex') ])).replace('0x','');
+    var mac = utils.blake2b256(Buffer.concat([ derivedKey.slice(16, 32), new Buffer(ciphertext, 'hex') ])).replace('0x','');
 
     return {
         version: 3,

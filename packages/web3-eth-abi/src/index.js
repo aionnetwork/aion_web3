@@ -22,7 +22,7 @@
  */
 
 var _ = require('underscore');
-var utils = require('web3-utils');
+var utils = require('aion-web3-utils');
 
 var EthersAbi = require('ethers/utils/abi-coder').AbiCoder;
 var ethersAbiCoder = new EthersAbi(function (type, value) {
@@ -43,7 +43,7 @@ var ABICoder = function () {
 };
 
 /**
- * Encodes the function name to its ABI representation, which are the first 4 bytes of the sha3 of the function name including  types.
+ * Encodes the function name to its ABI representation, which are the first 4 bytes of the blake2b256 of the function name including  types.
  *
  * @method encodeFunctionSignature
  * @param {String|Object} functionName
@@ -54,11 +54,11 @@ ABICoder.prototype.encodeFunctionSignature = function (functionName) {
         functionName = utils._jsonInterfaceMethodToString(functionName);
     }
 
-    return utils.sha3(functionName).slice(0, 10);
+    return utils.blake2b256(functionName).slice(0, 10);
 };
 
 /**
- * Encodes the function name to its ABI representation, which are the first 4 bytes of the sha3 of the function name including  types.
+ * Encodes the function name to its ABI representation, which are the first 4 bytes of the blake2b256 of the function name including  types.
  *
  * @method encodeEventSignature
  * @param {String|Object} functionName
@@ -69,7 +69,7 @@ ABICoder.prototype.encodeEventSignature = function (functionName) {
         functionName = utils._jsonInterfaceMethodToString(functionName);
     }
 
-    return utils.sha3(functionName);
+    return utils.blake2b256(functionName);
 };
 
 /**

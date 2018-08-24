@@ -15,7 +15,7 @@
  along with web3.js.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * @file soliditySha3.js
+ * @file solidityBlake2b256.js
  * @author Fabian Vogelsteller <fabian@ethereum.org>
  * @date 2017
  */
@@ -169,7 +169,7 @@ var _solidityPack = function (type, value, arraySize) {
 };
 
 
-var _processSoliditySha3Args = function (arg) {
+var _processSolidityBlake2b256Args = function (arg) {
     /*jshint maxcomplexity:false */
 
     if(_.isArray(arg)) {
@@ -223,23 +223,23 @@ var _processSoliditySha3Args = function (arg) {
 };
 
 /**
- * Hashes solidity values to a sha3 hash using keccak 256
+ * Hashes solidity values with blake2b256
  *
- * @method soliditySha3
- * @return {Object} the sha3
+ * @method solidityBlake2b256
+ * @return {Object} the blake2b256
  */
-var soliditySha3 = function () {
+var solidityBlake2b256 = function () {
     /*jshint maxcomplexity:false */
 
     var args = Array.prototype.slice.call(arguments);
 
-    var hexArgs = _.map(args, _processSoliditySha3Args);
+    var hexArgs = _.map(args, _processSolidityBlake2b256Args);
 
     // console.log(args, hexArgs);
     // console.log('0x'+ hexArgs.join(''));
 
-    return utils.sha3('0x'+ hexArgs.join(''));
+    return utils.blake2b256('0x'+ hexArgs.join(''));
 };
 
 
-module.exports = soliditySha3;
+module.exports = solidityBlake2b256;

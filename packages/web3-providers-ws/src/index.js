@@ -23,7 +23,7 @@
 "use strict";
 
 var _ = require('underscore');
-var errors = require('web3-core-helpers').errors;
+var errors = require('aion-web3-core-helpers').errors;
 
 var Ws = null;
 var _btoa = null;

@@ -25,8 +25,8 @@
 
 
 var _ = require('underscore');
-var utils = require('web3-utils');
-var Iban = require('web3-eth-iban');
+var utils = require('aion-web3-utils');
+var Iban = require('aion-web3-eth-iban');
 
 /**
  * Should the format output to a big number
@@ -316,8 +316,8 @@ var outputLogFormatter = function(log) {
     if(typeof log.blockHash === 'string' &&
        typeof log.transactionHash === 'string' &&
        typeof log.logIndex === 'string') {
-        var shaId = utils.sha3(log.blockHash.replace('0x','') + log.transactionHash.replace('0x','') + log.logIndex.replace('0x',''));
-        log.id = 'log_'+ shaId.replace('0x','').substr(0,8);
+        var blake2b256Id = utils.blake2b256(log.blockHash.replace('0x','') + log.transactionHash.replace('0x','') + log.logIndex.replace('0x',''));
+        log.id = 'log_'+ blake2b256Id.replace('0x','').substr(0,8);
     } else if(!log.id) {
         log.id = null;
     }

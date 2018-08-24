@@ -24,8 +24,8 @@ var _ = require('underscore');
 var BN = require('bn.js');
 var numberToBN = require('number-to-bn');
 var utf8 = require('utf8');
-var Hash = require("eth-lib/lib/hash");
-
+// var Hash = require("eth-lib/lib/hash");
+var aionLib = require('aion-lib');
 
 /**
  * Returns true if object is BN, otherwise false
@@ -86,10 +86,10 @@ var toTwosComplement = function (number) {
  */
 var isAddress = function (address) {
     // check if it has the basic requirements of an address
-    if (!/^(0x)?[0-9a-f]{40}$/i.test(address)) {
+    if (!/^(0x)?[0-9a-f]{64}$/i.test(address)) {
         return false;
         // If it's ALL lowercase or ALL upppercase
-    } else if (/^(0x|0X)?[0-9a-f]{40}$/.test(address) || /^(0x|0X)?[0-9A-F]{40}$/.test(address)) {
+    } else if (/^(0x|0X)?[0-9a-f]{64}$/.test(address) || /^(0x|0X)?[0-9A-F]{64}$/.test(address)) {
         return true;
         // Otherwise check each case
     } else {
@@ -109,9 +109,9 @@ var isAddress = function (address) {
 var checkAddressChecksum = function (address) {
     // Check each case
     address = address.replace(/^0x/i,'');
-    var addressHash = sha3(address.toLowerCase()).replace(/^0x/i,'');
+    var addressHash = blake2b256(address.toLowerCase()).replace(/^0x/i,'');
 
-    for (var i = 0; i < 40; i++ ) {
+    for (var i = 0; i < 64; i++ ) {
         // the nth letter should be uppercase if the nth digit of casemap is 1
         if ((parseInt(addressHash[i], 16) > 7 && address[i].toUpperCase() !== address[i]) || (parseInt(addressHash[i], 16) <= 7 && address[i].toLowerCase() !== address[i])) {
             return false;
@@ -415,31 +415,20 @@ var isTopic = function (topic) {
 
 
 /**
- * Hashes values to a sha3 hash using keccak 256
+ * Hashes the value to a blake2b256 hash
  *
  * To hash a HEX string the hex must have 0x in front.
  *
- * @method sha3
- * @return {String} the sha3 string
+ * @method blake2b256
+ * @return {String} the blake2b256 string
  */
-var SHA3_NULL_S = '0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470';
-
-var sha3 = function (value) {
+var blake2b256 = function (value) {
     if (isHexStrict(value) && /^0x/i.test((value).toString())) {
         value = hexToBytes(value);
     }
-
-    var returnValue = Hash.keccak256(value); // jshint ignore:line
-
-    if(returnValue === SHA3_NULL_S) {
-        return null;
-    } else {
-        return returnValue;
-    }
+    var out = aionLib.crypto.blake2b256(value);
+    return aionLib.formats.prependZeroX(out.toString('hex'));
 };
-// expose the under the hood keccak256
-sha3._Hash = Hash;
-
 
 module.exports = {
     BN: BN,
@@ -463,5 +452,5 @@ module.exports = {
     leftPad: leftPad,
     rightPad: rightPad,
     toTwosComplement: toTwosComplement,
-    sha3: sha3
+    blake2b256: blake2b256
 };

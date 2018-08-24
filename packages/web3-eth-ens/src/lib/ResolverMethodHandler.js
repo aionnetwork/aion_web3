@@ -20,7 +20,7 @@
 
 "use strict";
 
-var PromiEvent = require('web3-core-promievent');
+var PromiEvent = require('aion-web3-core-promievent');
 var namehash = require('eth-ens-namehash');
 var _ = require('underscore');
 

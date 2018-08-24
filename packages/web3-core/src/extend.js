@@ -23,9 +23,9 @@
 "use strict";
 
 
-var formatters = require('web3-core-helpers').formatters;
-var Method = require('web3-core-method');
-var utils = require('web3-utils');
+var formatters = require('aion-web3-core-helpers').formatters;
+var Method = require('aion-web3-core-method');
+var utils = require('aion-web3-utils');
 
 
 var extend = function (pckg) {

@@ -23,7 +23,7 @@
 "use strict";
 
 var Jsonrpc = require('./jsonrpc');
-var errors = require('web3-core-helpers').errors;
+var errors = require('aion-web3-core-helpers').errors;
 
 var Batch = function (requestManager) {
     this.requestManager = requestManager;

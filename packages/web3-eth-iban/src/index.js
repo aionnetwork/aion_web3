@@ -25,7 +25,7 @@
 
 "use strict";
 
-var utils = require('web3-utils');
+var utils = require('aion-web3-utils');
 var BigNumber = require('bn.js');
 
 

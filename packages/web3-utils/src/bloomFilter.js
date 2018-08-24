@@ -51,7 +51,7 @@ function codePointToInt(codePoint) {
 }
 
 function testBytes(bloom, bytes) {
-    var hash = utils.sha3(bytes).replace('0x','');
+    var hash = utils.blake2b256(bytes).replace('0x','');
 
     for (var i = 0; i < 12; i += 4) {
         // calculate bit position in bloom filter that must be active
@@ -80,10 +80,10 @@ function testBytes(bloom, bytes) {
  */
 var testAddress = function(bloom, address) {
     if (!utils.isBloom(bloom)) {
-        throw 'Invalid bloom given';
+        throw new Error('Invalid bloom given');
     }
     if (!utils.isAddress(address)) {
-        throw 'Invalid address given: "'+ address +'\"';
+        throw new Error('Invalid address given: "'+ address +'\"');
     }
 
     return testBytes(bloom, address);

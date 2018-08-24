@@ -25,10 +25,9 @@
 var _ = require('underscore');
 var ethjsUnit = require('ethjs-unit');
 var utils = require('./utils.js');
-var soliditySha3 = require('./soliditySha3.js');
+var solidityBlake2b256 = require('./solidityBlake2b256.js');
 var randomHex = require('randomhex');
-
-
+var aionLib = require('aion-lib');
 
 /**
  * Fires an error in an event emitter and callback and returns the eventemitter
@@ -270,9 +269,6 @@ var toWei = function(number, unit) {
     return utils.isBN(number) ? ethjsUnit.toWei(number, unit) : ethjsUnit.toWei(number, unit).toString(10);
 };
 
-
-
-
 /**
  * Converts to a checksum address
  *
@@ -283,27 +279,11 @@ var toWei = function(number, unit) {
 var toChecksumAddress = function (address) {
     if (typeof address === 'undefined') return '';
 
-    if(!/^(0x)?[0-9a-f]{40}$/i.test(address))
+    if(!/^(0x)?[0-9a-f]{64}$/i.test(address))
         throw new Error('Given address "'+ address +'" is not a valid Ethereum address.');
 
-
-
-    address = address.toLowerCase().replace(/^0x/i,'');
-    var addressHash = utils.sha3(address).replace(/^0x/i,'');
-    var checksumAddress = '0x';
-
-    for (var i = 0; i < address.length; i++ ) {
-        // If ith character is 9 to f then make it uppercase
-        if (parseInt(addressHash[i], 16) > 7) {
-            checksumAddress += address[i].toUpperCase();
-        } else {
-            checksumAddress += address[i];
-        }
-    }
-    return checksumAddress;
+    return aionLib.accounts.createChecksumAddress(address);
 };
-
-
 
 module.exports = {
     _fireError: _fireError,
@@ -318,9 +298,8 @@ module.exports = {
     isBigNumber: utils.isBigNumber,
     isHex: utils.isHex,
     isHexStrict: utils.isHexStrict,
-    sha3: utils.sha3,
-    keccak256: utils.sha3,
-    soliditySha3: soliditySha3,
+    blake2b256: utils.blake2b256,
+    solidityBlake2b256: solidityBlake2b256,
     isAddress: utils.isAddress,
     checkAddressChecksum: utils.checkAddressChecksum,
     toChecksumAddress: toChecksumAddress,

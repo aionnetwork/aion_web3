@@ -19,7 +19,7 @@
  *
  * To initialize a contract use:
  *
- *  var Contract = require('web3-eth-contract');
+ *  var Contract = require('aion-web3-eth-contract');
  *  Contract.setProvider('ws://localhost:8546');
  *  var contract = new Contract(abi, address, ...);
  *
@@ -32,14 +32,14 @@
 
 
 var _ = require('underscore');
-var core = require('web3-core');
-var Method = require('web3-core-method');
-var utils = require('web3-utils');
-var Subscription = require('web3-core-subscriptions').subscription;
-var formatters = require('web3-core-helpers').formatters;
-var errors = require('web3-core-helpers').errors;
-var promiEvent = require('web3-core-promievent');
-var abi = require('web3-eth-abi');
+var core = require('aion-web3-core');
+var Method = require('aion-web3-core-method');
+var utils = require('aion-web3-utils');
+var Subscription = require('aion-web3-core-subscriptions').subscription;
+var formatters = require('aion-web3-core-helpers').formatters;
+var errors = require('aion-web3-core-helpers').errors;
+var promiEvent = require('aion-web3-core-promievent');
+var abi = require('aion-web3-eth-abi');
 
 
 /**
@@ -322,7 +322,7 @@ Contract.prototype._encodeEventABI = function (event, options) {
                     return null;
                 }
 
-                // TODO: https://github.com/ethereum/web3.js/issues/344
+                // TODO: https://github.com/aionnetwork/aion_web3/issues/344
                 // TODO: deal properly with components
 
                 if (_.isArray(value)) {
