@@ -1,6 +1,5 @@
 let randomHex = require('randomhex')
 let numberToBn = require('number-to-bn')
-// let {Buffer} = require('safe-buffer')
 let {isEmpty, isArray, isString, isNumber} = require('underscore')
 let BN = require('bn.js')
 let values = require('./values')

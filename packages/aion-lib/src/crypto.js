@@ -5,7 +5,6 @@ there is a lot of monkey-business about 0x, strings, hex, and etc.
 
 */
 
-// let {Buffer} = require('safe-buffer')
 let blake2b = require('blake2b')
 let nacl = require('tweetnacl')
 let node =

@@ -6,8 +6,6 @@ values.
 
 */
 
-// let {Buffer} = require('safe-buffer')
-
 let values = Object.freeze({
   //
   // used in many places to add or remove this value
