@@ -206,7 +206,7 @@ Accounts.prototype.signTransaction = function signTransaction(tx, privateKey, ca
             transaction.to = tx.to;
             transaction.data = tx.data;
             transaction.value = tx.value;
-            transaction.value = tx.timestamp || Math.floor(Date.now() / 1000);
+            transaction.timestamp = tx.timestamp || Math.floor(Date.now() / 1000);
             transaction.type = tx.type || 1;
 
             var rlpEncoded = rlp.encode([
