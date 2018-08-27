@@ -28,8 +28,9 @@ var Method = require('aion-web3-core-method');
 var Promise = require('any-promise');
 var uuid = require('uuid');
 var utils = require('aion-web3-utils');
-var toBuffer = utils.toBuffer;
-var helpers = require('aion-web3-core-helpers');
+var isHex = utils.isHex;
+var isHexStrict = utils.isHexStrict;
+// var helpers = require('aion-web3-core-helpers');
 var aionLib = require('aion-lib');
 var blake2b256 = aionLib.crypto.blake2b256;
 var nacl = aionLib.crypto.nacl;
@@ -38,6 +39,7 @@ var cryp = aionLib.crypto.node;
 var Buffer = aionLib.formats.Buffer;
 var toBuffer = aionLib.formats.toBuffer;
 var bufferToZeroXHex = aionLib.formats.bufferToZeroXHex;
+var removeLeadingZeroX = aionLib.formats.removeLeadingZeroX;
 var rlp = require('aion-rlp');
 var AionLong = rlp.AionLong;
 var BN = require('bn.js');
@@ -45,6 +47,38 @@ var aionPubSigLen = aionLib.accounts.aionPubSigLen;
 
 var isNot = function(value) {
     return (_.isUndefined(value) || _.isNull(value));
+};
+
+var toAionLong = function (val) {
+    var num;
+
+    if (
+        val === undefined ||
+        val === null ||
+        val === '' ||
+        val === '0x'
+    ) {
+      return null;
+    }
+
+    if (typeof val === 'string') {
+        if (
+            val.indexOf('0x') === 0 ||
+            val.indexOf('0') === 0 ||
+            isHex(val) === true ||
+            isHexStrict(val) === true
+        ) {
+            num = new BN(removeLeadingZeroX(val), 16);
+        } else {
+            num = new BN(val, 10);
+        }
+    }
+
+    if (typeof val === 'number') {
+      num = new BN(val);
+    }
+
+    return new AionLong(num);
 };
 
 var Accounts = function Accounts() {
@@ -155,8 +189,9 @@ Accounts.prototype.signTransaction = function signTransaction(tx, privateKey, ca
         if (tx.nonce  < 0 ||
             tx.gas  < 0 ||
             tx.gasPrice  < 0 ||
-            tx.type  < 0) {
-            error = new Error('Gas, gasPrice, nonce or type is lower than 0');
+            tx.type  < 0 ||
+            tx.timestamp < 0) {
+            error = new Error('Gas, gasPrice, nonce, type, or timestamp is lower than 0');
         }
 
         if (error) {
@@ -165,12 +200,12 @@ Accounts.prototype.signTransaction = function signTransaction(tx, privateKey, ca
         }
 
         try {
-            tx = helpers.formatters.inputCallFormatter(tx);
+            // tx = helpers.formatters.inputCallFormatter(tx);
 
             var transaction = tx;
-            transaction.to = tx.to || '0x';
-            transaction.data = tx.data || '0x';
-            transaction.value = tx.value || '0x';
+            transaction.to = tx.to;
+            transaction.data = tx.data;
+            transaction.value = tx.value;
             transaction.value = tx.timestamp || Math.floor(Date.now() / 1000);
             transaction.type = tx.type || 1;
 
@@ -180,9 +215,9 @@ Accounts.prototype.signTransaction = function signTransaction(tx, privateKey, ca
                 transaction.value,
                 transaction.data,
                 transaction.timestamp,
-                new AionLong(new BN(transaction.gas)),
-                new AionLong(new BN(transaction.gasPrice)),
-                new AionLong(new BN(transaction.type))
+                toAionLong(transaction.gas),
+                toAionLong(transaction.gasPrice),
+                toAionLong(transaction.type)
             ]);
 
             // hash encoded message
@@ -220,22 +255,21 @@ Accounts.prototype.signTransaction = function signTransaction(tx, privateKey, ca
         return result;
     }
 
-    // Resolve immediately if nonce, chainId and price are provided
-    if (tx.nonce !== undefined && tx.chainId !== undefined && tx.gasPrice !== undefined) {
+    // Resolve immediately if nonce, type and price are provided
+    if (tx.nonce !== undefined && tx.type !== undefined && tx.gasPrice !== undefined) {
         return Promise.resolve(signed(tx));
     }
 
 
     // Otherwise, get the missing info from the Ethereum Node
     return Promise.all([
-        isNot(tx.chainId) ? _this._ethereumCall.getId() : tx.chainId,
         isNot(tx.gasPrice) ? _this._ethereumCall.getGasPrice() : tx.gasPrice,
         isNot(tx.nonce) ? _this._ethereumCall.getTransactionCount(_this.privateKeyToAccount(privateKey).address) : tx.nonce
     ]).then(function (args) {
-        if (isNot(args[0]) || isNot(args[1]) || isNot(args[2])) {
-            throw new Error('One of the values "chainId", "gasPrice", or "nonce" couldn\'t be fetched: '+ JSON.stringify(args));
+        if (isNot(args[0]) || isNot(args[1])) {
+            throw new Error('One of the values "type", "gasPrice", or "nonce" couldn\'t be fetched: '+ JSON.stringify(args));
         }
-        return signed(_.extend(tx, {chainId: args[0], gasPrice: args[1], nonce: args[2]}));
+        return signed(_.extend(tx, {gasPrice: args[0], nonce: args[1]}));
     });
 };
 
