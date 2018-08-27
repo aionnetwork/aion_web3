@@ -155,8 +155,8 @@ Accounts.prototype.signTransaction = function signTransaction(tx, privateKey, ca
         if (tx.nonce  < 0 ||
             tx.gas  < 0 ||
             tx.gasPrice  < 0 ||
-            tx.chainId  < 0) {
-            error = new Error('Gas, gasPrice, nonce or chainId is lower than 0');
+            tx.type  < 0) {
+            error = new Error('Gas, gasPrice, nonce or type is lower than 0');
         }
 
         if (error) {
@@ -172,7 +172,7 @@ Accounts.prototype.signTransaction = function signTransaction(tx, privateKey, ca
             transaction.data = tx.data || '0x';
             transaction.value = tx.value || '0x';
             transaction.value = tx.timestamp || Math.floor(Date.now() / 1000);
-            transaction.chainId = utils.numberToHex(tx.chainId || 1);
+            transaction.type = tx.type || 1;
 
             var rlpEncoded = rlp.encode([
                 transaction.nonce,
@@ -180,9 +180,9 @@ Accounts.prototype.signTransaction = function signTransaction(tx, privateKey, ca
                 transaction.value,
                 transaction.data,
                 transaction.timestamp,
-                new AionLong(new BN(transaction.gasPrice)),
                 new AionLong(new BN(transaction.gas)),
-                new AionLong(new BN(transaction.chainId))
+                new AionLong(new BN(transaction.gasPrice)),
+                new AionLong(new BN(transaction.type))
             ]);
 
             // hash encoded message
