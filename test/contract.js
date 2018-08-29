@@ -191,7 +191,7 @@ var abi = [{
 //var address2 = '0x5555567890123456789012345678901234567891';
 
 var address =  '0xa0c0ffee11111111111111111111111111111111111111111111111111111111';
-var addressLowerCase =  '0xa0c0ffee11111111111111111111111111111111111111111111111111111111'; //XXX
+var addressLowercase =  '0xa0c0ffee11111111111111111111111111111111111111111111111111111111'; //XXX
 var address2 = '0xa0decaf222222222222222222222222222222222222222222222222222222222';
 
 var getStandAloneContractInstance = function(abi, address, options, provider) {
@@ -249,9 +249,15 @@ var getEthContractInstance = function(abi, address, options, provider) {
 }
 
 var account = {
+    address: '0xa0735089ed2c0f236cf69918a89a45797eb2e430529fc9b0f53e21472105ac7b',
+    privateKey: '0xaf8cea07b246174e0e301effd1e2e381b46cd5aa9d57b9b4ed5950add3d8936ba92201eede614ebd6de4e673648b70363528ab13174365bf685e0c186badec0c',
+};
+/*
+var account = {
     address: '0xEB014f8c8B418Db6b45774c326A0E64C78914dC0',
     privateKey: '0xbe6383dad004f233317e46ddb46ad31b16064d14447a95cc1d8c8d4bc61c3728',
 };
+*/
 
 var runTests = function(contractFactory) {
     describe('instantiation', function () {
