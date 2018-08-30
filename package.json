@@ -19,7 +19,8 @@
     "docs": "cd docs; make html;",
     "lint": "jshint *.js packages",
     "test": "mocha; jshint *.js packages",
-    "test-coveralls": "istanbul cover _mocha -- -R spec && cat coverage/lcov.info | coveralls --verbose"
+    "test-coveralls": "istanbul cover _mocha -- -R spec && cat coverage/lcov.info | coveralls --verbose",
+    "dev-test": "nodemon -L -d 1 -w 'packages/*/src' -w test --exec mocha --opts mocha.opts --watch test || true"
   },
   "repository": {
     "type": "git",
@@ -85,6 +86,7 @@
     "jshint": ">=2.5.0",
     "lerna": "^2.5.1",
     "mocha": ">=2.3.3",
+    "nodemon": "^1.18.2",
     "sandboxed-module": "^2.0.2",
     "underscore": "^1.8.3",
     "vinyl-source-stream": "^2.0.0"
