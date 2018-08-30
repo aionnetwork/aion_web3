@@ -23,14 +23,15 @@
 
 var _ = require('underscore');
 var utils = require('aion-web3-utils');
+var abi = require('aion-lib').abi;
 
-var EthersAbi = require('ethers/utils/abi-coder').AbiCoder;
+/*var EthersAbi = require('ethers/utils/abi-coder').AbiCoder;
 var ethersAbiCoder = new EthersAbi(function (type, value) {
     if (type.match(/^u?int/) && !_.isArray(value) && (!_.isObject(value) || value.constructor.name !== 'BN')) {
         return value.toString();
     }
     return value;
-});
+});*/
 
 // result method
 function Result() {
@@ -93,7 +94,7 @@ ABICoder.prototype.encodeParameter = function (type, param) {
  * @return {String} encoded list of params
  */
 ABICoder.prototype.encodeParameters = function (types, params) {
-    return ethersAbiCoder.encode(this.mapTypes(types), params);
+    return abi.encodeParameters(types, params);
 };
 
 /**
@@ -226,7 +227,7 @@ ABICoder.prototype.decodeParameters = function (outputs, bytes) {
         throw new Error('Returned values aren\'t valid, did it run Out of Gas?');
     }
 
-    var res = ethersAbiCoder.decode(this.mapTypes(outputs), '0x' + bytes.replace(/0x/i, ''));
+    var res = abi.decodeParameters(this.mapTypes(outputs), '0x' + bytes.replace(/0x/i, ''));
     var returnValue = new Result();
     returnValue.__length__ = 0;
 
