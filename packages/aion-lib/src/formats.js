@@ -89,7 +89,7 @@ function toBuffer(val, encoding) {
     return Buffer.from(val)
   }
 
-  if (isNaN(val) === false || isNumber(val) === true || BN.isBN(val) === true) {
+  if (isNumber(val) === true || BN.isBN(val) === true) {
     // to array from BN is an array of bytes
     return Buffer.from(numberToBn(val).toArray())
   }

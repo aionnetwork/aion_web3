@@ -20,7 +20,7 @@
     "lint": "jshint *.js packages",
     "test": "mocha; jshint *.js packages",
     "test-coveralls": "istanbul cover _mocha -- -R spec && cat coverage/lcov.info | coveralls --verbose",
-    "dev-test": "nodemon -L -d 1 -w 'packages/*/src' -w test --exec mocha --opts mocha.opts --watch test || true"
+    "dev-test": "nodemon -L -d 1 -w packages -w test --ext js --exec mocha --opts mocha.opts --watch test || true"
   },
   "repository": {
     "type": "git",

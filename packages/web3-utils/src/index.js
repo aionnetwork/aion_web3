@@ -280,7 +280,7 @@ var toChecksumAddress = function (address) {
     if (typeof address === 'undefined') return '';
 
     if(!/^(0x)?[0-9a-f]{64}$/i.test(address))
-        throw new Error('Given address "'+ address +'" is not a valid Ethereum address.');
+        throw new Error('Given address "'+ address +'" is not a valid Aion address.');
 
     return aionLib.accounts.createChecksumAddress(address);
 };
@@ -299,6 +299,8 @@ module.exports = {
     isHex: utils.isHex,
     isHexStrict: utils.isHexStrict,
     blake2b256: utils.blake2b256,
+    sha3: utils.sha3,
+    keccak256: utils.sha3,
     solidityBlake2b256: solidityBlake2b256,
     isAddress: utils.isAddress,
     checkAddressChecksum: utils.checkAddressChecksum,

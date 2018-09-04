@@ -3,7 +3,7 @@ var assert = chai.assert;
 var coder = require('../packages/web3-eth-abi');
 
 
-describe('lib/solidity/coder', function () {
+xdescribe('lib/solidity/coder', function () {
     describe('encodeParameter', function () {
         var test = function (t) {
             it('should turn ' + t.value + ' to ' + t.expected + ' for '+ t.type, function () {
@@ -310,7 +310,7 @@ describe('lib/solidity/coder', function () {
 });
 
 
-describe('lib/solidity/coder', function () {
+xdescribe('lib/solidity/coder', function () {
     describe('encodeParameters', function () {
         var test = function (t) {
             it('should turn ' + t.values + ' to ' + t.expected, function () {

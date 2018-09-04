@@ -12,6 +12,7 @@ let node =
     ? require('crypto-browserify')
     : require('crypto')
 let scrypt = require('scryptsy')
+let jsSha3 = require('js-sha3')
 
 function blake2b128(val) {
   // 16
@@ -31,10 +32,15 @@ function blake2b256(val) {
   return out
 }
 
+function keccak256(val) {
+  return jsSha3.keccak256(val)
+}
+
 module.exports = {
   blake2b128,
   blake2b256,
   nacl,
   node,
-  scrypt
+  scrypt,
+  keccak256
 }

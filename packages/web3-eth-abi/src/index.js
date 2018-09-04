@@ -44,7 +44,7 @@ var ABICoder = function () {
 };
 
 /**
- * Encodes the function name to its ABI representation, which are the first 4 bytes of the blake2b256 of the function name including  types.
+ * Encodes the function name to its ABI representation, which are the first 4 bytes of the keccak256 of the function name including  types.
  *
  * @method encodeFunctionSignature
  * @param {String|Object} functionName
@@ -55,11 +55,11 @@ ABICoder.prototype.encodeFunctionSignature = function (functionName) {
         functionName = utils._jsonInterfaceMethodToString(functionName);
     }
 
-    return utils.blake2b256(functionName).slice(0, 10);
+    return utils.keccak256(functionName).slice(0, 10);
 };
 
 /**
- * Encodes the function name to its ABI representation, which are the first 4 bytes of the blake2b256 of the function name including  types.
+ * Encodes the function name to its ABI representation, which are the first 4 bytes of the keccak256 of the function name including  types.
  *
  * @method encodeEventSignature
  * @param {String|Object} functionName
@@ -70,7 +70,7 @@ ABICoder.prototype.encodeEventSignature = function (functionName) {
         functionName = utils._jsonInterfaceMethodToString(functionName);
     }
 
-    return utils.blake2b256(functionName);
+    return utils.keccak256(functionName);
 };
 
 /**
@@ -94,7 +94,14 @@ ABICoder.prototype.encodeParameter = function (type, param) {
  * @return {String} encoded list of params
  */
 ABICoder.prototype.encodeParameters = function (types, params) {
-    return abi.encodeParameters(types, params);
+    let typeStrings = types.map(function(item) {
+        if (typeof item === 'object' && typeof item.type === 'string') {
+          return item.type;
+        }
+
+        return item;
+    });
+    return abi.encodeParameters(typeStrings, params);
 };
 
 /**

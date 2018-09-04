@@ -190,7 +190,7 @@ var abi = [{
 //var addressLowercase = '0x11f4d0a3c12e86b4b5f39b213f7e19d048276dae';
 //var address2 = '0x5555567890123456789012345678901234567891';
 
-var address =  '0xa0c0ffee11111111111111111111111111111111111111111111111111111111';
+var address =  '0xA0C0FfEE11111111111111111111111111111111111111111111111111111111';
 var addressLowercase =  '0xa0c0ffee11111111111111111111111111111111111111111111111111111111'; //XXX
 var address2 = '0xa0decaf222222222222222222222222222222222222222222222222222222222';
 
@@ -296,7 +296,7 @@ var runTests = function(contractFactory) {
         it('.clone() should properly clone the contract instance', function () {
             var provider = new FakeIpcProvider();
 
-            var fromAddress = '0xDDfFD0A3C12e86b4b5f39B213f7e19d048276daE';
+            var fromAddress = address;
             var abi2 = [{
                 "name": "ballerRo",
                 "type": "function",
@@ -405,7 +405,7 @@ var runTests = function(contractFactory) {
                 topics: [
                     '0x1234',
                     null,
-                    '0x000000000000000000000000000000000000000000000000000000000000000c'
+                    '0x0000000000000000000000000000000c'
                 ]
             });
 
@@ -433,8 +433,8 @@ var runTests = function(contractFactory) {
                 topics: [
                     '0x1234',
                     null,
-                    '0x000000000000000000000000'+ addressLowercase.replace('0x',''),
-                    ['0x000000000000000000000000000000000000000000000000000000000000000c', '0x000000000000000000000000000000000000000000000000000000000000000a']
+                    address,
+                    ['0x0000000000000000000000000000000c', '0x0000000000000000000000000000000a']
                 ]
             });
 
@@ -471,6 +471,7 @@ var runTests = function(contractFactory) {
                 '0000000000000000000000000000000000000000000000000000000000000008'
             });
 
+            console.log('result', result)
             assert.equal(result.blockNumber, 3);
             assert.equal(result.blockHash, '0x1345');
             assert.equal(result.logIndex, 4);

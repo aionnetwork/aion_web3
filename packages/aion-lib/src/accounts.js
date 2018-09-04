@@ -31,14 +31,6 @@ function createKeyPair({entropy, privateKey}) {
     entropy = randomHexBuffer()
   }
 
-  if (entropy.length !== nacl.sign.seedLength) {
-    /*eslint-disable no-console*/
-    // for some reason the entropy has intermittent problems
-    console.log('entropy', entropy)
-    console.log('entropy.length', entropy.length)
-    /*eslint-enable no-console*/
-  }
-
   kp = nacl.sign.keyPair.fromSeed(entropy.slice(0, nacl.sign.seedLength))
   keyPair = {
     privateKey: toBuffer(kp.secretKey),

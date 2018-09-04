@@ -16,7 +16,7 @@ let {
   bufferToHex
 } = require('./formats')
 
-let {blake2b256} = require('./crypto')
+let {keccak256} = require('./crypto')
 let solidity = require('./solidity')
 let values = require('./values')
 
@@ -41,7 +41,7 @@ function fnHashBuffer(val) {
     }
   }
 
-  return blake2b256(op).slice(0, values.solidity.types.function.byteLength)
+  return keccak256(op).slice(0, values.solidity.types.function.byteLength)
 }
 
 /**
@@ -127,6 +127,7 @@ let abiTypeEncoders = {
  * @return {string}
  */
 function encodeEventSignature(val) {
+  console.log('val', val)
   return prependZeroX(fnHashBuffer(val).toString('hex'))
 }
 
@@ -296,7 +297,7 @@ function decodeAbiBoolean(val) {
 }
 
 function decodeAbiNumber(val) {
-  return new BN(bufferToZeroXHex(val), 'hex').toNumber();
+  return new BN(bufferToHex(val), 'hex').toNumber();
 }
 
 function decodeAbiAddress(val) {
@@ -324,6 +325,9 @@ let abiTypeDecodes = {
 function decodeParameters(types, val) {
   let typeList = []
 
+  // console.log('types', types)
+  // console.log('val', val)
+
   if (isArray(types) === true && isString(types[0]) === true) {
     // array of string types
     typeList = types
@@ -341,77 +345,81 @@ function decodeParameters(types, val) {
 
   let parsedTypes = typeList.map(solidity.parseType)
 
-  let useTopLevelOffsets = parsedTypes.some(
+  let useTopLevelOffsets = parsedTypes.length > 1 && parsedTypes.some(
     item => item.hasDynamicDimensions === true
   )
 
   let bytes = toBuffer(val)
   let op = []
-  let cursor
-
+  let cursor = 0
   let previousByteLength = 16
+  let outerOffsets = []
+
+  function readBytes(length) {
+    let op = bytes.slice(cursor, cursor + length)
+    cursor += length
+    return op
+  }
+
+  if (useTopLevelOffsets === true) {
+    parsedTypes.forEach(() => {
+      outerOffsets.push(decodeAbiNumber(readBytes(16)))
+    })
+
+    // console.log('outerOffsets', outerOffsets)
+  }
 
   parsedTypes.forEach((parsedType, paramIndex) => {
-    let {baseType, dimensions, hasDimensions} = parsedType
+    let {baseType, dimensions, hasDimensions, hasDynamicDimensions} = parsedType
     let {byteLength} = values.solidity.types[baseType]
     let dynamicType = values.solidity.types[baseType].dynamic
     let valueDecoder = abiTypeDecodes[baseType]
-    let offset
+    let offset = 0
+    let innerOffsets = []
     let paramOp = []
 
-    // give the next iteration some information about the previous
-    // it helps with the offset and cursor
-    function exit() {
-      previousByteLength = byteLength
+    // console.log('baseType', baseType)
+    // console.log('dimensions', dimensions)
+    // console.log('hasDimensions', hasDimensions)
+    // console.log('hasDynamicDimensions', hasDynamicDimensions)
+    // console.log('byteLength', byteLength)
+    // console.log('dynamicType', dynamicType)
+
+    if (hasDynamicDimensions === true) {
+      dimensions.forEach(() => {
+        innerOffsets.push(decodeAbiNumber(readBytes(16)))
+      })
+
+      // console.log('innerOffsets', innerOffsets)
     }
 
     //
     // simple single type param
     //
-    if (useTopLevelOffsets === false && hasDimensions === false) {
-      cursor = paramIndex * previousByteLength
-      let val = bytes.slice(cursor, cursor + byteLength)
-      op.push(valueDecoder(val))
-      return exit()
+    if (hasDimensions === false) {
+      // console.log('simple single type param')
+      op.push(valueDecoder(readBytes(byteLength)))
+      return
     }
 
     //
-    // simple array
+    // simple fixed-length array
     //
-    if (useTopLevelOffsets === false && hasDimensions === true) {
+    if (hasDimensions === true && hasDynamicDimensions === false) {
+      // console.log('simple array')
       let {length} = dimensions[0]
-
-      cursor = paramIndex * byteLength
       for (let i = 0; i < length; i += 1) {
-        let val = bytes.slice(cursor, cursor + byteLength)
-        paramOp.push(valueDecoder(val))
-        cursor += byteLength
+        paramOp.push(valueDecoder(readBytes(byteLength)))
       }
-      op.push(paramOp)
-      return exit()
+      return op.push(paramOp)
     }
 
     //
     // shifting to complex mode with offsets
     //
 
-    if (useTopLevelOffsets === true) {
-      cursor = paramIndex * 16
-      offset = decodeAbiNumber(bytes.slice(cursor, cursor + 16))
-    }
-
     //
-    // simple single value type after offsets
-    //
-    if (hasDimensions === false) {
-      cursor = offset
-      let val = bytes.slice(cursor, cursor + byteLength)
-      op.push(valueDecoder(val))
-      return exit()
-    }
-
-    //
-    // know it's an array now
+    // we know it's an array now
     //
     let {length} = dimensions[0]
 
@@ -419,36 +427,33 @@ function decodeParameters(types, val) {
     // using isNumber instead
 
     if (isNumber(length) === true) {
-      cursor = offset
+      // console.log('fixed length array')
       for (let i = 0; i < length; i += 1) {
-        let val = bytes.slice(cursor, cursor + byteLength)
-        paramOp.push(valueDecoder(val))
-        cursor += byteLength
+        paramOp.push(valueDecoder(readBytes(byteLength)))
       }
-      op.push(paramOp)
-      return exit()
+      return op.push(paramOp)
     }
 
-    length = bytes.slice(offset, offset + 16)
-    length = decodeAbiNumber(length)
-    cursor = offset + 16
+    // console.log('dynamic length array')
 
-    for (let i = 0; i < length; i += 1) {
-      if (dynamicType === true) {
-        let itemLength = bytes.slice(cursor, cursor + 16)
-        itemLength = decodeAbiNumber(itemLength)
-        cursor += 16
-        let val = bytes.slice(cursor, cursor + itemLength)
-        paramOp.push(valueDecoder(val))
-        cursor += byteLength
-        continue
+    dimensions.forEach((dimension, dimensionIndex) => {
+      let {dynamic, length} = dimension
+      let dimensionOp = []
+
+      if (dynamic === true) {
+        length = decodeAbiNumber(readBytes(16))
       }
-      let val = bytes.slice(cursor, cursor + byteLength)
-      paramOp.push(valueDecoder(val))
-      cursor += byteLength
-    }
+
+      // console.log('length', length)
+
+      for (let i = 0; i < length; i += 1) {
+        paramOp.push(valueDecoder(readBytes(byteLength)))
+      }
+
+      // paramOp.push(dimensionOp)
+    })
+
     op.push(paramOp)
-    exit()
   })
 
   return op
@@ -462,7 +467,7 @@ function decodeParameters(types, val) {
  * @return {string}
  */
 function decodeParameter(type, val) {
-  return decodeParameters({type}, val)[0]
+  return decodeParameters([type], val)[0]
 }
 
 /**
