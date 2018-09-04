@@ -131,7 +131,7 @@ var _solidityPack = function (type, value, arraySize) {
         return utils.rightPad(value, size * 2);
     } else if (type.startsWith('uint')) {
 
-        if ((size % 8) || (size < 8) || (size > 256)) {
+        if ((size % 8) || (size < 8) || (size > 128)) {
             throw new Error('Invalid uint'+size+' size');
         }
 
@@ -147,7 +147,7 @@ var _solidityPack = function (type, value, arraySize) {
         return size ? utils.leftPad(num.toString('hex'), size/8 * 2) : num;
     } else if (type.startsWith('int')) {
 
-        if ((size % 8) || (size < 8) || (size > 256)) {
+        if ((size % 8) || (size < 8) || (size > 128)) {
             throw new Error('Invalid int'+size+' size');
         }
 

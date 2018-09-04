@@ -15,7 +15,7 @@ var abi = [{
         "type": "address"
     },{
         "name": "myValue",
-        "type": "uint256"
+        "type": "uint128"
     }]
 },{
     "constant": false,
@@ -64,7 +64,7 @@ var abi = [{
     "constant": true,
     "outputs": [{
         "name": "value",
-        "type": "uint256"
+        "type": "uint128"
     }]
 },{
     "name": "hasALotOfParams",
@@ -117,7 +117,7 @@ var abi = [{
         "type": "address"
     }, {
         "name": "value",
-        "type": "uint256"
+        "type": "uint128"
     }],
     "outputs": [],
     "stateMutability": "payable"
@@ -129,7 +129,7 @@ var abi = [{
         "type": "address"
     }, {
         "name": "value",
-        "type": "uint256"
+        "type": "uint128"
     }],
     "outputs": [],
     "payable": false
@@ -150,27 +150,27 @@ var abi = [{
     "type":"event",
     "inputs": [
         {"name":"from","type":"address","indexed":true},
-        {"name":"amount","type":"uint256","indexed":true},
-        {"name":"t1","type":"uint256","indexed":false},
-        {"name":"t2","type":"uint256","indexed":false}
+        {"name":"amount","type":"uint128","indexed":true},
+        {"name":"t1","type":"uint128","indexed":false},
+        {"name":"t2","type":"uint128","indexed":false}
     ]
 }, {
         "name":"Unchanged",
         "type":"event",
         "inputs": [
-            {"name":"value","type":"uint256","indexed":true},
+            {"name":"value","type":"uint128","indexed":true},
             {"name":"addressFrom","type":"address","indexed":true},
-            {"name":"t1","type":"uint256","indexed":false}
+            {"name":"t1","type":"uint128","indexed":false}
         ]
 }, {
     "name":"overloadedFunction",
     "type":"function",
     "inputs":[
-        {"name":"a","type":"uint256"}
+        {"name":"a","type":"uint128"}
     ],
     "constant":true,
     "outputs":[
-        {"name":"", "type":"uint256"}
+        {"name":"", "type":"uint128"}
     ],
     "payable":false,
     "stateMutability":"view"
@@ -180,7 +180,7 @@ var abi = [{
     "inputs":[],
     "constant":true,
     "outputs":[
-        {"name":"","type":"uint256"}
+        {"name":"","type":"uint128"}
     ],
     "payable":false,
     "stateMutability":"view"
@@ -307,7 +307,7 @@ var runTests = function(contractFactory) {
                 "constant": true,
                 "outputs": [{
                     "name": "man",
-                    "type": "uint256"
+                    "type": "uint128"
                 }]
             }];
 
@@ -366,9 +366,9 @@ var runTests = function(contractFactory) {
                 "type":"event",
                 "inputs": [
                     {"name":"from","type":"address","indexed":true},
-                    {"name":"amount","type":"uint256","indexed":true},
-                    {"name":"t1","type":"uint256","indexed":false},
-                    {"name":"t2","type":"uint256","indexed":false}
+                    {"name":"amount","type":"uint128","indexed":true},
+                    {"name":"t1","type":"uint128","indexed":false},
+                    {"name":"t2","type":"uint128","indexed":false}
                 ]
             });
 
@@ -382,6 +382,7 @@ var runTests = function(contractFactory) {
             });
 
         });
+
         it('_encodeEventABI should return the encoded event object with topics', function () {
             var provider = new FakeIpcProvider();
 
@@ -393,9 +394,9 @@ var runTests = function(contractFactory) {
                 "type":"event",
                 "inputs": [
                     {"name":"from","type":"address","indexed":true},
-                    {"name":"amount","type":"uint256","indexed":true},
-                    {"name":"t1","type":"uint256","indexed":false},
-                    {"name":"t2","type":"uint256","indexed":false}
+                    {"name":"amount","type":"uint128","indexed":true},
+                    {"name":"t1","type":"uint128","indexed":false},
+                    {"name":"t2","type":"uint128","indexed":false}
                 ]
             }, {filter: {amount: 12}, fromBlock: 2});
 
@@ -410,6 +411,7 @@ var runTests = function(contractFactory) {
             });
 
         });
+
         it('_encodeEventABI should return the encoded event object with topics and multiple choices', function () {
             var provider = new FakeIpcProvider();
             var contract = contractFactory(abi, address, provider);
@@ -419,11 +421,11 @@ var runTests = function(contractFactory) {
                 "name":"Changed",
                 "type":"event",
                 "inputs": [
-                    {"name":"test","type":"uint256","indexed":true},
+                    {"name":"test","type":"uint128","indexed":true},
                     {"name":"from","type":"address","indexed":true},
-                    {"name":"amount","type":"uint256","indexed":true},
-                    {"name":"t1","type":"uint256","indexed":false},
-                    {"name":"t2","type":"uint256","indexed":false}
+                    {"name":"amount","type":"uint128","indexed":true},
+                    {"name":"t1","type":"uint128","indexed":false},
+                    {"name":"t2","type":"uint128","indexed":false}
                 ]
             }, {filter: {amount: [12,10], from: address}, fromBlock: 2});
 
@@ -439,9 +441,10 @@ var runTests = function(contractFactory) {
             });
 
         });
+
         it('_decodeEventABI should return the decoded event object with topics', function () {
             var provider = new FakeIpcProvider();
-            var signature = 'Changed(address,uint256,uint256,uint256)';
+            var signature = 'Changed(address,uint128,uint128,uint128)';
 
             var contract = contractFactory(abi, address, provider);
 
@@ -451,15 +454,15 @@ var runTests = function(contractFactory) {
                 "type":"event",
                 "inputs": [
                     {"name":"from","type":"address","indexed":true},
-                    {"name":"amount","type":"uint256","indexed":true},
-                    {"name":"t1","type":"uint256","indexed":false},
-                    {"name":"t2","type":"uint256","indexed":false}
+                    {"name":"amount","type":"uint128","indexed":true},
+                    {"name":"t1","type":"uint128","indexed":false},
+                    {"name":"t2","type":"uint128","indexed":false}
                 ]
             }, {
                 address: address,
                 topics: [
                     sha3(signature),
-                    '0x000000000000000000000000'+ address.replace('0x',''),
+                    '0x'+ address.replace('0x',''),
                     '0x0000000000000000000000000000000000000000000000000000000000000001'
                 ],
                 blockNumber: '0x3',
@@ -471,21 +474,21 @@ var runTests = function(contractFactory) {
                 '0000000000000000000000000000000000000000000000000000000000000008'
             });
 
-            console.log('result', result)
             assert.equal(result.blockNumber, 3);
             assert.equal(result.blockHash, '0x1345');
             assert.equal(result.logIndex, 4);
             assert.equal(result.id, 'log_9ff24cb4');
             assert.equal(result.transactionIndex, 0);
-            assert.equal(result.returnValues.from, address);
-            assert.equal(result.returnValues.amount, 1);
+            assert.equal(result.returnValues.from, addressLowercase);
+            assert.equal(result.returnValues.amount, 0);
             assert.equal(result.returnValues.t1, 1);
             assert.equal(result.returnValues.t2, 8);
 
         });
+
         it('_decodeMethodReturn should return the decoded values', function () {
             var provider = new FakeIpcProvider();
-            var signature = 'Changed(address,uint256,uint256,uint256)';
+            var signature = 'Changed(address,uint128,uint128,uint128)';
 
             var contract = contractFactory(abi, address, provider);
 
@@ -494,20 +497,20 @@ var runTests = function(contractFactory) {
                 "type": "address"
             },{
                 "name": "value",
-                "type": "uint256"
-            }], '0x000000000000000000000000'+ address.replace('0x','')+
+                "type": "uint128"
+            }], '0x'+ address.replace('0x','')+
                 '000000000000000000000000000000000000000000000000000000000000000a');
 
             assert.isObject(result);
-            assert.equal(result[0], address);
-            assert.equal(result.myAddress, address);
+            assert.equal(result[0], addressLowercase);
+            assert.equal(result.myAddress, addressLowercase);
             assert.equal(result[1], 10);
             assert.equal(result.value, 10);
 
         });
         it('_decodeMethodReturn should return a single decoded value', function () {
             var provider = new FakeIpcProvider();
-            var signature = 'Changed(address,uint256,uint256,uint256)';
+            var signature = 'Changed(address,uint128,uint128,uint128)';
 
             var contract = contractFactory(abi, address, provider);
 
@@ -521,7 +524,7 @@ var runTests = function(contractFactory) {
         });
         it('_executeMethod as instantSealEngine should sendTransaction and check for receipts', function (done) {
             var provider = new FakeIpcProvider();
-            var signature = sha3('mySend(address,uint256)').slice(0, 10);
+            var signature = sha3('mySend(address,uint128)').slice(0, 10);
 
             provider.injectValidation(function (payload) {
                 assert.equal(payload.method, 'eth_sendTransaction');
@@ -560,7 +563,7 @@ var runTests = function(contractFactory) {
                     "type": "address"
                 }, {
                     "name": "value",
-                    "type": "uint256"
+                    "type": "uint128"
                 }],
                 "outputs": []
             };
@@ -588,7 +591,7 @@ var runTests = function(contractFactory) {
         });
         it('_executeMethod should sendTransaction and check for receipts', function (done) {
             var provider = new FakeIpcProvider();
-            var signature = sha3('mySend(address,uint256)').slice(0, 10);
+            var signature = sha3('mySend(address,uint128)').slice(0, 10);
 
             provider.injectValidation(function (payload) {
                 assert.equal(payload.method, 'eth_sendTransaction');
@@ -655,7 +658,7 @@ var runTests = function(contractFactory) {
                     "type": "address"
                 }, {
                     "name": "value",
-                    "type": "uint256"
+                    "type": "uint128"
                 }],
                 "outputs": []
             };
@@ -709,7 +712,7 @@ var runTests = function(contractFactory) {
                 "constant": true,
                 "outputs": [{
                     "name": "value",
-                    "type": "uint256"
+                    "type": "uint128"
                 }]
             };
             txObject._parent = contract;
@@ -730,7 +733,7 @@ var runTests = function(contractFactory) {
     describe('event', function () {
         it('should create event subscription', function (done) {
             var provider = new FakeIpcProvider();
-            var signature = 'Changed(address,uint256,uint256,uint256)';
+            var signature = 'Changed(address,uint128,uint128,uint128)';
             provider.injectValidation(function (payload) {
                 assert.equal(payload.jsonrpc, '2.0');
                 assert.equal(payload.method, 'eth_subscribe');
@@ -787,7 +790,7 @@ var runTests = function(contractFactory) {
 
         it('should create event from the events object and use the fromBlock option', function (done) {
             var provider = new FakeIpcProvider();
-            var signature = 'Changed(address,uint256,uint256,uint256)';
+            var signature = 'Changed(address,uint128,uint128,uint128)';
 
             provider.injectValidation(function (payload) {
                 assert.equal(payload.jsonrpc, '2.0');
@@ -899,7 +902,7 @@ var runTests = function(contractFactory) {
 
         it('should create event from the events object using a signature and callback', function (done) {
             var provider = new FakeIpcProvider();
-            var signature = 'Changed(address,uint256,uint256,uint256)';
+            var signature = 'Changed(address,uint128,uint128,uint128)';
 
             provider.injectValidation(function (payload) {
                 assert.equal(payload.jsonrpc, '2.0');
@@ -956,7 +959,7 @@ var runTests = function(contractFactory) {
 
         it('should create event from the events object using event name and parameters', function (done) {
             var provider = new FakeIpcProvider();
-            var signature = 'Changed(address,uint256,uint256,uint256)';
+            var signature = 'Changed(address,uint128,uint128,uint128)';
 
             provider.injectValidation(function (payload) {
                 assert.equal(payload.jsonrpc, '2.0');
@@ -1013,7 +1016,7 @@ var runTests = function(contractFactory) {
 
         it('should create event using the  function and unsubscribe after one log received', function (done) {
             var provider = new FakeIpcProvider();
-            var signature = 'Changed(address,uint256,uint256,uint256)';
+            var signature = 'Changed(address,uint128,uint128,uint128)';
 
             provider.injectValidation(function (payload) {
                 assert.equal(payload.jsonrpc, '2.0');
@@ -1095,7 +1098,7 @@ var runTests = function(contractFactory) {
 
         it('should create event using the  function and unsubscribe after one log received when no options are provided', function (done) {
             var provider = new FakeIpcProvider();
-            var signature = 'Changed(address,uint256,uint256,uint256)';
+            var signature = 'Changed(address,uint128,uint128,uint128)';
 
             provider.injectValidation(function (payload) {
                 assert.equal(payload.jsonrpc, '2.0');
@@ -1184,7 +1187,7 @@ var runTests = function(contractFactory) {
 
         it('should create event subscription and fire the changed event, if log.removed = true', function (done) {
             var provider = new FakeIpcProvider();
-            var signature = 'Changed(address,uint256,uint256,uint256)';
+            var signature = 'Changed(address,uint128,uint128,uint128)';
 
             provider.injectValidation(function (payload) {
                 assert.equal(payload.jsonrpc, '2.0');
@@ -1278,7 +1281,7 @@ var runTests = function(contractFactory) {
 
         it('should create all event filter and receive two logs', function (done) {
             var provider = new FakeIpcProvider();
-            var signature = 'Changed(address,uint256,uint256,uint256)';
+            var signature = 'Changed(address,uint128,uint128,uint128)';
 
             provider.injectValidation(function (payload) {
                 assert.equal(payload.jsonrpc, '2.0');
@@ -1328,7 +1331,7 @@ var runTests = function(contractFactory) {
                     result: {
                         address: address,
                         topics: [
-                            sha3('Changed(address,uint256,uint256,uint256)'),
+                            sha3('Changed(address,uint128,uint128,uint128)'),
                             '0x000000000000000000000000'+ address.replace('0x',''),
                             '0x0000000000000000000000000000000000000000000000000000000000000001'
                         ],
@@ -1350,7 +1353,7 @@ var runTests = function(contractFactory) {
                     result: {
                         address: address,
                         topics: [
-                            sha3('Unchanged(uint256,address,uint256)'),
+                            sha3('Unchanged(uint128,address,uint128)'),
                             '0x0000000000000000000000000000000000000000000000000000000000000002',
                             '0x000000000000000000000000'+ address.replace('0x','')
                         ],
@@ -1413,16 +1416,16 @@ var runTests = function(contractFactory) {
                     "type": "address"
                 }, {
                     "name": "value",
-                    "type": "uint256"
+                    "type": "uint128"
                 }],
                 "outputs": []
             }, {
                 "name":"Unchanged",
                 "type":"event",
                 "inputs": [
-                    {"name":"value","type":"uint256","indexed":true},
+                    {"name":"value","type":"uint128","indexed":true},
                     {"name":"addressFrom","type":"address","indexed":true},
-                    {"name":"t1","type":"uint256","indexed":false}
+                    {"name":"t1","type":"uint128","indexed":false}
                 ]
             }];
 
@@ -1712,7 +1715,7 @@ var runTests = function(contractFactory) {
 
         it('should sendTransaction and check for receipts with formatted logs', function (done) {
             var provider = new FakeIpcProvider();
-            var signature = sha3('mySend(address,uint256)').slice(0, 10);
+            var signature = sha3('mySend(address,uint128)').slice(0, 10);
 
             provider.injectValidation(function (payload) {
                 assert.equal(payload.method, 'eth_sendTransaction');
@@ -1763,7 +1766,7 @@ var runTests = function(contractFactory) {
                 logs: [{
                     address: address,
                     topics: [
-                        sha3('Unchanged(uint256,address,uint256)'),
+                        sha3('Unchanged(uint128,address,uint128)'),
                         '0x0000000000000000000000000000000000000000000000000000000000000002',
                         '0x000000000000000000000000'+ addressLowercase.replace('0x','')
                     ],
@@ -1776,7 +1779,7 @@ var runTests = function(contractFactory) {
                 },{
                     address: address,
                     topics: [
-                        sha3('Changed(address,uint256,uint256,uint256)'),
+                        sha3('Changed(address,uint128,uint128,uint128)'),
                         '0x000000000000000000000000'+ addressLowercase.replace('0x',''),
                         '0x0000000000000000000000000000000000000000000000000000000000000001'
                     ],
@@ -1877,7 +1880,7 @@ var runTests = function(contractFactory) {
 
         it('should sendTransaction and check for receipts with formatted logs when multiple of same event', function (done) {
             var provider = new FakeIpcProvider();
-            var signature = sha3('mySend(address,uint256)').slice(0, 10);
+            var signature = sha3('mySend(address,uint128)').slice(0, 10);
 
             provider.injectValidation(function (payload) {
                 assert.equal(payload.method, 'eth_sendTransaction');
@@ -1928,7 +1931,7 @@ var runTests = function(contractFactory) {
                 logs: [{
                     address: address,
                     topics: [
-                        sha3('Changed(address,uint256,uint256,uint256)'),
+                        sha3('Changed(address,uint128,uint128,uint128)'),
                         '0x000000000000000000000000' + addressLowercase.replace('0x', ''),
                         '0x0000000000000000000000000000000000000000000000000000000000000001'
                     ],
@@ -1942,7 +1945,7 @@ var runTests = function(contractFactory) {
                 },{
                     address: address,
                     topics: [
-                        sha3('Changed(address,uint256,uint256,uint256)'),
+                        sha3('Changed(address,uint128,uint128,uint128)'),
                         '0x000000000000000000000000'+ addressLowercase.replace('0x',''),
                         '0x0000000000000000000000000000000000000000000000000000000000000002'
                     ],
@@ -2043,7 +2046,7 @@ var runTests = function(contractFactory) {
 
         it('should sendTransaction and check for receipts with formatted logs using the HTTP provider', function (done) {
             var provider = new FakeHttpProvider();
-            var signature = sha3('mySend(address,uint256)').slice(0, 10);
+            var signature = sha3('mySend(address,uint128)').slice(0, 10);
 
             provider.injectValidation(function (payload) {
                 assert.equal(payload.method, 'eth_sendTransaction');
@@ -2078,7 +2081,7 @@ var runTests = function(contractFactory) {
                 logs: [{
                     address: address,
                     topics: [
-                        sha3('Unchanged(uint256,address,uint256)'),
+                        sha3('Unchanged(uint128,address,uint128)'),
                         '0x0000000000000000000000000000000000000000000000000000000000000002',
                         '0x000000000000000000000000'+ addressLowercase.replace('0x','')
                     ],
@@ -2091,7 +2094,7 @@ var runTests = function(contractFactory) {
                 },{
                     address: address,
                     topics: [
-                        sha3('Changed(address,uint256,uint256,uint256)'),
+                        sha3('Changed(address,uint128,uint128,uint128)'),
                         '0x000000000000000000000000'+ addressLowercase.replace('0x',''),
                         '0x0000000000000000000000000000000000000000000000000000000000000001'
                     ],
@@ -2192,7 +2195,7 @@ var runTests = function(contractFactory) {
 
         it('should sendTransaction and receive multiple confirmations', function(done){
             var provider = new FakeIpcProvider();
-            var signature = sha3('mySend(address,uint256)').slice(0, 10);
+            var signature = sha3('mySend(address,uint128)').slice(0, 10);
 
             provider.injectValidation(function (payload) {
                 assert.equal(payload.method, 'eth_sendTransaction');
@@ -2288,7 +2291,7 @@ var runTests = function(contractFactory) {
 
         it('should sendTransaction to contract function', function () {
             var provider = new FakeIpcProvider();
-            var signature = 'mySend(address,uint256)';
+            var signature = 'mySend(address,uint128)';
 
             provider.injectValidation(function (payload) {
                 assert.equal(payload.method, 'eth_sendTransaction');
@@ -2328,7 +2331,7 @@ var runTests = function(contractFactory) {
 
         it('should not throw error when trying to not send ether to a non payable contract function', function (done) {
             var provider = new FakeIpcProvider();
-            var signature = 'myDisallowedSend(address,uint256)';
+            var signature = 'myDisallowedSend(address,uint128)';
 
             provider.injectValidation(function (payload) {
                 assert.equal(payload.method, 'eth_sendTransaction');
@@ -2363,7 +2366,7 @@ var runTests = function(contractFactory) {
 
         it('should sendTransaction to contract function using the function namen incl. parameters', function () {
             var provider = new FakeIpcProvider();
-            var signature = sha3('mySend(address,uint256)').slice(0, 10);
+            var signature = sha3('mySend(address,uint128)').slice(0, 10);
 
             provider.injectValidation(function (payload) {
                 assert.equal(payload.method, 'eth_sendTransaction');
@@ -2379,12 +2382,12 @@ var runTests = function(contractFactory) {
 
             var contract = contractFactory(abi, address, provider);
 
-            contract.methods['mySend(address,uint256)'](address, 17).send({from: address, gasPrice: '23456787654321'});
+            contract.methods['mySend(address,uint128)'](address, 17).send({from: address, gasPrice: '23456787654321'});
         });
 
         it('should sendTransaction to contract function using the signature', function () {
             var provider = new FakeIpcProvider();
-            var signature = sha3('mySend(address,uint256)').slice(0, 10);
+            var signature = sha3('mySend(address,uint128)').slice(0, 10);
 
             provider.injectValidation(function (payload) {
                 assert.equal(payload.method, 'eth_sendTransaction');
@@ -2405,7 +2408,7 @@ var runTests = function(contractFactory) {
 
         it('should throw when trying to create a tx object and wrong amount of params', function (done) {
             var provider = new FakeIpcProvider();
-            var signature = 'mySend(address,uint256)';
+            var signature = 'mySend(address,uint128)';
 
             provider.injectValidation(function (payload) {
                 assert.equal(payload.method, 'eth_sendTransaction');
@@ -2514,7 +2517,7 @@ var runTests = function(contractFactory) {
 
         it('should sendTransaction with optional params', function (done) {
             var provider = new FakeIpcProvider();
-            var signature = 'mySend(address,uint256)';
+            var signature = 'mySend(address,uint128)';
 
             provider.injectValidation(function (payload) {
                 assert.equal(payload.method, 'eth_sendTransaction');
@@ -2539,7 +2542,7 @@ var runTests = function(contractFactory) {
 
         it('should sendTransaction and fill in default gasPrice', function (done) {
             var provider = new FakeIpcProvider();
-            var signature = 'mySend(address,uint256)';
+            var signature = 'mySend(address,uint128)';
 
             provider.injectValidation(function (payload) {
                 assert.equal(payload.method, 'eth_gasPrice');
@@ -2570,7 +2573,7 @@ var runTests = function(contractFactory) {
 
         it('should explicitly sendTransaction with optional params', function (done) {
             var provider = new FakeIpcProvider();
-            var signature = 'mySend(address,uint256)';
+            var signature = 'mySend(address,uint128)';
 
             provider.injectValidation(function (payload) {
                 assert.equal(payload.method, 'eth_sendTransaction');
@@ -2596,7 +2599,7 @@ var runTests = function(contractFactory) {
 
         it('should explicitly call sendTransaction with optional params and call callback without error', function (done) {
             var provider = new FakeIpcProvider();
-            var signature = 'mySend(address,uint256)';
+            var signature = 'mySend(address,uint128)';
 
             provider.injectValidation(function (payload) {
 
@@ -2623,7 +2626,7 @@ var runTests = function(contractFactory) {
 
         it('should explicitly estimateGas with optional params', function () {
             var provider = new FakeIpcProvider();
-            var signature = 'mySend(address,uint256)';
+            var signature = 'mySend(address,uint128)';
 
             provider.injectValidation(function (payload) {
                 assert.equal(payload.method, 'eth_estimateGas');
@@ -3035,7 +3038,7 @@ describe('typical usage', function() {
 
         provider.injectValidation(function (payload) {
             var expected = eth.accounts.wallet[0].signTransaction({
-                data: '0x1234567000000000000000000000000' + account.address.toLowerCase().replace('0x', '') + '00000000000000000000000000000000000000000000000000000000000000c8',
+                data: '0x1234567' + account.address.toLowerCase().replace('0x', '') + '00000000000000000000000000000000000000000000000000000000000000c8',
                 from: account.address.toLowerCase(),
                 gas: '0xc350',
                 gasPrice: '0xbb8',

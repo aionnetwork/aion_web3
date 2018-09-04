@@ -316,8 +316,8 @@ var outputLogFormatter = function(log) {
     if(typeof log.blockHash === 'string' &&
        typeof log.transactionHash === 'string' &&
        typeof log.logIndex === 'string') {
-        var blake2b256Id = utils.blake2b256(log.blockHash.replace('0x','') + log.transactionHash.replace('0x','') + log.logIndex.replace('0x',''));
-        log.id = 'log_'+ blake2b256Id.replace('0x','').substr(0,8);
+        var sha3Id = utils.sha3(log.blockHash.replace('0x','') + log.transactionHash.replace('0x','') + log.logIndex.replace('0x',''));
+        log.id = 'log_'+ sha3Id.replace('0x','').substr(0,8);
     } else if(!log.id) {
         log.id = null;
     }

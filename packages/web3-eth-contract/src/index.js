@@ -374,6 +374,9 @@ Contract.prototype._decodeEventABI = function (data) {
 
     var argTopics = event.anonymous ? data.topics : data.topics.slice(1);
 
+    console.log('event.inputs', event.inputs)
+    console.log('data.data', data.data)
+    console.log('argTopics', argTopics)
     result.returnValues = abi.decodeLog(event.inputs, data.data, argTopics);
     delete result.returnValues.__length__;
 
@@ -390,7 +393,6 @@ Contract.prototype._decodeEventABI = function (data) {
     };
     delete result.data;
     delete result.topics;
-
 
     return result;
 };
