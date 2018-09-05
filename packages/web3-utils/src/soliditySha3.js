@@ -29,13 +29,13 @@ var _elementaryName = function (name) {
     /*jshint maxcomplexity:false */
 
     if (name.startsWith('int[')) {
-        return 'int256' + name.slice(3);
+        return 'int128' + name.slice(3);
     } else if (name === 'int') {
-        return 'int256';
+        return 'int128';
     } else if (name.startsWith('uint[')) {
-        return 'uint256' + name.slice(4);
+        return 'uint128' + name.slice(4);
     } else if (name === 'uint') {
-        return 'uint256';
+        return 'uint128';
     } else if (name.startsWith('fixed[')) {
         return 'fixed128x128' + name.slice(5);
     } else if (name === 'fixed') {

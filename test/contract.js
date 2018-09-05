@@ -435,7 +435,7 @@ var runTests = function(contractFactory) {
                 topics: [
                     '0x1234',
                     null,
-                    address,
+                    addressLowercase,
                     ['0x0000000000000000000000000000000c', '0x0000000000000000000000000000000a']
                 ]
             });
@@ -462,16 +462,16 @@ var runTests = function(contractFactory) {
                 address: address,
                 topics: [
                     sha3(signature),
-                    '0x'+ address.replace('0x',''),
-                    '0x0000000000000000000000000000000000000000000000000000000000000001'
+                    address,
+                    '0x00000000000000000000000000000001'
                 ],
                 blockNumber: '0x3',
                 transactionHash: '0x1234',
                 blockHash: '0x1345',
                 transactionIndex: '0x0',
                 logIndex: '0x4',
-                data: '0x0000000000000000000000000000000000000000000000000000000000000001' +
-                '0000000000000000000000000000000000000000000000000000000000000008'
+                data: '0x00000000000000000000000000000001' +
+                    '00000000000000000000000000000008'
             });
 
             assert.equal(result.blockNumber, 3);
@@ -479,8 +479,8 @@ var runTests = function(contractFactory) {
             assert.equal(result.logIndex, 4);
             assert.equal(result.id, 'log_9ff24cb4');
             assert.equal(result.transactionIndex, 0);
-            assert.equal(result.returnValues.from, addressLowercase);
-            assert.equal(result.returnValues.amount, 0);
+            assert.equal(result.returnValues.from, address);
+            assert.equal(result.returnValues.amount, 1);
             assert.equal(result.returnValues.t1, 1);
             assert.equal(result.returnValues.t2, 8);
 
@@ -498,12 +498,11 @@ var runTests = function(contractFactory) {
             },{
                 "name": "value",
                 "type": "uint128"
-            }], '0x'+ address.replace('0x','')+
-                '000000000000000000000000000000000000000000000000000000000000000a');
+            }], address + '0000000000000000000000000000000a');
 
             assert.isObject(result);
-            assert.equal(result[0], addressLowercase);
-            assert.equal(result.myAddress, addressLowercase);
+            assert.equal(result[0], address);
+            assert.equal(result.myAddress, address);
             assert.equal(result[1], 10);
             assert.equal(result.value, 10);
 
@@ -517,7 +516,7 @@ var runTests = function(contractFactory) {
             var result = contract._decodeMethodReturn([{
                 "name": "myAddress",
                 "type": "address"
-            }], '0x000000000000000000000000'+ address.replace('0x',''));
+            }], address);
 
             assert.equal(result, address);
 
@@ -529,7 +528,7 @@ var runTests = function(contractFactory) {
             provider.injectValidation(function (payload) {
                 assert.equal(payload.method, 'eth_sendTransaction');
                 assert.deepEqual(payload.params, [{
-                    data: signature +'000000000000000000000000'+ addressLowercase.replace('0x','') +'000000000000000000000000000000000000000000000000000000000000000a',
+                    data: signature + addressLowercase.replace('0x','') +'0000000000000000000000000000000a',
                     from: address2,
                     to: addressLowercase,
                     gasPrice: "0x5af3107a4000"
@@ -596,7 +595,7 @@ var runTests = function(contractFactory) {
             provider.injectValidation(function (payload) {
                 assert.equal(payload.method, 'eth_sendTransaction');
                 assert.deepEqual(payload.params, [{
-                    data: signature +'000000000000000000000000'+ addressLowercase.replace('0x','') +'000000000000000000000000000000000000000000000000000000000000000a',
+                    data: signature + addressLowercase.replace('0x','') +'0000000000000000000000000000000a',
                     from: address2,
                     to: addressLowercase,
                     gasPrice: "0x5af3107a4000"
@@ -690,12 +689,12 @@ var runTests = function(contractFactory) {
             provider.injectValidation(function (payload) {
                 assert.equal(payload.method, 'eth_call');
                 assert.deepEqual(payload.params, [{
-                    data: signature + '000000000000000000000000'+ addressLowercase.replace('0x',''),
+                    data: signature + addressLowercase.replace('0x',''),
                     from: address2,
                     to: addressLowercase
                 }, 'latest']);
             });
-            provider.injectResult('0x000000000000000000000000000000000000000000000000000000000000000a');
+            provider.injectResult('0x0000000000000000000000000000000a');
 
 
             var contract = contractFactory(abi, address, provider);
@@ -740,7 +739,7 @@ var runTests = function(contractFactory) {
                 assert.deepEqual(payload.params[1], {
                     topics: [
                         sha3(signature),
-                        ('0x000000000000000000000000' + addressLowercase.replace('0x', '')),
+                        addressLowercase,
                         null
                     ],
                     address: addressLowercase
@@ -762,15 +761,15 @@ var runTests = function(contractFactory) {
                         address: addressLowercase,
                         topics: [
                             sha3(signature),
-                            ('0x000000000000000000000000' + addressLowercase.replace('0x', '')),
-                            '0x0000000000000000000000000000000000000000000000000000000000000001'
+                            addressLowercase,
+                            '0x00000000000000000000000000000001'
                         ],
                         blockNumber: '0x3',
                         transactionHash: '0x1234',
                         blockHash: '0x1345',
                         logIndex: '0x4',
-                        data: '0x0000000000000000000000000000000000000000000000000000000000000001' +
-                        '0000000000000000000000000000000000000000000000000000000000000008'
+                        data: '0x00000000000000000000000000000001' +
+                        '00000000000000000000000000000008'
                     }
                 }
             });
@@ -800,29 +799,29 @@ var runTests = function(contractFactory) {
                     address: addressLowercase,
                     topics: [
                         sha3(signature),
-                        '0x000000000000000000000000'+ addressLowercase.replace('0x',''),
-                        '0x0000000000000000000000000000000000000000000000000000000000000002'
+                        addressLowercase,
+                        '0x00000000000000000000000000000002'
                     ],
                     blockNumber: '0x3',
                     transactionHash: '0x1234',
                     blockHash: '0x1345',
                     logIndex: '0x4',
-                    data: '0x0000000000000000000000000000000000000000000000000000000000000002' +
-                    '0000000000000000000000000000000000000000000000000000000000000009'
+                    data: '0x00000000000000000000000000000002' +
+                    '00000000000000000000000000000009'
                 },
                 {
                     address: addressLowercase,
                     topics: [
                         sha3(signature),
-                        '0x000000000000000000000000'+ addressLowercase.replace('0x',''),
-                        '0x0000000000000000000000000000000000000000000000000000000000000003'
+                        addressLowercase,
+                        '0x00000000000000000000000000000003'
                     ],
                     blockNumber: '0x4',
                     transactionHash: '0x1235',
                     blockHash: '0x1346',
                     logIndex: '0x1',
-                    data: '0x0000000000000000000000000000000000000000000000000000000000000004' +
-                    '0000000000000000000000000000000000000000000000000000000000000005'
+                    data: '0x00000000000000000000000000000004' +
+                    '00000000000000000000000000000005'
             }]);
 
             provider.injectValidation(function (payload) {
@@ -831,7 +830,7 @@ var runTests = function(contractFactory) {
                 assert.deepEqual(payload.params[1], {
                     topics: [
                         sha3(signature),
-                        '0x000000000000000000000000'+ addressLowercase.replace('0x',''),
+                        addressLowercase,
                         null
                     ],
                     address: addressLowercase
@@ -854,15 +853,15 @@ var runTests = function(contractFactory) {
                         address: addressLowercase,
                         topics: [
                             sha3(signature),
-                            '0x000000000000000000000000'+ addressLowercase.replace('0x',''),
-                            '0x0000000000000000000000000000000000000000000000000000000000000001'
+                            addressLowercase,
+                            '0x00000000000000000000000000000001'
                         ],
                         blockNumber: '0x3',
                         transactionHash: '0x1234',
                         blockHash: '0x1345',
                         logIndex: '0x4',
-                        data: '0x0000000000000000000000000000000000000000000000000000000000000001' +
-                        '0000000000000000000000000000000000000000000000000000000000000008'
+                        data: '0x00000000000000000000000000000001' +
+                        '00000000000000000000000000000008'
                     }
                 }
             });
@@ -933,15 +932,15 @@ var runTests = function(contractFactory) {
                         address: addressLowercase,
                         topics: [
                             sha3(signature),
-                            '0x000000000000000000000000'+ addressLowercase.replace('0x',''),
-                            '0x0000000000000000000000000000000000000000000000000000000000000001'
+                            addressLowercase,
+                            '0x00000000000000000000000000000001'
                         ],
                         blockNumber: '0x3',
                         transactionHash: '0x1234',
                         blockHash: '0x1345',
                         logIndex: '0x4',
-                        data: '0x0000000000000000000000000000000000000000000000000000000000000001' +
-                        '0000000000000000000000000000000000000000000000000000000000000008'
+                        data: '0x00000000000000000000000000000001' +
+                        '00000000000000000000000000000008'
                     }
                 }
             });

@@ -19,6 +19,7 @@ let {
 let {keccak256} = require('./crypto')
 let solidity = require('./solidity')
 let values = require('./values')
+let {createChecksumAddress} = require('./accounts')
 
 /**
  * Shared between function and event signatures. Creates a name/type combination
@@ -105,7 +106,7 @@ function encodeAbiNumber(val) {
  * @return {string}
  */
 function encodeAbiAddress(val) {
-  return removeLeadingZeroX(val)
+  return removeLeadingZeroX(val).toLowerCase()
 }
 
 // replaces the need for switch case
@@ -301,7 +302,7 @@ function decodeAbiNumber(val) {
 }
 
 function decodeAbiAddress(val) {
-  return prependZeroX(toBuffer(val).toString('hex'))
+  return createChecksumAddress(toBuffer(val).toString('hex'))
 }
 
 let abiTypeDecodes = {

@@ -28,14 +28,14 @@ var RESOLVER = [
             },
             {
                 "name": "contentTypes",
-                "type": "uint256"
+                "type": "uint128"
             }
         ],
         "name": "ABI",
         "outputs": [
             {
                 "name": "contentType",
-                "type": "uint256"
+                "type": "uint128"
             },
             {
                 "name": "data",
@@ -148,7 +148,7 @@ var RESOLVER = [
             },
             {
                 "name": "contentType",
-                "type": "uint256"
+                "type": "uint128"
             },
             {
                 "name": "data",
@@ -323,7 +323,7 @@ var RESOLVER = [
             {
                 "indexed": true,
                 "name": "contentType",
-                "type": "uint256"
+                "type": "uint128"
             }
         ],
         "name": "ABIChanged",
