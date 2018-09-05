@@ -137,14 +137,14 @@ let values = Object.freeze({
       bytes: {
         pad: 'right',
         dynamic: true,
-        byteLength: 16,
-        stringLength: 32
+        byteLength: 32,
+        stringLength: 64
       },
       string: {
         pad: 'right',
         dynamic: true,
-        byteLength: 16,
-        stringLength: 32
+        byteLength: 32,
+        stringLength: 64
       }
     },
     numericTypes: ['uint', 'int', 'fixed', 'ufixed']

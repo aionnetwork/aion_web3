@@ -63,15 +63,13 @@ let abiPad = (direction, length, val) => {
  */
 function encodeAbiString(val) {
   let buf = toBuffer(val)
-  let bufLen = buf.length
-  let lenOp = encodeAbiNumber(bufLen)
   let bufHex = buf.toString('hex')
   let valOp = abiPad(
     values.solidity.types.string.pad,
     values.solidity.types.string.stringLength,
     bufHex
   )
-  return lenOp + valOp
+  return valOp
 }
 
 /**
@@ -128,7 +126,6 @@ let abiTypeEncoders = {
  * @return {string}
  */
 function encodeEventSignature(val) {
-  console.log('val', val)
   return prependZeroX(fnHashBuffer(val).toString('hex'))
 }
 
@@ -219,7 +216,7 @@ function encodeParametersIntermediate({types, params}) {
 
   let offset = 0
 
-  if (useTopLevelOffsets === true) {
+  /*if (useTopLevelOffsets === true) {
     // first item is this many bytes down
     offset += rows.length * 16
     op.push(encodeAbiNumber(offset))
@@ -231,7 +228,7 @@ function encodeParametersIntermediate({types, params}) {
       offset += item.rowByteLen
       op.push(encodeAbiNumber(offset))
     })
-  }
+  }*/
 
   rows.forEach(item => {
     op = op.concat(item.paramOp)
@@ -326,9 +323,6 @@ let abiTypeDecodes = {
 function decodeParameters(types, val) {
   let typeList = []
 
-  // console.log('types', types)
-  // console.log('val', val)
-
   if (isArray(types) === true && isString(types[0]) === true) {
     // array of string types
     typeList = types
@@ -366,8 +360,6 @@ function decodeParameters(types, val) {
     parsedTypes.forEach(() => {
       outerOffsets.push(decodeAbiNumber(readBytes(16)))
     })
-
-    // console.log('outerOffsets', outerOffsets)
   }
 
   parsedTypes.forEach((parsedType, paramIndex) => {
@@ -379,26 +371,16 @@ function decodeParameters(types, val) {
     let innerOffsets = []
     let paramOp = []
 
-    // console.log('baseType', baseType)
-    // console.log('dimensions', dimensions)
-    // console.log('hasDimensions', hasDimensions)
-    // console.log('hasDynamicDimensions', hasDynamicDimensions)
-    // console.log('byteLength', byteLength)
-    // console.log('dynamicType', dynamicType)
-
     if (hasDynamicDimensions === true) {
       dimensions.forEach(() => {
         innerOffsets.push(decodeAbiNumber(readBytes(16)))
       })
-
-      // console.log('innerOffsets', innerOffsets)
     }
 
     //
     // simple single type param
     //
     if (hasDimensions === false) {
-      // console.log('simple single type param')
       op.push(valueDecoder(readBytes(byteLength)))
       return
     }
@@ -407,7 +389,6 @@ function decodeParameters(types, val) {
     // simple fixed-length array
     //
     if (hasDimensions === true && hasDynamicDimensions === false) {
-      // console.log('simple array')
       let {length} = dimensions[0]
       for (let i = 0; i < length; i += 1) {
         paramOp.push(valueDecoder(readBytes(byteLength)))
@@ -428,14 +409,11 @@ function decodeParameters(types, val) {
     // using isNumber instead
 
     if (isNumber(length) === true) {
-      // console.log('fixed length array')
       for (let i = 0; i < length; i += 1) {
         paramOp.push(valueDecoder(readBytes(byteLength)))
       }
       return op.push(paramOp)
     }
-
-    // console.log('dynamic length array')
 
     dimensions.forEach((dimension, dimensionIndex) => {
       let {dynamic, length} = dimension
@@ -444,8 +422,6 @@ function decodeParameters(types, val) {
       if (dynamic === true) {
         length = decodeAbiNumber(readBytes(16))
       }
-
-      // console.log('length', length)
 
       for (let i = 0; i < length; i += 1) {
         paramOp.push(valueDecoder(readBytes(byteLength)))
