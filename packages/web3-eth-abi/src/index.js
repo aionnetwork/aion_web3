@@ -23,15 +23,20 @@
 
 var _ = require('underscore');
 var utils = require('aion-web3-utils');
-var abi = require('aion-lib').abi;
+var aionLib = require('aion-lib');
+var removeLeadingZeroX = aionLib.formats.removeLeadingZeroX;
 
-/*var EthersAbi = require('ethers/utils/abi-coder').AbiCoder;
+// originally it was pulling in ethersjs for this
+// var EthersAbi = require('ethers/utils/abi-coder');
+
+// we've made a copy of just the ABI part in ./coder.js
+var EthersAbi = require('./coder');
 var ethersAbiCoder = new EthersAbi(function (type, value) {
     if (type.match(/^u?int/) && !_.isArray(value) && (!_.isObject(value) || value.constructor.name !== 'BN')) {
         return value.toString();
     }
     return value;
-});*/
+});
 
 // result method
 function Result() {
@@ -44,7 +49,7 @@ var ABICoder = function () {
 };
 
 /**
- * Encodes the function name to its ABI representation, which are the first 4 bytes of the keccak256 of the function name including  types.
+ * Encodes the function name to its ABI representation, which are the first 4 bytes of the sha3 of the function name including  types.
  *
  * @method encodeFunctionSignature
  * @param {String|Object} functionName
@@ -55,11 +60,11 @@ ABICoder.prototype.encodeFunctionSignature = function (functionName) {
         functionName = utils._jsonInterfaceMethodToString(functionName);
     }
 
-    return utils.keccak256(functionName).slice(0, 10);
+    return utils.sha3(functionName).slice(0, 10);
 };
 
 /**
- * Encodes the function name to its ABI representation, which are the first 4 bytes of the keccak256 of the function name including  types.
+ * Encodes the function name to its ABI representation, which are the first 4 bytes of the sha3 of the function name including  types.
  *
  * @method encodeEventSignature
  * @param {String|Object} functionName
@@ -70,7 +75,7 @@ ABICoder.prototype.encodeEventSignature = function (functionName) {
         functionName = utils._jsonInterfaceMethodToString(functionName);
     }
 
-    return utils.keccak256(functionName);
+    return utils.sha3(functionName);
 };
 
 /**
@@ -94,14 +99,7 @@ ABICoder.prototype.encodeParameter = function (type, param) {
  * @return {String} encoded list of params
  */
 ABICoder.prototype.encodeParameters = function (types, params) {
-    let typeStrings = types.map(function(item) {
-        if (typeof item === 'object' && typeof item.type === 'string') {
-          return item.type;
-        }
-
-        return item;
-    });
-    return abi.encodeParameters(typeStrings, params);
+    return ethersAbiCoder.encode(this.mapTypes(types), params);
 };
 
 /**
@@ -206,7 +204,8 @@ ABICoder.prototype.mapStructToCoderFormat = function (struct) {
  * @return {String} The encoded ABI for this function call
  */
 ABICoder.prototype.encodeFunctionCall = function (jsonInterface, params) {
-    return this.encodeFunctionSignature(jsonInterface) + this.encodeParameters(jsonInterface.inputs, params).replace('0x', '');
+    return this.encodeFunctionSignature(jsonInterface) +
+        removeLeadingZeroX(this.encodeParameters(jsonInterface.inputs, params));
 };
 
 /**
@@ -230,11 +229,11 @@ ABICoder.prototype.decodeParameter = function (type, bytes) {
  * @return {Array} array of plain params
  */
 ABICoder.prototype.decodeParameters = function (outputs, bytes) {
-    if (!bytes || bytes === '0x' || bytes === '0X') {
-        throw new Error('Returned values aren\'t valid, did it run Out of Gas?');
-    }
+    var res = ethersAbiCoder.decode(
+        this.mapTypes(outputs),
+        removeLeadingZeroX(bytes)
+    );
 
-    var res = abi.decodeParameters(this.mapTypes(outputs), '0x' + bytes.replace(/0x/i, ''));
     var returnValue = new Result();
     returnValue.__length__ = 0;
 

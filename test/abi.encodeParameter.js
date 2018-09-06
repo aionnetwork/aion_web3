@@ -2,8 +2,11 @@ var chai = require('chai');
 var assert = chai.assert;
 var coder = require('../packages/web3-eth-abi');
 
+var address01a = '0xa0202797a7aff86fec1a5d8b7cacea276de5bcfc2e8b14878c9ba48d7d5330a0'
+var address01b = 'a0202797a7aff86fec1a5d8b7cacea276de5bcfc2e8b14878c9ba48d7d5330a0'
 
-xdescribe('lib/solidity/coder', function () {
+
+describe('lib/solidity/coder', function () {
     describe('encodeParameter', function () {
         var test = function (t) {
             it('should turn ' + t.value + ' to ' + t.expected + ' for '+ t.type, function () {
@@ -12,32 +15,32 @@ xdescribe('lib/solidity/coder', function () {
         };
 
 
-        test({ type: 'address', value: '0x407d73d8a49eeb85d32cf465507dd71d507100c1',
-                                                    expected: '000000000000000000000000407d73d8a49eeb85d32cf465507dd71d507100c1'});
-        test({ type: 'address[2]', value: ['0x407d73d8a49eeb85d32cf465507dd71d507100c1', '0x407d73d8a49eeb85d32cf465507dd71d507100c3'],
-                                                    expected: '000000000000000000000000407d73d8a49eeb85d32cf465507dd71d507100c1' +
+        test({ type: 'address', value: address01a,
+                                                    expected: address01b});
+        test({ type: 'address[2]', value: [address01a, '0x407d73d8a49eeb85d32cf465507dd71d507100c3'],
+                                                    expected: address01b +
                                                               '000000000000000000000000407d73d8a49eeb85d32cf465507dd71d507100c3' });
-        test({ type: 'address[]', value: ['0x407d73d8a49eeb85d32cf465507dd71d507100c1', '0x407d73d8a49eeb85d32cf465507dd71d507100c3'],
+        test({ type: 'address[]', value: [address01a, '0x407d73d8a49eeb85d32cf465507dd71d507100c3'],
                                                     expected: '0000000000000000000000000000000000000000000000000000000000000020' +
                                                               '0000000000000000000000000000000000000000000000000000000000000002' +
-                                                              '000000000000000000000000407d73d8a49eeb85d32cf465507dd71d507100c1' +
+                                                              address01b +
                                                               '000000000000000000000000407d73d8a49eeb85d32cf465507dd71d507100c3' });
-        test({ type: 'address[][2]', value: [['0x407d73d8a49eeb85d32cf465507dd71d507100c1', '0x407d73d8a49eeb85d32cf465507dd71d507100c2'],
+        test({ type: 'address[][2]', value: [[address01a, '0x407d73d8a49eeb85d32cf465507dd71d507100c2'],
                                                ['0x407d73d8a49eeb85d32cf465507dd71d507100c3', '0x407d73d8a49eeb85d32cf465507dd71d507100c4']],
                                                     expected:   '0000000000000000000000000000000000000000000000000000000000000020' +
                                                                 '0000000000000000000000000000000000000000000000000000000000000040' +
                                                                 '00000000000000000000000000000000000000000000000000000000000000a0' +
                                                                 '0000000000000000000000000000000000000000000000000000000000000002' +
-                                                                '000000000000000000000000407d73d8a49eeb85d32cf465507dd71d507100c1' +
+                                                                address01b +
                                                                 '000000000000000000000000407d73d8a49eeb85d32cf465507dd71d507100c2' +
                                                                 '0000000000000000000000000000000000000000000000000000000000000002' +
                                                                 '000000000000000000000000407d73d8a49eeb85d32cf465507dd71d507100c3' +
                                                                 '000000000000000000000000407d73d8a49eeb85d32cf465507dd71d507100c4' });
-        test({ type: 'address[2][]', value: [['0x407d73d8a49eeb85d32cf465507dd71d507100c1', '0x407d73d8a49eeb85d32cf465507dd71d507100c2'],
+        test({ type: 'address[2][]', value: [[address01a, '0x407d73d8a49eeb85d32cf465507dd71d507100c2'],
                                                ['0x407d73d8a49eeb85d32cf465507dd71d507100c3', '0x407d73d8a49eeb85d32cf465507dd71d507100c4']],
                                                     expected: '0000000000000000000000000000000000000000000000000000000000000020' +
                                                               '0000000000000000000000000000000000000000000000000000000000000002' +
-                                                              '000000000000000000000000407d73d8a49eeb85d32cf465507dd71d507100c1' +
+                                                              address01b +
                                                               '000000000000000000000000407d73d8a49eeb85d32cf465507dd71d507100c2' +
                                                               '000000000000000000000000407d73d8a49eeb85d32cf465507dd71d507100c3' +
                                                               '000000000000000000000000407d73d8a49eeb85d32cf465507dd71d507100c4' });
@@ -319,8 +322,8 @@ xdescribe('lib/solidity/coder', function () {
         };
 
 
-        test({ types: ['address', 'address'], values: ['0x407d73d8a49eeb85d32cf465507dd71d507100c1', '0x407d73d8a49eeb85d32cf465507dd71d507100c3'],
-                                                            expected: '000000000000000000000000407d73d8a49eeb85d32cf465507dd71d507100c1' +
+        test({ types: ['address', 'address'], values: [address01a, '0x407d73d8a49eeb85d32cf465507dd71d507100c3'],
+                                                            expected: address01b +
                                                                       '000000000000000000000000407d73d8a49eeb85d32cf465507dd71d507100c3'});
         test({ types: ['bool[2]', 'bool[3]'], values: [[true, false], [false, false, true]],
                                                             expected: '0000000000000000000000000000000000000000000000000000000000000001' +

@@ -9,6 +9,8 @@
   "dependencies": {
     "aion-web3-utils": "1.0.0-alpha",
     "aion-lib": "1.0.0-alpha",
+    "bn.js": "^4.11.8",
+    "safe-buffer": "^5.1.2",
     "underscore": "1.8.3"
   }
 }

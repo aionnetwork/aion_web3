@@ -4,7 +4,7 @@ var sha3 = require('../packages/web3-utils').sha3;
 
 
 describe('web3.sha3', function () {
-    xit('should return sha3 with hex prefix', function() {
+    it('should return sha3 with hex prefix', function() {
         test1 = sha3('test123');
         test2 = sha3('test(int)');
         assert.deepEqual(test1, '0x' + cjssha3('test123', {
@@ -14,7 +14,7 @@ describe('web3.sha3', function () {
                 outputLength: 256
             }).toString());
     });
-    xit('should return sha3 with hex prefix when hex input', function() {
+    it('should return sha3 with hex prefix when hex input', function() {
         var sha3Hex = function(value){
             if (value.length > 2 && value.substr(0, 2) === '0x') {
                 value = value.substr(2);

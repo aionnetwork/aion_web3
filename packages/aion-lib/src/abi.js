@@ -360,6 +360,7 @@ function decodeParameters(types, val) {
     parsedTypes.forEach(() => {
       outerOffsets.push(decodeAbiNumber(readBytes(16)))
     })
+    console.log('outerOffsets', outerOffsets)
   }
 
   parsedTypes.forEach((parsedType, paramIndex) => {
@@ -375,12 +376,14 @@ function decodeParameters(types, val) {
       dimensions.forEach(() => {
         innerOffsets.push(decodeAbiNumber(readBytes(16)))
       })
+      console.log('inner offsets', innerOffsets)
     }
 
     //
     // simple single type param
     //
     if (hasDimensions === false) {
+      console.log('simple single type param')
       op.push(valueDecoder(readBytes(byteLength)))
       return
     }
@@ -389,6 +392,7 @@ function decodeParameters(types, val) {
     // simple fixed-length array
     //
     if (hasDimensions === true && hasDynamicDimensions === false) {
+      console.log('simple fixed-length array')
       let {length} = dimensions[0]
       for (let i = 0; i < length; i += 1) {
         paramOp.push(valueDecoder(readBytes(byteLength)))
@@ -405,15 +409,15 @@ function decodeParameters(types, val) {
     //
     let {length} = dimensions[0]
 
-    // there was a bug with underscore reporting length numbers as empty
-    // using isNumber instead
-
     if (isNumber(length) === true) {
+      console.log('array with length')
       for (let i = 0; i < length; i += 1) {
         paramOp.push(valueDecoder(readBytes(byteLength)))
       }
       return op.push(paramOp)
     }
+
+    console.log('dynamic array')
 
     dimensions.forEach((dimension, dimensionIndex) => {
       let {dynamic, length} = dimension
