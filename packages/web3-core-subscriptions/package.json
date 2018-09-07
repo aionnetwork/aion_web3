@@ -1,0 +1,26 @@
+{
+    "name": "aion-web3-core-subscriptions",
+    "namespace": "aion",
+    "version": "1.0.0-alpha",
+    "description": "Manages web3 subscriptions. This is an internal package.",
+    "license": "LGPL-3.0",
+    "main": "src/index.js",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/aionnetwork/aion_web3.git"
+    },
+    "homepage": "https://github.com/aionnetwork/aion_web3/tree/master/packages/web3-core-subscriptions",
+    "bugs": {
+        "url": "https://github.com/aionnetwork/aion_web3/issues"
+    },
+    "keywords": [
+        "aion",
+        "web3",
+        "cryptocurrency"
+    ],
+    "dependencies": {
+        "eventemitter3": "1.1.1",
+        "underscore": "1.8.3",
+        "aion-web3-core-helpers": "1.0.0-alpha"
+    }
+}

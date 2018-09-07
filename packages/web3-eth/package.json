@@ -1,0 +1,37 @@
+{
+  "name": "aion-web3-eth",
+  "namespace": "aion",
+  "version": "1.0.0-alpha",
+  "description": "Web3 module to interact with the Ethereum blockchain and smart contracts.",
+  "license": "LGPL-3.0",
+  "main": "src/index.js",
+  "repository": {
+        "type": "git",
+        "url": "https://github.com/aionnetwork/aion_web3.git"
+    },
+    "homepage": "https://github.com/aionnetwork/aion_web3/tree/master/packages/web3-eth",
+    "bugs": {
+        "url": "https://github.com/aionnetwork/aion_web3/issues"
+    },
+    "keywords": [
+        "aion",
+        "web3",
+        "cryptocurrency"
+    ],
+  "dependencies": {
+    "underscore": "1.8.3",
+    "aion-web3-core": "1.0.0-alpha",
+    "aion-web3-core-helpers": "1.0.0-alpha",
+    "aion-web3-core-method": "1.0.0-alpha",
+    "aion-web3-core-subscriptions": "1.0.0-alpha",
+    "aion-web3-eth-abi": "1.0.0-alpha",
+    "aion-web3-eth-accounts": "1.0.0-alpha",
+    "aion-web3-eth-contract": "1.0.0-alpha",
+    "aion-web3-eth-ens": "1.0.0",
+    "aion-web3-eth-iban": "1.0.0-alpha",
+    "aion-web3-eth-personal": "1.0.0-alpha",
+    "aion-web3-eth-ens": "1.0.0-alpha",
+    "aion-web3-net": "1.0.0-alpha",
+    "aion-web3-utils": "1.0.0-alpha"
+  }
+}

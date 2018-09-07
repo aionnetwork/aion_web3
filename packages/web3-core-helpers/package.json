@@ -1,0 +1,26 @@
+{
+    "name": "aion-web3-core-helpers",
+    "namespace": "aion",
+    "version": "1.0.0-alpha",
+    "description": "Web3 core tools helper for sub packages. This is an internal package.",
+    "license": "LGPL-3.0",
+    "main": "src/index.js",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/aionnetwork/aion_web3.git"
+    },
+    "homepage": "https://github.com/aionnetwork/aion_web3/tree/master/packages/web3-core-helpers",
+    "bugs": {
+        "url": "https://github.com/aionnetwork/aion_web3/issues"
+    },
+    "keywords": [
+        "aion",
+        "web3",
+        "cryptocurrency"
+    ],
+    "dependencies": {
+        "underscore": "1.8.3",
+        "aion-web3-eth-iban": "1.0.0-alpha",
+        "aion-web3-utils": "1.0.0-alpha"
+    }
+}

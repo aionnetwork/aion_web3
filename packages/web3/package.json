@@ -1,0 +1,49 @@
+{
+    "name": "aion-web3",
+    "namespace": "aion",
+    "version": "1.0.0-alpha",
+    "description": "Ethereum JavaScript API",
+    "license": "LGPL-3.0",
+    "main": "src/index.js",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/aionnetwork/aion_web3.git"
+    },
+    "homepage": "https://github.com/aionnetwork/aion_web3/tree/master/packages/web3",
+    "bugs": {
+        "url": "https://github.com/aionnetwork/aion_web3/issues"
+    },
+    "keywords": [
+        "aion",
+        "web3",
+        "cryptocurrency"
+    ],
+    "author": "ethereum.org",
+    "authors": [{
+        "name": "Fabian Vogelsteller",
+        "email": "fabian@ethereum.org",
+        "homepage": "http://frozeman.de"
+    }, {
+        "name": "Marek Kotewicz",
+        "email": "marek@parity.io",
+        "url": "https://github.com/debris"
+    }, {
+        "name": "Marian Oancea",
+        "url": "https://github.com/cubedro"
+    }, {
+        "name": "Gav Wood",
+        "email": "g@parity.io",
+        "homepage": "http://gavwood.com"
+    }, {
+        "name": "Jeffery Wilcke",
+        "email": "jeffrey.wilcke@ethereum.org",
+        "url": "https://github.com/obscuren"
+    }],
+    "dependencies": {
+        "aion-web3-core": "1.0.0-alpha",
+        "aion-web3-eth": "1.0.0-alpha",
+        "aion-web3-eth-personal": "1.0.0-alpha",
+        "aion-web3-net": "1.0.0-alpha",
+        "aion-web3-utils": "1.0.0-alpha"
+    }
+}

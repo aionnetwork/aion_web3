@@ -3,6 +3,10 @@
 ## About
 This project contains tools for using the Web3 application programming interface on top of the Aion network.
 
+```sh
+npm install --save aion-web3
+```
+
 ## Requirements
 
 * **Node.js** version 8.9.1 <br/>
@@ -19,22 +23,15 @@ This project contains tools for using the Web3 application programming interface
 
 **Note:** Other versions may work, but have not been thoroughly tested at present.
 
-## Setup
+## Development
 
 ```bash
 git clone https://github.com/aionnetwork/aion_web3
 cd aion_web3
 npm install
-gulp build
+npm run build
+npm test
 ```
-
-or
-
-```bash
-npm install --save aion-web3
-```
-
-## API Use
 
 This application programming interface can be used to perform different operation on the Aion blockchain.
 Some example uses cases are available in the project [wiki](https://github.com/aionnetwork/aion_web3/wiki).
@@ -42,14 +39,8 @@ Some example uses cases are available in the project [wiki](https://github.com/a
 * Web use:<br>
     &nbsp;&nbsp;&nbsp;&nbsp;include `dist/web3.min.js` in your html file
 * Node use: 
-    ```
-    var Web3 = require('aion-web3')
-    var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
-    ```
 
-## Application Development
 ```js
-var coinbase = web3.eth.coinbase;
-var balance = web3.eth.getBalance(coinbase);
+var Web3 = require('aion-web3')
+var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 ```
-

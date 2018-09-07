@@ -1,0 +1,28 @@
+{
+    "name": "aion-web3-core-method",
+    "namespace": "aion",
+    "version": "1.0.0-alpha",
+    "description": "Creates the methods on the web3 modules. This is an internal package.",
+    "license": "LGPL-3.0",
+    "main": "src/index.js",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/aionnetwork/aion_web3.git"
+    },
+    "homepage": "https://github.com/aionnetwork/aion_web3/tree/master/packages/web3-core-method",
+    "bugs": {
+        "url": "https://github.com/aionnetwork/aion_web3/issues"
+    },
+    "keywords": [
+        "aion",
+        "web3",
+        "cryptocurrency"
+    ],
+    "dependencies": {
+        "underscore": "1.8.3",
+        "aion-web3-core-helpers": "1.0.0-alpha",
+        "aion-web3-core-promievent": "1.0.0-alpha",
+        "aion-web3-core-subscriptions": "1.0.0-alpha",
+        "aion-web3-utils": "1.0.0-alpha"
+    }
+}

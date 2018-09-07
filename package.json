@@ -1,48 +1,26 @@
 {
   "name": "aion-web3",
   "namespace": "aion",
-  "version": "0.0.4",
-  "description": "aion js api",
-  "main": "./index.js",
+  "version": "1.0.0-alpha",
+  "description": "Ethereum JavaScript API wrapper repository",
+  "license": "LGPL-3.0",
+  "main": "./packages/web3/src/index.js",
   "directories": {
-    "lib": "./lib"
-  },
-  "browser": {
-    "xmlhttprequest": "./lib/utils/browser-xhr.js"
-  },
-  "dependencies": {
-    "bignumber.js": "git+https://github.com/MikeMcl/bignumber.js.git",
-    "crypto-js": "*",
-    "envify": "^4.1.0",
-    "moment": "*",
-    "request": "*",
-    "utf8": "*",
-    "xhr2": "*",
-    "xmlhttprequest": "*"
-  },
-  "devDependencies": {
-    "browserify": "*",
-    "exorcist": "*",
-    "del": "*",
-    "gulp": "*",
-    "gulp-jshint": "*",
-    "gulp-rename": "*",
-    "gulp-streamify": "*",
-    "gulp-uglify": "*",
-    "gulp-replace": "*",
-    "jshint": "*",
-    "vinyl-source-stream": "*",
-    "colors": "*",
-    "repl": "*",
-    "chai": "*",
-    "mocha": "*",
-    "gulp-tar": "*",
-    "gulp-gzip": "*"
+    "doc": "./doc",
+    "test": "./test"
   },
   "scripts": {
-    "build": "gulp build",
+    "lerna": "lerna bootstrap",
+    "postinstall": "lerna bootstrap",
+    "build": "lerna bootstrap && gulp",
+    "build-all": "lerna bootstrap && gulp all",
+    "release": "lerna bootstrap; lerna publish; gulp version; gulp; gulp publishTag; git push --tags",
     "watch": "gulp watch",
-    "lint": "jshint *.js lib"
+    "docs": "cd docs; make html;",
+    "lint": "jshint *.js packages",
+    "test": "mocha; jshint *.js packages",
+    "test-coveralls": "istanbul cover _mocha -- -R spec && cat coverage/lcov.info | coveralls --verbose",
+    "dev-test": "nodemon -L -d 1 -w packages -w test --ext js --exec mocha --opts mocha.opts --watch test || true"
   },
   "repository": {
     "type": "git",
@@ -54,16 +32,62 @@
   },
   "keywords": [
     "aion",
-    "javascript",
-    "api"
+    "web3",
+    "cryptocurrency"
   ],
-  "author": "aionnetwork",
+  "author": "aion.network",
   "authors": [
     {
-      "name": "chris",
-      "email": "aion.6368726973@gmail.com",
-      "url": "https://github.com/aion-6368726973"
+      "name": "Fabian Vogelsteller",
+      "email": "fabian@ethereum.org",
+      "homepage": "http://frozeman.de"
+    },
+    {
+      "name": "Marek Kotewicz",
+      "email": "marek@parity.io",
+      "url": "https://github.com/debris"
+    },
+    {
+      "name": "Marian Oancea",
+      "url": "https://github.com/cubedro"
+    },
+    {
+      "name": "Gav Wood",
+      "email": "g@parity.io",
+      "homepage": "http://gavwood.com"
+    },
+    {
+      "name": "Jeffery Wilcke",
+      "email": "jeffrey.wilcke@ethereum.org",
+      "url": "https://github.com/obscuren"
     }
   ],
-  "license": "LGPL-3.0"
+  "devDependencies": {
+    "babel-preset-env": "^1.6.0",
+    "bignumber.js": "^4.0.0",
+    "bluebird": "3.3.1",
+    "bn.js": "^4.11.8",
+    "bower": ">=1.4.1",
+    "browserify": "^14.4.0",
+    "chai": "^4.0.0",
+    "coveralls": "^3.0.2",
+    "del": ">=2.0.2",
+    "exorcist": "^0.4.0",
+    "gulp": "^4.0.0",
+    "gulp-babel": "^6.1.2",
+    "gulp-jshint": "^2.0.4",
+    "gulp-rename": "^1.2.2",
+    "gulp-replace": "^0.6.1",
+    "gulp-streamify": "^1.0.2",
+    "gulp-uglify": "^3.0.0",
+    "istanbul": "^0.4.4",
+    "jshint": ">=2.5.0",
+    "lerna": "^2.5.1",
+    "mocha": ">=2.3.3",
+    "nodemon": "^1.18.2",
+    "repl": "^0.1.3",
+    "sandboxed-module": "^2.0.2",
+    "underscore": "^1.8.3",
+    "vinyl-source-stream": "^2.0.0"
+  }
 }

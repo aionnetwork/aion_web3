@@ -1,0 +1,26 @@
+{
+    "name": "aion-web3-net",
+    "namespace": "aion",
+    "version": "1.0.0-alpha",
+    "description": "Web3 module to interact with the Ethereum nodes networking properties.",
+    "license": "LGPL-3.0",
+    "main": "src/index.js",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/aionnetwork/aion_web3.git"
+    },
+    "homepage": "https://github.com/aionnetwork/aion_web3/tree/master/packages/web3-net",
+    "bugs": {
+        "url": "https://github.com/aionnetwork/aion_web3/issues"
+    },
+    "keywords": [
+        "aion",
+        "web3",
+        "cryptocurrency"
+    ],
+    "dependencies": {
+        "aion-web3-core": "1.0.0-alpha",
+        "aion-web3-core-method": "1.0.0-alpha",
+        "aion-web3-utils": "1.0.0-alpha"
+    }
+}
