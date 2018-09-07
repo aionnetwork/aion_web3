@@ -95,7 +95,7 @@ function toUtf8Bytes(str) {
         }
     }
 
-    return convert.arrayify(result);
+    return arrayify(result);
 }
 
 function toUtf8String(bytes) {

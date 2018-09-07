@@ -449,7 +449,7 @@ var coderAddress = function(coerceFunc, localName) {
 }
 
 function _encodeDynamicBytes(value) {
-    var dataLength = parseInt(16 * Math.ceil(value.length / 16));
+    var dataLength = parseInt(32 * Math.ceil(value.length / 32));
     var padding = Buffer.alloc(dataLength - value.length);
 
     return utils.concat([
@@ -460,27 +460,27 @@ function _encodeDynamicBytes(value) {
 }
 
 function _decodeDynamicBytes(data, offset, localName) {
-    if (data.length < offset + 32) {
+    if (data.length < offset + 16) {
         throw new Error('insufficient data for dynamicBytes length');
     }
-    console.log('data', data.toString('hex'))
-    console.log('offset', offset)
 
     var length = uint128Coder.decode(data, offset).value;
-    console.log('length', length)
+    offset += 16
+
     try {
         length = length.toNumber();
     } catch (error) {
         throw new Error('dynamic bytes count too large');
     }
 
-    if (data.length < offset + 32 + length) {
+    if (data.length < offset + length) {
         throw new Error('insufficient data for dynamicBytes type');
     }
 
+
     return {
-        consumed: parseInt(32 + 32 * Math.ceil(length / 32)),
-        value: data.slice(offset + 32, offset + 32 + length),
+        consumed: parseInt(32 * Math.ceil(length / 32)),
+        value: data.slice(offset, offset + length),
     }
 }
 
@@ -669,7 +669,6 @@ function coderArray(coerceFunc, coder, length, localName) {
             //if (data.length < offset + length * 32) { throw new Error('invalid array'); }
 
             var consumed = 0;
-
             var count = length;
 
             if (count === -1) {
@@ -679,7 +678,6 @@ function coderArray(coerceFunc, coder, length, localName) {
                      throw new Error('insufficient data for dynamic array length');
                  }
                  try {
-                    console.log('decodedLength', decodedLength)
                      count = decodedLength.value.toNumber();
                  } catch (error) {
                      throw new Error('array count too large');
