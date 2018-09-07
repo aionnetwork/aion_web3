@@ -22,7 +22,7 @@ var tests = [{
     call: 'eth_'+ method
 }];
 
-xdescribe('async', function () {
+describe('async', function () {
     tests.forEach(function (test, index) {
         it('test callback: ' + index, function (done) {
 

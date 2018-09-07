@@ -348,8 +348,6 @@ var coderNumber = function(coerceFunc, size, signed, localName) {
                 value = value.maskn(size * 8);
             }
 
-            //if (size <= 6) { value = value.toNumber(); }
-
             return {
                 consumed: 16,
                 value: coerceFunc(name, value),

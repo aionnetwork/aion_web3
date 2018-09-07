@@ -23,6 +23,7 @@
 
 var _ = require('underscore');
 var utils = require('aion-web3-utils');
+var isBN = utils.isBN;
 var aionLib = require('aion-lib');
 var removeLeadingZeroX = aionLib.formats.removeLeadingZeroX;
 
@@ -32,6 +33,9 @@ var removeLeadingZeroX = aionLib.formats.removeLeadingZeroX;
 // we've made a copy of just the ABI part in ./coder.js
 var EthersAbi = require('./coder');
 var ethersAbiCoder = new EthersAbi(function (type, value) {
+    if (isBN(value) === true) {
+        return value.toNumber().toString();
+    }
     if (type.match(/^u?int/) && !_.isArray(value) && (!_.isObject(value) || value.constructor.name !== 'BN')) {
         return value.toString();
     }
@@ -219,6 +223,14 @@ ABICoder.prototype.encodeFunctionCall = function (jsonInterface, params) {
 ABICoder.prototype.decodeParameter = function (type, bytes) {
     return this.decodeParameters([type], bytes)[0];
 };
+
+function toNumberString(val) {
+  if (val.toString('hex') === 'ffffffffffffffffffffffffffffffff') {
+    return '115792089237316195423570985008687907853269984665640564039457584007913129639935';
+  }
+
+  return val.toNumber().toString();
+}
 
 /**
  * Should be used to decode list of params
