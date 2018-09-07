@@ -26,74 +26,74 @@ var packages = [{
     expose: 'aionLib',
     src: './packages/aion-lib/src/index.js'
 }, {
-    fileName: 'web3',
+    fileName: 'aion-web3',
     expose: 'Web3',
     src: './packages/web3/src/index.js',
     ignore: ['xmlhttprequest', 'websocket']
 }, {
-    fileName: 'web3-utils',
+    fileName: 'aion-web3-utils',
     expose: 'Web3Utils',
     src: './packages/web3-utils/src/index.js'
 }, {
-    fileName: 'web3-eth',
+    fileName: 'aion-web3-eth',
     expose: 'Web3Eth',
     src: './packages/web3-eth/src/index.js'
 }, {
-    fileName: 'web3-eth-accounts',
+    fileName: 'aion-web3-eth-accounts',
     expose: 'Web3EthAccounts',
     src: './packages/web3-eth-accounts/src/index.js'
 }, {
-    fileName: 'web3-eth-contract',
+    fileName: 'aion-web3-eth-contract',
     expose: 'Web3EthContract',
     src: './packages/web3-eth-contract/src/index.js'
 }, {
-    fileName: 'web3-eth-personal',
+    fileName: 'aion-web3-eth-personal',
     expose: 'Web3EthPersonal',
     src: './packages/web3-eth-personal/src/index.js'
 }, {
-    fileName: 'web3-eth-iban',
+    fileName: 'aion-web3-eth-iban',
     expose: 'Web3EthIban',
     src: './packages/web3-eth-iban/src/index.js'
 }, {
-    fileName: 'web3-eth-abi',
+    fileName: 'aion-web3-eth-abi',
     expose: 'Web3EthAbi',
     src: './packages/web3-eth-abi/src/index.js'
 },{
-    fileName: 'web3-eth-ens',
+    fileName: 'aion-web3-eth-ens',
     expose: 'EthEns',
     src: './packages/web3-eth-ens/src/index.js'
 },{
-    fileName: 'web3-net',
+    fileName: 'aion-web3-net',
     expose: 'Web3Net',
     src: './packages/web3-net/src/index.js'
 }, {
-    fileName: 'web3-providers-ipc',
+    fileName: 'aion-web3-providers-ipc',
     expose: 'Web3IpcProvider',
     src: './packages/web3-providers-ipc/src/index.js'
 }, {
-    fileName: 'web3-providers-http',
+    fileName: 'aion-web3-providers-http',
     expose: 'Web3HttpProvider',
     src: './packages/web3-providers-http/src/index.js',
     ignore: ['xmlhttprequest']
 }, {
-    fileName: 'web3-providers-ws',
+    fileName: 'aion-web3-providers-ws',
     expose: 'Web3WsProvider',
     src: './packages/web3-providers-ws/src/index.js',
     ignore: ['websocket']
 }, {
-    fileName: 'web3-core-subscriptions',
+    fileName: 'aion-web3-core-subscriptions',
     expose: 'Web3Subscriptions',
     src: './packages/web3-core-subscriptions/src/index.js'
 }, {
-    fileName: 'web3-core-requestmanager',
+    fileName: 'aion-web3-core-requestmanager',
     expose: 'Web3RequestManager',
     src: './packages/web3-core-requestmanager/src/index.js'
 }, {
-    fileName: 'web3-core-promievent',
+    fileName: 'aion-web3-core-promievent',
     expose: 'Web3PromiEvent',
     src: './packages/web3-core-promievent/src/index.js'
 }, {
-    fileName: 'web3-core-method',
+    fileName: 'aion-web3-core-method',
     expose: 'Web3Method',
     src: './packages/web3-core-method/src/index.js'
 }];
