@@ -7,7 +7,7 @@ let {
   prependZeroX,
   removeLeadingZeroX,
   randomHexBuffer,
-  // Buffer,
+  bufferToZeroXHex,
   toBuffer
 } = require('./formats')
 
@@ -17,23 +17,47 @@ let aionPubSigLen = nacl.sign.publicKeyLength + nacl.sign.signatureLength
 function createKeyPair({entropy, privateKey}) {
   let kp
   let keyPair
+  let ent
+  let priv
 
   if (privateKey !== undefined) {
-    kp = nacl.sign.keyPair.fromSecretKey(toBuffer(privateKey))
+    priv = toBuffer(privateKey)
+    try {
+      kp = nacl.sign.keyPair.fromSecretKey(priv)
+    } catch (err) {
+      console.log('privateKey', privateKey)
+      console.log('priv', priv.toString('hex'))
+      console.error('error ', err)
+      throw err
+    }
     keyPair = {
-      privateKey: toBuffer(kp.secretKey),
+      _privateKey: priv,
+      privateKey: bufferToZeroXHex(priv),
       publicKey: toBuffer(kp.publicKey)
     }
     return keyPair
   }
 
   if (entropy === undefined) {
-    entropy = randomHexBuffer()
+    ent = randomHexBuffer()
   }
 
-  kp = nacl.sign.keyPair.fromSeed(entropy.slice(0, nacl.sign.seedLength))
+  if (typeof entropy === 'string') {
+    ent = toBuffer(entropy)
+  }
+
+  // entropy sandwich
+  ent = Buffer.concat([
+    blake2b256(randomHexBuffer()), // bread
+    blake2b256(ent), // peanut butter
+    blake2b256(randomHexBuffer()) // bread 😉
+  ])
+
+  kp = nacl.sign.keyPair.fromSeed(ent.slice(0, nacl.sign.seedLength))
+  priv = toBuffer(kp.secretKey)
   keyPair = {
-    privateKey: toBuffer(kp.secretKey),
+    _privateKey: priv,
+    privateKey: bufferToZeroXHex(priv),
     publicKey: toBuffer(kp.publicKey)
   }
   return keyPair

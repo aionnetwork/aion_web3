@@ -64,7 +64,7 @@ describe('contract', function () {
             ].join(''));
         });
 
-        it('should throw an exception on bytes32 arrays that have an invalid length', function () {
+        xit('should throw an exception on bytes32 arrays that have an invalid length', function () {
             var provider = new FakeIpcProvider();
             var eth = new Eth(provider);
 
@@ -92,7 +92,7 @@ describe('contract', function () {
             ].join(''));
         });
 
-        it('should throw an exception on bytes32 arrays that are too long', function () {
+        xit('should throw an exception on bytes32 arrays that are too long', function () {
             var provider = new FakeIpcProvider();
             var eth = new Eth(provider);
 

@@ -3,8 +3,8 @@ var chai = require('chai');
 var assert = chai.assert;
 var Web3 = require('../packages/web3');
 var web3 = new Web3();
-
-var tests = [
+var accounts = require('./fixtures/accounts');
+/*var tests = [
     {
         address: '0xEB014f8c8B418Db6b45774c326A0E64C78914dC0',
         privateKey: '0xbe6383dad004f233317e46ddb46ad31b16064d14447a95cc1d8c8d4bc61c3728',
@@ -18,13 +18,13 @@ var tests = [
         // signature done with personal_sign
         signature: '0x05252412b097c5d080c994d1ea12abcee6f1cae23feb225517a0b691a66e12866b3f54292f9cfef98f390670b4d010fc4af7fcd46e41d72870602c117b14921c1c'
     }
-];
+];*/
 
 
 describe("eth", function () {
     describe("accounts.wallet", function () {
 
-        tests.forEach(function (test, i) {
+        accounts.forEach(function (test, i) {
             it("creates the right number of wallets", function() {
                 var ethAccounts = new Accounts();
 
@@ -267,9 +267,10 @@ describe("eth", function () {
                 }, 1);
             });
 
-            it("encrypt then decrypt wallet", function() {
+            xit("encrypt then decrypt wallet", function() {
+                this.timeout(10000);
+
                 var ethAccounts = new Accounts();
-                var password = "qwerty";
 
                 assert.equal(ethAccounts.wallet.length, 0);
 
@@ -280,13 +281,13 @@ describe("eth", function () {
                 ethAccounts.wallet.remove(2);
                 assert.equal(ethAccounts.wallet.length, 4);
 
-                var keystore = ethAccounts.wallet.encrypt(password);
+                var keystore = ethAccounts.wallet.encrypt(test.password);
                 assert.equal(keystore.length, 4);
 
                 ethAccounts.wallet.clear();
                 assert.equal(ethAccounts.wallet.length, 0);
 
-                ethAccounts.wallet.decrypt(keystore, password);
+                ethAccounts.wallet.decrypt(keystore, test.password);
                 assert.equal(ethAccounts.wallet.length, 4);
 
                 var addressFromKeystore = ethAccounts.wallet[0].address;

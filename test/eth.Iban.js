@@ -6,15 +6,15 @@ var eth = new Eth();
 var tests = [
     {
         direct: 'XE7338O073KYGTWWZN0F2WZ0R8PX5ZPPZS',
-        address: '0x00c5496aEe77C1bA1f0854206A26DdA82a81D6D8' // checksum address
+        address: '0x00000000000000000000000000C5496Aee77c1ba1F0854206A26dDa82a81D6d8' // checksum address
     },
     {
         direct: 'XE1222Q908LN1QBBU6XUQSO1OHWJIOS46OO',
-        address: '0x11c5496AEE77c1bA1f0854206a26dDa82A81D6D8'
+        address: '0x00000000000000000000000011c5496AeE77C1Ba1F0854206A26dDA82a81D6D8'
     },
     {
         direct: 'XE75JRZCTTLBSYEQBGAS7GID8DKR7QY0QA3',
-        address: '0xa94f5374Fce5edBC8E2a8697C15331677e6EbF0B' // checksum address
+        address: '0x000000000000000000000000a94f5374FCE5EDbC8E2A8697C15331677E6Ebf0b' // checksum address
     },
     {
         error: true,

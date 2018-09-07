@@ -97,7 +97,7 @@ function toBuffer(val, encoding) {
   // string
   if (isString(val) === true && isEmpty(encoding) === true) {
     // hex
-    if (isHex(val) === true) {
+    if (startsWithZeroX(val) === true || isHex(val) === true) {
       return Buffer.from(removeLeadingZeroX(val), 'hex')
     }
   }

@@ -132,14 +132,14 @@ Accounts.prototype._addAccountFunctions = function (account) {
 
     // add sign functions
     account.signTransaction = function signTransaction(tx, callback) {
-        return _this.signTransaction(tx, account.privateKey, callback);
+        return _this.signTransaction(tx, account._privateKey, callback);
     };
     account.sign = function sign(data) {
-        return _this.sign(data, account.privateKey);
+        return _this.sign(data, account._privateKey);
     };
 
     account.encrypt = function encrypt(password, options) {
-        return _this.encrypt(account.privateKey, password, options);
+        return _this.encrypt(account._privateKey, password, options);
     };
 
 
@@ -224,7 +224,7 @@ Accounts.prototype.signTransaction = function signTransaction(tx, privateKey, ca
             var hash = blake2b256(rlpEncoded);
 
             // sign with nacl
-            var signature = toBuffer(nacl.sign.detached(hash, account.privateKey));
+            var signature = toBuffer(nacl.sign.detached(hash, account._privateKey));
 
             // verify nacl signature
             if (nacl.sign.detached.verify(hash, signature, account.publicKey) === false) {
@@ -351,7 +351,7 @@ Accounts.prototype.decrypt = function (v3Keystore, password, nonStrict) {
 
     var ciphertext = new Buffer(json.crypto.ciphertext, 'hex');
 
-    var mac = utils.blake2b256(Buffer.concat([ derivedKey.slice(16, 32), ciphertext ])).replace('0x','');
+    var mac = utils.blake2b256(Buffer.concat([derivedKey.slice(16, 32), ciphertext ])).replace('0x','');
     if (mac !== json.crypto.mac) {
         throw new Error('Key derivation failed - possibly wrong password');
     }
@@ -396,7 +396,10 @@ Accounts.prototype.encrypt = function (privateKey, password, options) {
         throw new Error('Unsupported cipher');
     }
 
-    var ciphertext = Buffer.concat([ cipher.update(new Buffer(account.privateKey.replace('0x',''), 'hex')), cipher.final() ]);
+    var ciphertext = Buffer.concat([
+        cipher.update(account._privateKey),
+        cipher.final()
+    ]);
 
     var mac = utils.blake2b256(Buffer.concat([ derivedKey.slice(16, 32), new Buffer(ciphertext, 'hex') ])).replace('0x','');
 
@@ -475,17 +478,26 @@ Wallet.prototype.add = function (account) {
 
 Wallet.prototype.remove = function (addressOrIndex) {
     var account = this[addressOrIndex];
+    var address;
+    var addressLower;
+    var index;
 
     if (account && account.address) {
-        // address
-        this[account.address].privateKey = null;
-        delete this[account.address];
-        // address lowercase
-        this[account.address.toLowerCase()].privateKey = null;
-        delete this[account.address.toLowerCase()];
-        // index
-        this[account.index].privateKey = null;
-        delete this[account.index];
+        address = account.address;
+        addressLower = address.toLowerCase();
+        index = account.index;
+
+        if (this[address] !== undefined) {
+          delete this[address];
+        }
+
+        if (this[addressLower] !== undefined) {
+          delete this[addressLower];
+        }
+
+        if (index !== undefined && this[index] !== undefined) {
+          delete this[index];
+        }
 
         this.length--;
 

@@ -254,7 +254,7 @@ Iban.prototype.toAddress = function () {
     if (this.isDirect()) {
         var base36 = this._iban.substr(4);
         var asBn = new BigNumber(base36, 36);
-        return utils.toChecksumAddress(asBn.toString(16, 20));
+        return utils.toChecksumAddress(asBn.toString(16, 32));
     }
 
     return '';
