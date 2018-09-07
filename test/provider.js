@@ -3,7 +3,6 @@ var assert = chai.assert;
 var net = require('net');
 
 var Eth = require('../packages/web3-eth');
-var Shh = require('../packages/web3-shh');
 var Net = require('../packages/web3-net');
 var Web3 = require('../packages/web3');
 
@@ -71,37 +70,6 @@ var tests = [{
         package: Net,
         error: true
     },
-
-    {
-        providerParams: ['http://localhost:8545'],
-        providerType: 'HttpProvider',
-        package: Shh
-    },{
-        providerParams: ['HTTP://localhost:8545'],
-        providerType: 'HttpProvider',
-        package: Shh
-    },{
-        providerParams: ['ws://localhost:8546'],
-        providerType: 'WebsocketProvider',
-        package: Shh
-    },{
-        providerParams: ['WS://localhost:8546'],
-        providerType: 'WebsocketProvider',
-        package: Shh
-    },{
-        providerParams: ['/.ethereum/my/path/geth.ipc', net],
-        providerType: 'IpcProvider',
-        package: Shh
-    },{
-        providerParams: ['\\\\.\\pipe\\geth.ipc', net],
-        providerType: 'IpcProvider',
-        package: Shh
-    },{
-        providerParams: ['://hello.com:1234'],
-        package: Shh,
-        error: true
-    },
-
     {
         providerParams: ['http://localhost:8545'],
         providerType: 'HttpProvider',

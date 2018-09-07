@@ -5,22 +5,25 @@ var eth = new Eth();
 
 var method = 'getCode';
 
+var accounts = require('./fixtures/accounts')
+var address = accounts[0].address;
+var checksumAddress = accounts[0].checksumAddress;
 
 var tests = [{
-    args: ['0x4E65FDa2159562a496F9f3522f89122A3088497a'], // checksum address
-    formattedArgs: ['0x4e65fda2159562a496f9f3522f89122a3088497a', eth.defaultBlock],
+    args: [address], // checksum address
+    formattedArgs: [address, eth.defaultBlock],
     result: '0x47d33b27bb249a2dbab4c0612bf9caf4747d33b27bb249a2dbab4c0612bf9cafd33b27bb249a2dbab4c0612bf9caf4c1950855',
     formattedResult: '0x47d33b27bb249a2dbab4c0612bf9caf4747d33b27bb249a2dbab4c0612bf9cafd33b27bb249a2dbab4c0612bf9caf4c1950855',
     call: 'eth_'+ method
 },{
-    args: ['0x47d33b27bb249a2dbab4c0612bf9caf4c1950855'],
-    formattedArgs: ['0x47d33b27bb249a2dbab4c0612bf9caf4c1950855', eth.defaultBlock],
+    args: [address],
+    formattedArgs: [address, eth.defaultBlock],
     result: '0x47d33b27bb249a2dbab4c0612bf9caf4747d33b27bb249a2dbab4c0612bf9cafd33b27bb249a2dbab4c0612bf9caf4c1950855',
     formattedResult: '0x47d33b27bb249a2dbab4c0612bf9caf4747d33b27bb249a2dbab4c0612bf9cafd33b27bb249a2dbab4c0612bf9caf4c1950855',
     call: 'eth_'+ method
 },{
-    args: ['0x47d33b27bb249a2dbab4c0612bf9caf4c1950855', 2],
-    formattedArgs: ['0x47d33b27bb249a2dbab4c0612bf9caf4c1950855', '0x2'],
+    args: [address, 2],
+    formattedArgs: [address, '0x2'],
     result: '0x47d33b27bb249a2dbab4c0612bf9caf4747d33b27bb249a2dbab4c0612bf9cafd33b27bb249a2dbab4c0612bf9caf4c1950855',
     formattedResult: '0x47d33b27bb249a2dbab4c0612bf9caf4747d33b27bb249a2dbab4c0612bf9cafd33b27bb249a2dbab4c0612bf9caf4c1950855',
     call: 'eth_'+ method

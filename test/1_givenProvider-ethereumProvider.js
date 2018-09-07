@@ -23,14 +23,6 @@ describe('Web3.providers.givenProvider', function () {
 
         });
 
-        it('when instantiating Bzz', function () {
-
-            var Bzz = require('../packages/web3-bzz');
-
-            assert.deepEqual(Bzz.givenProvider, global.ethereumProvider.bzz);
-
-        });
-
     });
 });
 

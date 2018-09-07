@@ -67,14 +67,6 @@ var packages = [{
     expose: 'Web3Net',
     src: './packages/web3-net/src/index.js'
 }, {
-    fileName: 'web3-shh',
-    expose: 'Web3Shh',
-    src: './packages/web3-shh/src/index.js'
-}, {
-    fileName: 'web3-bzz',
-    expose: 'Web3Bzz',
-    src: './packages/web3-bzz/src/index.js'
-}, {
     fileName: 'web3-providers-ipc',
     expose: 'Web3IpcProvider',
     src: './packages/web3-providers-ipc/src/index.js'

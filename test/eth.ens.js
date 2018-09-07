@@ -5,6 +5,10 @@ var Web3 = require('../packages/web3');
 var sha3 = require('../packages/web3-utils').sha3;
 var asciiToHex = require('../packages/web3-utils').asciiToHex;
 
+var accounts = require('./fixtures/accounts')
+var address = accounts[0].address;
+var checksumAddress = accounts[0].checksumAddress;
+
 describe('ens', function () {
     var provider;
     var web3;
@@ -50,13 +54,13 @@ describe('ens', function () {
                 assert.equal(payload.method, 'eth_call');
                 assert.deepEqual(payload.params, [{
                     data: sha3(signature).slice(0, 10) + '1757b5941987904c18c7594de32c1726cda093fdddacb738cfbc4a7cd1ef4370',
-                    to: '0x314159265dd8dbb310642f98f50c066173c1259b',
+                    to: address,
                 }, 'latest']);
             });
-            provider.injectResult('0x0000000000000000000000000123456701234567012345670123456701234567');
+            provider.injectResult(address);
 
             web3.eth.ens.registry.owner('foobar.eth').then(function (owner) {
-                assert.equal(owner, '0x0123456701234567012345670123456701234567');
+                assert.equal(owner, checksumAddress);
                 done();
             }).catch(function (err) {
                 throw err;
@@ -72,13 +76,13 @@ describe('ens', function () {
                 assert.equal(payload.method, 'eth_call');
                 assert.deepEqual(payload.params, [{
                     data: sha3(signature).slice(0, 10) + '1757b5941987904c18c7594de32c1726cda093fdddacb738cfbc4a7cd1ef4370',
-                    to: '0x314159265dd8dbb310642f98f50c066173c1259b',
+                    to: address,
                 }, 'latest']);
             });
-            provider.injectResult('0x0000000000000000000000000123456701234567012345670123456701234567');
+            provider.injectResult(address);
 
             web3.eth.ens.registry.resolver('foobar.eth').then(function (resolver) {
-                assert.equal(resolver.options.address, '0x0123456701234567012345670123456701234567');
+                assert.equal(resolver.options.address, checksumAddress);
                 done();
             }).catch(function (err) {
                 throw err;
@@ -94,23 +98,23 @@ describe('ens', function () {
                 assert.equal(payload.method, 'eth_call');
                 assert.deepEqual(payload.params, [{
                     data: sha3(resolverSig).slice(0, 10) + '1757b5941987904c18c7594de32c1726cda093fdddacb738cfbc4a7cd1ef4370',
-                    to: '0x314159265dd8dbb310642f98f50c066173c1259b',
+                    to: address,
                 }, 'latest']);
             });
-            provider.injectResult('0x0000000000000000000000000123456701234567012345670123456701234567');
+            provider.injectResult(address);
 
             provider.injectValidation(function (payload) {
                 assert.equal(payload.jsonrpc, '2.0');
                 assert.equal(payload.method, 'eth_call');
                 assert.deepEqual(payload.params, [{
                     data: sha3(addrSig).slice(0, 10) + '1757b5941987904c18c7594de32c1726cda093fdddacb738cfbc4a7cd1ef4370',
-                    to: '0x0123456701234567012345670123456701234567',
+                    to: address,
                 }, 'latest']);
             });
-            provider.injectResult('0x0000000000000000000000001234567012345670123456701234567012345670');
+            provider.injectResult(address);
 
             web3.eth.ens.getAddress('foobar.eth').then(function (addr) {
-                assert.equal(addr, '0x1234567012345670123456701234567012345670');
+                assert.equal(addr, checksumAddress);
                 done();
             }).catch(function (err) {
                 throw err;
@@ -126,17 +130,17 @@ describe('ens', function () {
                 assert.equal(payload.method, 'eth_call');
                 assert.deepEqual(payload.params, [{
                     data: sha3(resolverSignature).slice(0, 10) + '1757b5941987904c18c7594de32c1726cda093fdddacb738cfbc4a7cd1ef4370',
-                    to: '0x314159265dd8dbb310642f98f50c066173c1259b',
+                    to: address,
                 }, 'latest']);
             });
-            provider.injectResult('0x0000000000000000000000000123456701234567012345670123456701234567');
+            provider.injectResult(address);
 
             provider.injectValidation(function (payload) {
                 assert.equal(payload.jsonrpc, '2.0');
                 assert.equal(payload.method, 'eth_call');
                 assert.deepEqual(payload.params, [{
                     data: sha3(pubkeySignature).slice(0, 10) + '1757b5941987904c18c7594de32c1726cda093fdddacb738cfbc4a7cd1ef4370',
-                    to: '0x0123456701234567012345670123456701234567',
+                    to: address,
                 }, 'latest']);
             });
 
@@ -162,17 +166,17 @@ describe('ens', function () {
                 assert.equal(payload.method, 'eth_call');
                 assert.deepEqual(payload.params, [{
                     data: sha3(resolverSignature).slice(0, 10) + '1757b5941987904c18c7594de32c1726cda093fdddacb738cfbc4a7cd1ef4370',
-                    to: '0x314159265dd8dbb310642f98f50c066173c1259b',
+                    to: address,
                 }, 'latest']);
             });
-            provider.injectResult('0x0000000000000000000000000123456701234567012345670123456701234567');
+            provider.injectResult(address);
 
             provider.injectValidation(function (payload) {
                 assert.equal(payload.jsonrpc, '2.0');
                 assert.equal(payload.method, 'eth_call');
                 assert.deepEqual(payload.params, [{
                     data: sha3(contentSignature).slice(0, 10) + '1757b5941987904c18c7594de32c1726cda093fdddacb738cfbc4a7cd1ef4370',
-                    to: '0x0123456701234567012345670123456701234567',
+                    to: address,
                 }, 'latest']);
             });
 
@@ -207,7 +211,7 @@ describe('ens', function () {
         });
 
         provider.injectResult({
-            hash: '0x0123456701234567012345670123456701234567012345670123456701234567',
+            hash: '0xa0202797a7aff86fec1a5d8b7cacea276de5bcfc2e8b14878c9ba48d7d5330a0012345670123456701234567',
             blockNumber: '0x0'
         });
         provider.injectValidation(function (payload) {

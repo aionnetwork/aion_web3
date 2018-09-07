@@ -4,8 +4,8 @@ var method = 'getCoinbase';
 
 
 var tests = [{
-    result: '0x47d33b27bb249a2dbab4c0612bf9caf4c1950855',
-    formattedResult: '0x47d33b27bb249a2dbab4c0612bf9caf4c1950855',
+    result: '0xa0202797a7aff86fec1a5d8b7cacea276de5bcfc2e8b14878c9ba48d7d5330a0',
+    formattedResult: '0xa0202797a7aff86fec1a5d8b7cacea276de5bcfc2e8b14878c9ba48d7d5330a0',
     call: 'eth_coinbase'
 }];
 

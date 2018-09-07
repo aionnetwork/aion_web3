@@ -33,8 +33,6 @@ var core = require('aion-web3-core');
 var Eth = require('aion-web3-eth');
 var Net = require('aion-web3-net');
 var Personal = require('aion-web3-eth-personal');
-var Shh = require('aion-web3-shh');
-var Bzz = require('aion-web3-bzz');
 var utils = require('aion-web3-utils');
 
 var Web3 = function Web3() {
@@ -47,8 +45,6 @@ var Web3 = function Web3() {
     this.utils = utils;
 
     this.eth = new Eth(this);
-    this.shh = new Shh(this);
-    this.bzz = new Bzz(this);
 
     // overwrite package setProvider
     var setProvider = this.setProvider;
@@ -56,8 +52,6 @@ var Web3 = function Web3() {
         setProvider.apply(_this, arguments);
 
         this.eth.setProvider(provider, net);
-        this.shh.setProvider(provider, net);
-        this.bzz.setProvider(provider);
 
         return true;
     };
@@ -68,9 +62,7 @@ Web3.utils = utils;
 Web3.modules = {
     Eth: Eth,
     Net: Net,
-    Personal: Personal,
-    Shh: Shh,
-    Bzz: Bzz
+    Personal: Personal
 };
 
 core.addProviders(Web3);

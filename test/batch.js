@@ -57,27 +57,18 @@ describe('lib/web3/batch', function () {
             var callback = function (err, r) {
                 counter++;
                 assert.isArray(result, r);
-            };
-
-            var callback2 = function (err, r) {
-                assert.equal(counter, 1);
-                assert.equal(r, 11);
                 done();
             };
 
             provider.injectValidation(function (payload) {
                 var first = payload[0];
-                var second = payload[1];
 
                 assert.equal(first.method, 'eth_accounts');
                 assert.deepEqual(first.params, []);
-                assert.equal(second.method, 'shh_post');
-                assert.deepEqual(second.params, [{}]);
             });
 
             var batch = new web3.BatchRequest();
             batch.add(web3.eth.getAccounts.request(callback));
-            batch.add(web3.shh.post.request({}, callback2));
             batch.execute();
         });
 

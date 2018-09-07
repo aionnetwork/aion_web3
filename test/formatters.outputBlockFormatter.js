@@ -2,6 +2,10 @@ var chai = require('chai');
 var assert = chai.assert;
 var formatters = require('../packages/web3-core-helpers/src/formatters.js');
 
+var accounts = require('./fixtures/accounts')
+var address = accounts[0].address;
+var checksumAddress = accounts[0].checksumAddress;
+
 
 describe('formatters', function () {
     describe('outputBlockFormatter', function () {
@@ -10,7 +14,7 @@ describe('formatters', function () {
             assert.deepEqual(formatters.outputBlockFormatter({
                 hash: '0xd6960376d6c6dea93647383ffb245cfced97ccc5c7525397a543a72fdaea5265',
                 parentHash: '0x83ffb245cfced97ccc5c75253d6960376d6c6dea93647397a543a72fdaea5265',
-                miner: '0xdcc6960376d6c6dea93647383ffb245cfced97cf',
+                miner: address,
                 stateRoot: '0x54dda68af07643f68739a6e9612ad157a26ae7e2ce81f77842bb5835fbcde583',
                 sha3Uncles: '0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347',
                 bloom: '0xd6960376d6c6dea93647383ffb245cfced97ccc5c7525397a543a72fdaea5265',
@@ -26,7 +30,7 @@ describe('formatters', function () {
             }), {
                 hash: '0xd6960376d6c6dea93647383ffb245cfced97ccc5c7525397a543a72fdaea5265',
                 parentHash: '0x83ffb245cfced97ccc5c75253d6960376d6c6dea93647397a543a72fdaea5265',
-                miner: '0xDCc6960376d6C6dEa93647383FfB245CfCed97Cf',
+                miner: checksumAddress,
                 stateRoot: '0x54dda68af07643f68739a6e9612ad157a26ae7e2ce81f77842bb5835fbcde583',
                 sha3Uncles: '0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347',
                 bloom: '0xd6960376d6c6dea93647383ffb245cfced97ccc5c7525397a543a72fdaea5265',

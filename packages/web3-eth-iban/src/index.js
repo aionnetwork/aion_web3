@@ -134,9 +134,9 @@ Iban.fromAddress = function (address) {
     address = address.replace('0x','').replace('0X','');
 
     var asBn = new BigNumber(address, 16);
-    var base36 = asBn.toString(36);
-    var padded = leftPad(base36, 15);
-    return Iban.fromBban(padded.toUpperCase());
+    var base36 = asBn.toString(36).slice(0, 34).toUpperCase();
+    // var padded = leftPad(base36, 15);
+    return Iban.fromBban(base36);
 };
 
 /**

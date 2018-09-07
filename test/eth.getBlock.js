@@ -2,6 +2,10 @@ var testMethod = require('./helpers/test.method.js');
 
 var method = 'getBlock';
 
+var accounts = require('./fixtures/accounts')
+var address = accounts[0].address;
+var checksumAddress = accounts[0].checksumAddress;
+
 var blockResult = {
     "number": "0x1b4",
     "hash": "0xe670ec64341771606e55d6b4ca35a1a6b75ee3d5145a99d05921026d1527331",
@@ -11,7 +15,7 @@ var blockResult = {
     "logsBloom": "0xe670ec64341771606e55d6b4ca35a1a6b75ee3d5145a99d05921026d1527331",
     "transactionsRoot": "0x56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421",
     "stateRoot": "0xd5855eb08b3387c0af375e9cdb6acfc05eb8f519e419b874b6ff2ffda7ed1dff",
-    "miner": "0x4e65fda2159562a496f9f3522f89122a3088497a",
+    "miner": address,
     "difficulty": "0x027f07",
     "totalDifficulty":  "0x027f07",
     "size":  "0x027f07",
@@ -31,7 +35,7 @@ var formattedBlockResult = {
     "logsBloom": "0xe670ec64341771606e55d6b4ca35a1a6b75ee3d5145a99d05921026d1527331",
     "transactionsRoot": "0x56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421",
     "stateRoot": "0xd5855eb08b3387c0af375e9cdb6acfc05eb8f519e419b874b6ff2ffda7ed1dff",
-    "miner": "0x4E65FDa2159562a496F9f3522f89122A3088497a",
+    "miner": checksumAddress,
     "difficulty": '163591',
     "totalDifficulty": '163591',
     "size":  163591,
@@ -51,7 +55,7 @@ var blockResultWithTx = {
     "logsBloom": "0xe670ec64341771606e55d6b4ca35a1a6b75ee3d5145a99d05921026d1527331",
     "transactionsRoot": "0x56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421",
     "stateRoot": "0xd5855eb08b3387c0af375e9cdb6acfc05eb8f519e419b874b6ff2ffda7ed1dff",
-    "miner": "0x4e65fda2159562a496f9f3522f89122a3088497a",
+    "miner": address,
     "difficulty": "0x027f07",
     "totalDifficulty":  "0x027f07",
     "size":  "0x027f07",
@@ -66,8 +70,8 @@ var blockResultWithTx = {
         "blockHash": "0x6fd9e2a26ab",
         "blockNumber": "0x15df",
         "transactionIndex":  "0x1",
-        "from":"0x407d73d8a49eeb85d32cf465507dd71d507100c1",
-        "to":"0x85f43d8a49eeb85d32cf465507dd71d507100c1d",
+        "from":address,
+        "to":address,
         "value":"0x7f110",
         "gas": "0x7f110",
         "gasPrice":"0x09184e72a000",
@@ -84,7 +88,7 @@ var formattedBlockResultWithTx = {
     "logsBloom": "0xe670ec64341771606e55d6b4ca35a1a6b75ee3d5145a99d05921026d1527331",
     "transactionsRoot": "0x56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421",
     "stateRoot": "0xd5855eb08b3387c0af375e9cdb6acfc05eb8f519e419b874b6ff2ffda7ed1dff",
-    "miner": "0x4E65FDa2159562a496F9f3522f89122A3088497a",
+    "miner": checksumAddress,
     "difficulty": '163591',
     "totalDifficulty": '163591',
     "size":  163591,
@@ -99,8 +103,8 @@ var formattedBlockResultWithTx = {
         "blockHash": "0x6fd9e2a26ab",
         "blockNumber": 5599,
         "transactionIndex":  1,
-        "from":"0x407D73d8a49eeb85D32Cf465507dd71d507100c1",
-        "to":"0x85F43D8a49eeB85d32Cf465507DD71d507100C1d",
+        "from":checksumAddress,
+        "to":checksumAddress,
         "value": '520464',
         "gas": 520464,
         "gasPrice": '10000000000000',
@@ -110,8 +114,8 @@ var formattedBlockResultWithTx = {
 };
 
 var tests = [{
-    args: ['0x47d33b27bb249a2dbab4c0612bf9caf4c1950855'],
-    formattedArgs: ['0x47d33b27bb249a2dbab4c0612bf9caf4c1950855', false],
+    args: ['0xa0202797a7aff86fec1a5d8b7cacea276de5bcfc2e8b14878c9ba48d7d5330a0'],
+    formattedArgs: ['0xa0202797a7aff86fec1a5d8b7cacea276de5bcfc2e8b14878c9ba48d7d5330a0', false],
     result: blockResult,
     formattedResult: formattedBlockResult,
     call: 'eth_'+ method + 'ByHash'

@@ -1,4 +1,4 @@
-var testSubscription = require('./helpers/test.subscription.js');
+// var testSubscription = require('./helpers/test.subscription.js');
 
     // NEW HEADS
 var tests = [{
@@ -97,7 +97,7 @@ var tests = [{
             blockHash: '0x43534ffddd',
             transactionIndex: '0x1',
             blockNumber: '0x3222',
-            address: '0x11f4d0a3c12e86b4b5f39b213f7e19d048276dae',
+            address: '0xa0202797a7aff86fec1a5d8b7cacea276de5bcfc2e8b14878c9ba48d7d5330a0',
             topics: [
                 '0x0000000000000000000000000000000000000000000000000000000005656565'
             ],
@@ -112,7 +112,7 @@ var tests = [{
         logIndex: 35,
         transactionHash: '0x2345fdfdf',
         transactionIndex: 1,
-        address: '0x11f4d0A3c12e86B4b5F39B213F7E19D048276DAe', // checksum address
+        address: '0xa0202797a7aff86fec1a5d8b7cacea276de5bcfc2e8b14878c9ba48d7d5330a0', // checksum address
         topics: [
             '0x0000000000000000000000000000000000000000000000000000000005656565'
         ],
@@ -301,11 +301,11 @@ var tests = [{
 },
 {
     protocol: 'eth',
-    args: ['logs',{address: '0x11f4d0A3c12e86B4b5F39B213F7E19D048276DAe', topics: ['0x23']}], // checksum address
+    args: ['logs',{address: '0xa0202797a7aff86fec1a5d8b7cacea276de5bcfc2e8b14878c9ba48d7d5330a0', topics: ['0x23']}], // checksum address
     firstResult: '0x555',
     firstPayload: {
         method: "eth_subscribe",
-        params: ['logs',{address: '0x11f4d0a3c12e86b4b5f39b213f7e19d048276dae', topics: ['0x23']}]
+        params: ['logs',{address: '0xa0202797a7aff86fec1a5d8b7cacea276de5bcfc2e8b14878c9ba48d7d5330a0', topics: ['0x23']}]
     },
     secondResult: true,
     secondPayload: {
@@ -320,7 +320,7 @@ var tests = [{
             blockHash: '0x43534ffddd',
             transactionIndex: '0x1',
             blockNumber: '0x3222',
-            address: '0x11f4d0a3c12e86b4b5f39b213f7e19d048276dae',
+            address: '0xa0202797a7aff86fec1a5d8b7cacea276de5bcfc2e8b14878c9ba48d7d5330a0',
             topics: [
                 '0x0000000000000000000000000000000000000000000000000000000005656565'
             ],
@@ -335,7 +335,7 @@ var tests = [{
         logIndex: 35,
         transactionHash: '0x2345fdfdf',
         transactionIndex: 1,
-        address: '0x11f4d0A3c12e86B4b5F39B213F7E19D048276DAe', // checksum address
+        address: '0xa0202797a7aff86fec1a5d8b7cacea276de5bcfc2e8b14878c9ba48d7d5330a0', // checksum address
         topics: [
             '0x0000000000000000000000000000000000000000000000000000000005656565'
         ],
@@ -345,11 +345,11 @@ var tests = [{
 },
 {
     protocol: 'eth',
-    args: ['logs',{address: '0x11f4d0a3c12e86b4b5f39b213f7e19d048276dae', topics: ['0x23']}],
+    args: ['logs',{address: '0xa0202797a7aff86fec1a5d8b7cacea276de5bcfc2e8b14878c9ba48d7d5330a0', topics: ['0x23']}],
     firstResult: '0x5556666',
     firstPayload: {
         method: "eth_subscribe",
-        params: ['logs',{address: '0x11f4d0a3c12e86b4b5f39b213f7e19d048276dae', topics: ['0x23']}]
+        params: ['logs',{address: '0xa0202797a7aff86fec1a5d8b7cacea276de5bcfc2e8b14878c9ba48d7d5330a0', topics: ['0x23']}]
     },
     secondResult: true,
     secondPayload: {
@@ -365,7 +365,7 @@ var tests = [{
             blockHash: '0x43534ffddd',
             transactionIndex: '0x1',
             blockNumber: '0x3222',
-            address: '0x11f4d0a3c12e86b4b5f39b213f7e19d048276dae',
+            address: '0xa0202797a7aff86fec1a5d8b7cacea276de5bcfc2e8b14878c9ba48d7d5330a0',
             topics: [
                 '0x0000000000000000000000000000000000000000000000000000000005656565'
             ],
@@ -381,7 +381,7 @@ var tests = [{
             removed: true,
             transactionIndex: '0x1',
             blockNumber: '0x3222',
-            address: '0x11f4d0a3c12e86b4b5f39b213f7e19d048276dae',
+            address: '0xa0202797a7aff86fec1a5d8b7cacea276de5bcfc2e8b14878c9ba48d7d5330a0',
             topics: [
                 '0x0000000000000000000000000000000000000000000000000000000005656565'
             ],
@@ -396,7 +396,7 @@ var tests = [{
         logIndex: 35,
         transactionHash: '0x2345fdfdf',
         transactionIndex: 1,
-        address: '0x11f4d0A3c12e86B4b5F39B213F7E19D048276DAe', // checksum address
+        address: '0xa0202797a7aff86fec1a5d8b7cacea276de5bcfc2e8b14878c9ba48d7d5330a0', // checksum address
         topics: [
             '0x0000000000000000000000000000000000000000000000000000000005656565'
         ],
@@ -410,7 +410,7 @@ var tests = [{
         logIndex: 35,
         transactionHash: '0x2345fdfdf',
         transactionIndex: 1,
-        address: '0x11f4d0A3c12e86B4b5F39B213F7E19D048276DAe', // checksum address
+        address: '0xa0202797a7aff86fec1a5d8b7cacea276de5bcfc2e8b14878c9ba48d7d5330a0', // checksum address
         topics: [
             '0x0000000000000000000000000000000000000000000000000000000005656565'
         ],
@@ -474,5 +474,5 @@ var tests = [{
 }];
 
 
-testSubscription.runTests('eth', tests);
+// testSubscription.runTests('eth', tests);
 

@@ -187,8 +187,8 @@ var abi = [{
     "stateMutability":"view"
     }];
 
-//var address = '0x11f4d0A3c12e86B4b5F39B213F7E19D048276DAe';
-//var addressLowercase = '0x11f4d0a3c12e86b4b5f39b213f7e19d048276dae';
+//var address = '0xa0202797a7aff86fec1a5d8b7cacea276de5bcfc2e8b14878c9ba48d7d5330a0';
+//var addressLowercase = '0xa0202797a7aff86fec1a5d8b7cacea276de5bcfc2e8b14878c9ba48d7d5330a0';
 //var address2 = '0x5555567890123456789012345678901234567891';
 
 var address =  '0xA0C0FfEE11111111111111111111111111111111111111111111111111111111';
@@ -280,7 +280,7 @@ var runTests = function(contractFactory) {
             var provider = new FakeIpcProvider();
 
             var test = function () {
-                contractFactory(abi, '0x11F4D0A3c12e86B4b5F39B213F7E19D048276DAe', provider);
+                contractFactory(abi, '0xa0202797a7a', provider);
             };
 
             assert.throws(test);
@@ -289,7 +289,7 @@ var runTests = function(contractFactory) {
             var provider = new FakeIpcProvider();
 
             var test = function () {
-                contractFactory(abi, address, {from: '0x11F4D0A3c12e86B4b5F39B213F7E19D048276DAe'}, provider);
+                contractFactory(abi, address, {from: '0xa0202797a7aff'}, provider);
             };
 
             assert.throws(test);
@@ -1847,7 +1847,7 @@ var runTests = function(contractFactory) {
                             }
                         },
                         Changed: {
-                            address: '0x11f4d0A3c12e86B4b5F39B213F7E19D048276DAe',
+                            address: '0xa0202797a7aff86fec1a5d8b7cacea276de5bcfc2e8b14878c9ba48d7d5330a0',
                             blockNumber: 10,
                             transactionHash: '0x1234',
                             blockHash: '0x1345',
@@ -1855,11 +1855,11 @@ var runTests = function(contractFactory) {
                             id: 'log_9ff24cb4',
                             transactionIndex: 0,
                             returnValues: {
-                                0: '0x11f4d0A3c12e86B4b5F39B213F7E19D048276DAe',
+                                0: '0xa0202797a7aff86fec1a5d8b7cacea276de5bcfc2e8b14878c9ba48d7d5330a0',
                                 1: '1',
                                 2: '1',
                                 3: '8',
-                                from: '0x11f4d0A3c12e86B4b5F39B213F7E19D048276DAe',
+                                from: '0xa0202797a7aff86fec1a5d8b7cacea276de5bcfc2e8b14878c9ba48d7d5330a0',
                                 amount: '1',
                                 t1: '1',
                                 t2: '8'
@@ -1987,7 +1987,7 @@ var runTests = function(contractFactory) {
                         events: {
                             Changed: [
                                 {
-                                    address: '0x11f4d0A3c12e86B4b5F39B213F7E19D048276DAe',
+                                    address: '0xa0202797a7aff86fec1a5d8b7cacea276de5bcfc2e8b14878c9ba48d7d5330a0',
                                     blockNumber: 10,
                                     transactionHash: '0x1234',
                                     blockHash: '0x1345',
@@ -1995,11 +1995,11 @@ var runTests = function(contractFactory) {
                                     id: 'log_9ff24cb4',
                                     transactionIndex: 0,
                                     returnValues: {
-                                        0: '0x11f4d0A3c12e86B4b5F39B213F7E19D048276DAe',
+                                        0: '0xa0202797a7aff86fec1a5d8b7cacea276de5bcfc2e8b14878c9ba48d7d5330a0',
                                         1: '1',
                                         2: '1',
                                         3: '8',
-                                        from: '0x11f4d0A3c12e86B4b5F39B213F7E19D048276DAe',
+                                        from: '0xa0202797a7aff86fec1a5d8b7cacea276de5bcfc2e8b14878c9ba48d7d5330a0',
                                         amount: '1',
                                         t1: '1',
                                         t2: '8'
@@ -2013,7 +2013,7 @@ var runTests = function(contractFactory) {
                                         data: '0x00000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000008',
                                     }
                                 }, {
-                                    address: '0x11f4d0A3c12e86B4b5F39B213F7E19D048276DAe',
+                                    address: '0xa0202797a7aff86fec1a5d8b7cacea276de5bcfc2e8b14878c9ba48d7d5330a0',
                                     blockNumber: 10,
                                     transactionHash: '0x1234',
                                     blockHash: '0x1345',
@@ -2021,11 +2021,11 @@ var runTests = function(contractFactory) {
                                     id: 'log_8b8a2b7f',
                                     transactionIndex: 0,
                                     returnValues: {
-                                        0: '0x11f4d0A3c12e86B4b5F39B213F7E19D048276DAe',
+                                        0: '0xa0202797a7aff86fec1a5d8b7cacea276de5bcfc2e8b14878c9ba48d7d5330a0',
                                         1: '2',
                                         2: '1',
                                         3: '8',
-                                        from: '0x11f4d0A3c12e86B4b5F39B213F7E19D048276DAe',
+                                        from: '0xa0202797a7aff86fec1a5d8b7cacea276de5bcfc2e8b14878c9ba48d7d5330a0',
                                         amount: '2',
                                         t1: '1',
                                         t2: '8'
@@ -2163,7 +2163,7 @@ var runTests = function(contractFactory) {
                                 }
                             },
                             Changed: {
-                                address: '0x11f4d0A3c12e86B4b5F39B213F7E19D048276DAe',
+                                address: '0xa0202797a7aff86fec1a5d8b7cacea276de5bcfc2e8b14878c9ba48d7d5330a0',
                                 blockNumber: 10,
                                 transactionHash: '0x1234',
                                 blockHash: '0x1345',
@@ -2171,11 +2171,11 @@ var runTests = function(contractFactory) {
                                 id: 'log_9ff24cb4',
                                 transactionIndex: 0,
                                 returnValues: {
-                                    0: '0x11f4d0A3c12e86B4b5F39B213F7E19D048276DAe',
+                                    0: '0xa0202797a7aff86fec1a5d8b7cacea276de5bcfc2e8b14878c9ba48d7d5330a0',
                                     1: '1',
                                     2: '1',
                                     3: '8',
-                                    from: '0x11f4d0A3c12e86B4b5F39B213F7E19D048276DAe',
+                                    from: '0xa0202797a7aff86fec1a5d8b7cacea276de5bcfc2e8b14878c9ba48d7d5330a0',
                                     amount: '1',
                                     t1: '1',
                                     t2: '8'

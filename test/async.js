@@ -8,14 +8,18 @@ var web3 = new Web3();
 // use sendTransaction as dummy
 var method = 'call';
 
+var accounts = require('./fixtures/accounts')
+var address = accounts[0].address;
+var checksumAddress = accounts[0].checksumAddress;
+
 var tests = [{
     input: {
-        'from': 'XE7338O073KYGTWWZN0F2WZ0R8PX5ZPPZS',
-        'to': 'XE7338O073KYGTWWZN0F2WZ0R8PX5ZPPZS'
+        'from': address,
+        'to': address
     },
     formattedInput: [{
-        'from': '0x00000000000000000000000000c5496aee77c1ba1f0854206a26dda82a81d6d8',
-        'to': '0x00000000000000000000000000c5496aee77c1ba1f0854206a26dda82a81d6d8'
+        'from': address,
+        'to': address
     }, 'latest'],
     result: '0xb',
     formattedResult: '0xb',

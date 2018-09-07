@@ -2,12 +2,16 @@ var testMethod = require('./helpers/test.method.js');
 
 var method = 'newAccount';
 
+var accounts = require('./fixtures/accounts')
+var address = accounts[0].address;
+var checksumAddress = accounts[0].checksumAddress;
+
 
 var tests = [{
     args: ['P@ssw0rd!'],
     formattedArgs: ['P@ssw0rd!'],
-    result: ['0x47d33b27bb249a2dbab4c0612bf9caf4c1950855'],
-    formattedResult: ['0x47D33b27Bb249a2DBab4C0612BF9CaF4C1950855'], // checksum address
+    result: [address],
+    formattedResult: [checksumAddress], // checksum address
     call: 'personal_newAccount'
 }];
 

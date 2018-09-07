@@ -22,14 +22,7 @@ function createKeyPair({entropy, privateKey}) {
 
   if (privateKey !== undefined) {
     priv = toBuffer(privateKey)
-    try {
-      kp = nacl.sign.keyPair.fromSecretKey(priv)
-    } catch (err) {
-      console.log('privateKey', privateKey)
-      console.log('priv', priv.toString('hex'))
-      console.error('error ', err)
-      throw err
-    }
+    kp = nacl.sign.keyPair.fromSecretKey(priv)
     keyPair = {
       _privateKey: priv,
       privateKey: bufferToZeroXHex(priv),

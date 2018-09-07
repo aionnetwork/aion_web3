@@ -84,16 +84,11 @@ var toTwosComplement = function (number) {
  * @return {Boolean}
  */
 var isAddress = function (address) {
-    // check if it has the basic requirements of an address
-    if (!/^(0x)?[0-9a-f]{64}$/i.test(address)) {
-        return false;
-        // If it's ALL lowercase or ALL upppercase
-    } else if (/^(0x|0X)?[0-9a-f]{64}$/.test(address) || /^(0x|0X)?[0-9A-F]{64}$/.test(address)) {
+    if (/^(0x|0X)?[0-9a-f]{64}$/i.test(address)) {
         return true;
-        // Otherwise check each case
-    } else {
-        return checkAddressChecksum(address);
     }
+
+    return false;
 };
 
 
@@ -106,7 +101,10 @@ var isAddress = function (address) {
  * @return {Boolean}
  */
 var checkAddressChecksum = function (address) {
-    return aionLib.accounts.createChecksumAddress(address);
+    if (isAddress(address) === false) {
+        return false;
+    }
+    return address === aionLib.accounts.createChecksumAddress(address);
 };
 
 /**

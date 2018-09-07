@@ -5,36 +5,40 @@ var eth = new Eth();
 
 var method = 'sign';
 
+var accounts = require('./fixtures/accounts')
+var address = accounts[0].address;
+var checksumAddress = accounts[0].checksumAddress;
+var privateKey = accounts[0].privateKey;
 
 var tests = [{
-    args: ['Hello World!$*', '0xeb014f8c8b418db6b45774c326a0e64c78914dc0'],
-    formattedArgs: ['0xeb014f8c8b418db6b45774c326a0e64c78914dc0', '0x48656c6c6f20576f726c6421242a'],
-    result: '0x5763ab346198e3e6cc4d53996ccdeca0c941cb6cb70d671d97711c421d3bf7922c77ef244ad40e5262d1721bf9638fb06bab8ed3c43bfaa80d6da0be9bbd33dc1b',
-    formattedResult: '0x5763ab346198e3e6cc4d53996ccdeca0c941cb6cb70d671d97711c421d3bf7922c77ef244ad40e5262d1721bf9638fb06bab8ed3c43bfaa80d6da0be9bbd33dc1b',
+    args: ['Hello World!$*', address],
+    formattedArgs: [address, '0x48656c6c6f20576f726c6421242a'],
+    result: '0x3ddfb8596435b9530b5e635736c801c1403578b85e582d98dd7a322ddfb1e4c11108042d43cde677ebf2cfe02a3dcf895157f3714a05f69ae7faeda8c469e012ce6b158379e14024804f5e1aa565a544dd946e3bd1286777ac9931db8918cf03',
+    formattedResult: '0x3ddfb8596435b9530b5e635736c801c1403578b85e582d98dd7a322ddfb1e4c11108042d43cde677ebf2cfe02a3dcf895157f3714a05f69ae7faeda8c469e012ce6b158379e14024804f5e1aa565a544dd946e3bd1286777ac9931db8918cf03',
     call: 'eth_'+ method
 },{
     useLocalWallet: function (web3) {
-        web3.eth.accounts.wallet.add('0xbe6383dad004f233317e46ddb46ad31b16064d14447a95cc1d8c8d4bc61c3728');
+        web3.eth.accounts.wallet.add(privateKey);
     },
-    args: ['Hello World!$*', '0xeb014f8c8b418db6b45774c326a0e64c78914dc0'],
-    formattedArgs: ['0xeb014f8c8b418db6b45774c326a0e64c78914dc0', '0x48656c6c6f20576f726c6421242a'],
-    result: '0x5763ab346198e3e6cc4d53996ccdeca0c941cb6cb70d671d97711c421d3bf7922c77ef244ad40e5262d1721bf9638fb06bab8ed3c43bfaa80d6da0be9bbd33dc1b',
-    formattedResult: '0x5763ab346198e3e6cc4d53996ccdeca0c941cb6cb70d671d97711c421d3bf7922c77ef244ad40e5262d1721bf9638fb06bab8ed3c43bfaa80d6da0be9bbd33dc1b',
+    args: ['Hello World!$*', address],
+    formattedArgs: [address, '0x48656c6c6f20576f726c6421242a'],
+    result: '0x3ddfb8596435b9530b5e635736c801c1403578b85e582d98dd7a322ddfb1e4c11108042d43cde677ebf2cfe02a3dcf895157f3714a05f69ae7faeda8c469e012ce6b158379e14024804f5e1aa565a544dd946e3bd1286777ac9931db8918cf03',
+    formattedResult: '0x3ddfb8596435b9530b5e635736c801c1403578b85e582d98dd7a322ddfb1e4c11108042d43cde677ebf2cfe02a3dcf895157f3714a05f69ae7faeda8c469e012ce6b158379e14024804f5e1aa565a544dd946e3bd1286777ac9931db8918cf03',
     call: null
 },{
-    args: ['Hello Wolrd!$*', '0xeb014f8c8b418db6b45774c326a0e64c78914dc0'],
-    formattedArgs: ['0xeb014f8c8b418db6b45774c326a0e64c78914dc0', '0x48656c6c6f20576f6c726421242a'],
-    result: '0x680b2c019eb81d5476012ca453a1ac2248dec3d89c2ed20d78177e2e0550b72d702d42c40943f6140b3d2e9fc9981c7fdd428ff93623020969e33b6b406e26851b',
-    formattedResult: '0x680b2c019eb81d5476012ca453a1ac2248dec3d89c2ed20d78177e2e0550b72d702d42c40943f6140b3d2e9fc9981c7fdd428ff93623020969e33b6b406e26851b',
+    args: ['Hello Wolrd!$*', address],
+    formattedArgs: [address, '0x48656c6c6f20576f6c726421242a'],
+    result: '0x3ddfb8596435b9530b5e635736c801c1403578b85e582d98dd7a322ddfb1e4c13624fa4c833937ffd8582499ad142b15e995e3f75f275cf1c15362d23f4df75158453be47cbd82dd7c5f86019bad88317d39896f8a629c89536f7fb4fd954f0f',
+    formattedResult: '0x3ddfb8596435b9530b5e635736c801c1403578b85e582d98dd7a322ddfb1e4c13624fa4c833937ffd8582499ad142b15e995e3f75f275cf1c15362d23f4df75158453be47cbd82dd7c5f86019bad88317d39896f8a629c89536f7fb4fd954f0f',
     call: 'eth_'+ method
 },{
     useLocalWallet: function (web3) {
-        web3.eth.accounts.wallet.add('0xbe6383dad004f233317e46ddb46ad31b16064d14447a95cc1d8c8d4bc61c3728');
+        web3.eth.accounts.wallet.add(privateKey);
     },
-    args: ['Hello Wolrd!$*', '0xeb014f8c8b418db6b45774c326a0e64c78914dc0'],
-    formattedArgs: ['0xeb014f8c8b418db6b45774c326a0e64c78914dc0', '0x48656c6c6f20576f6c726421242a'],
-    result: '0x680b2c019eb81d5476012ca453a1ac2248dec3d89c2ed20d78177e2e0550b72d702d42c40943f6140b3d2e9fc9981c7fdd428ff93623020969e33b6b406e26851b',
-    formattedResult: '0x680b2c019eb81d5476012ca453a1ac2248dec3d89c2ed20d78177e2e0550b72d702d42c40943f6140b3d2e9fc9981c7fdd428ff93623020969e33b6b406e26851b',
+    args: ['Hello Wolrd!$*', address],
+    formattedArgs: [address, '0x48656c6c6f20576f6c726421242a'],
+    result: '0x3ddfb8596435b9530b5e635736c801c1403578b85e582d98dd7a322ddfb1e4c13624fa4c833937ffd8582499ad142b15e995e3f75f275cf1c15362d23f4df75158453be47cbd82dd7c5f86019bad88317d39896f8a629c89536f7fb4fd954f0f',
+    formattedResult: '0x3ddfb8596435b9530b5e635736c801c1403578b85e582d98dd7a322ddfb1e4c13624fa4c833937ffd8582499ad142b15e995e3f75f275cf1c15362d23f4df75158453be47cbd82dd7c5f86019bad88317d39896f8a629c89536f7fb4fd954f0f',
     call: null
 }];
 

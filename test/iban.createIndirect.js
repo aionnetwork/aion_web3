@@ -6,7 +6,7 @@ var tests = [
     { institution: 'XREG', identifier: 'GAVOFYORK', expected: 'XE81ETHXREGGAVOFYORK'}
 ];
 
-describe('lib/web3/iban', function () {
+xdescribe('lib/web3/iban', function () {
     describe('createIndirect', function () {
         tests.forEach(function (test) {
             it('shoud create indirect iban: ' +  test.expected, function () {
