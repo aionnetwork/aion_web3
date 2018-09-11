@@ -34,7 +34,7 @@ var removeLeadingZeroX = aionLib.formats.removeLeadingZeroX;
 var EthersAbi = require('./coder');
 var ethersAbiCoder = new EthersAbi(function (type, value) {
     if (isBN(value) === true) {
-        return value.toNumber().toString();
+        return value.toString();
     }
     if (type.match(/^u?int/) && !_.isArray(value) && (!_.isObject(value) || value.constructor.name !== 'BN')) {
         return value.toString();
