@@ -382,6 +382,7 @@ var coderBoolean = function(coerceFunc, localName) {
 
 var coderFixedBytes = function(coerceFunc, length, localName) {
     var name = ('bytes' + length);
+    var minLen = (length <= 16 ? 16 : 32);
     return {
         localName: localName,
         name: name,
@@ -401,19 +402,19 @@ var coderFixedBytes = function(coerceFunc, length, localName) {
                 throw error;
             }
 
-            if (value.length === 32) { return value; }
+            if (value.length === minLen)  { return value; }
 
-            var result = Buffer.alloc(32);
+            var result = Buffer.alloc(minLen);
             result.set(value);
             return result;
         },
         decode: function(data, offset) {
-            if (data.length < offset + 32) {
+            if (data.length < offset + minLen) {
                 throw new Error('insufficient data for ' + name + ' type');
             }
 
             return {
-                consumed: 32,
+                consumed: minLen,
                 value: coerceFunc(name, utils.hexlify(data.slice(offset, offset + length)))
             }
         }
