@@ -208,7 +208,6 @@ var Eth = function Eth() {
             name: 'getHashrate',
             call: 'eth_hashrate',
             params: 0,
-            outputFormatter: utils.hexToNumber
         }),
         new Method({
             name: 'isSyncing',
