@@ -1,7 +1,6 @@
 let test_cfg = require('./_integ_test_config.js');
 
-console.log("acct = ", test_cfg.TEST_ACCT_ADDR);
-console.log("cfg = ", test_cfg);
+console.log("Using cfg = ", test_cfg);
 
 let fs = require('fs')
 let path = require('path')
@@ -267,7 +266,7 @@ describe('contracts', () => {
 
   let array2 = [ [addr1, addr2 ], [addr4, addr1 ]];
   it('address[2][2]', done => {
-      ct.methods.superCrazy1(array2)
+      ct.methods.superCrazy2(array2)
           .call()
           .then(res => {
               res.should.eql(array2);
