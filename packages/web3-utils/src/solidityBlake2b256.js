@@ -31,7 +31,6 @@ var _elementaryName = function (name) {
     if (name.startsWith('int[')) {
         return 'int128' + name.slice(3);
     } else if (name === 'int') {
-        console.log("_elementaryName =", name.slice(3));
         return 'int128';
     } else if (name.startsWith('uint[')) {
         return 'uint128' + name.slice(4);
