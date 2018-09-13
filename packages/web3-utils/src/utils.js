@@ -84,11 +84,12 @@ var toTwosComplement = function (number) {
  * @return {Boolean}
  */
 var isAddress = function (address) {
-    if (/^(0x|0X)?[0-9a-f]{64}$/i.test(address)) {
+    return aionLib.accounts.isAccountAddress(address);
+    /*if (/^(0x|0X)?[0-9a-f]{64}$/i.test(address)) {
         return true;
     }
 
-    return false;
+    return false;*/
 };
 
 
@@ -101,10 +102,11 @@ var isAddress = function (address) {
  * @return {Boolean}
  */
 var checkAddressChecksum = function (address) {
-    if (isAddress(address) === false) {
+    return aionLib.accounts.isValidChecksumAddress(address);
+    /*if (isAddress(address) === false) {
         return false;
     }
-    return address === aionLib.accounts.createChecksumAddress(address);
+    return address === aionLib.accounts.createChecksumAddress(address);*/
 };
 
 /**
@@ -329,7 +331,7 @@ var toHex = function (value, returnType) {
     // if its a negative number, pass it through numberToHex
     if (_.isString(value)) {
         if (value.indexOf('-0x') === 0 || value.indexOf('-0X') === 0) {
-            return returnType ? 'int256' : numberToHex(value);
+            return returnType ? 'int128' : numberToHex(value);
         } else if(value.indexOf('0x') === 0 || value.indexOf('0X') === 0) {
             return returnType ? 'bytes' : value;
         } else if (!isFinite(value)) {
@@ -337,7 +339,7 @@ var toHex = function (value, returnType) {
         }
     }
 
-    return returnType ? (value < 0 ? 'int256' : 'uint256') : numberToHex(value);
+    return returnType ? (value < 0 ? 'int128' : 'uint128') : numberToHex(value);
 };
 
 
@@ -437,6 +439,7 @@ var blake2b256 = function (value) {
     if (isHexStrict(value) && /^0x/i.test((value).toString())) {
         value = hexToBytes(value);
     }
+    console.log('XXX call aionLib.crypto.blake2b256(',value,')');
     var out = aionLib.crypto.blake2b256(value);
     return aionLib.formats.prependZeroX(out.toString('hex'));
 };
