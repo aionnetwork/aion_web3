@@ -83,7 +83,6 @@ var _parseNumber = function (arg) {
 var _solidityPack = function (type, value, arraySize) {
     /*jshint maxcomplexity:false */
 
-    console.log("_solidityPack(", type, ",", value, ",", arraySize, ")");
     var size, num;
     type = _elementaryName(type);
 

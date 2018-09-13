@@ -4,8 +4,8 @@ var method = 'getHashrate';
 
 
 var tests = [{
-    result: '0x788a8',
-    formattedResult: 493736,
+    result: '3.14159',
+    formattedResult: "3.14159",
     call: 'eth_hashrate'
 }];
 
