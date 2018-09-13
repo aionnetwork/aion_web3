@@ -28,7 +28,6 @@ var utils = require('./utils.js');
 var _elementaryName = function (name) {
     /*jshint maxcomplexity:false */
 
-    console.log("XXX _elementaryName(", name, ")");
     if (name.startsWith('int[')) {
         return 'int128' + name.slice(3);
     } else if (name === 'int') {
@@ -108,16 +107,13 @@ var _solidityPack = function (type, value, arraySize) {
         }
 
         if(!utils.checkAddressChecksum(value)) {
-            console.log('XXX isAddress(',value,') =', utils.isAddress(value));
             throw new Error(value +' is not a valid address, or the checksum is invalid.');
         }
 
-        console.log("XXX utils.leftPad(",value.toLowerCase(),", ",size,")");
         return utils.leftPad(value.toLowerCase(), size);
     }
 
     size = _parseTypeN(type);
-        console.log("XXX size of type", type, "is", size);
 
     if (type.startsWith('bytes')) {
 
@@ -163,7 +159,6 @@ var _solidityPack = function (type, value, arraySize) {
         }
 
         if(num.lt(new BN(0))) {
-            console.log('XXX num.toTwos(',size,').toString(\'hex\')');
             return num.toTwos(size).toString('hex');
         } else {
             return size ? utils.leftPad(num.toString('hex'), size/8 * 2) : num;
@@ -190,7 +185,6 @@ var _processSolidityBlake2b256Args = function (arg) {
     if (_.isObject(arg) && (arg.hasOwnProperty('v') || arg.hasOwnProperty('t') || arg.hasOwnProperty('value') || arg.hasOwnProperty('type'))) {
         type = arg.hasOwnProperty('t') ? arg.t : arg.type;
         value = arg.hasOwnProperty('v') ? arg.v : arg.value;
-        console.log("XXX _processSolidityBlake2b256Args type given.  type = ", type);
     // otherwise try to guess the type
     } else {
 
@@ -200,7 +194,6 @@ var _processSolidityBlake2b256Args = function (arg) {
         if (!type.startsWith('int') && !type.startsWith('uint')) {
             type = 'bytes';
         }
-        console.log("XXX _processSolidityBlake2b256Args type not given.  type = ", type);
     }
 
     if ((type.startsWith('int') || type.startsWith('uint')) &&  typeof value === 'string' && !/^(-)?0x/i.test(value)) {
@@ -220,12 +213,10 @@ var _processSolidityBlake2b256Args = function (arg) {
 
     if (_.isArray(value)) {
         hexArg = value.map(function (val) {
-            console.log("XXX isArray true");
             return _solidityPack(type, val, arraySize).toString('hex').replace('0x','');
         });
         return hexArg.join('');
     } else {
-        console.log("XXX isArray false");
         hexArg = _solidityPack(type, value, arraySize);
         return hexArg.toString('hex').replace('0x','');
     }
@@ -242,16 +233,12 @@ var solidityBlake2b256 = function () {
     /*jshint maxcomplexity:false */
 
     var args = Array.prototype.slice.call(arguments);
-    console.log("XXX", 'solidityBlake2b256 proto arguments =', args);
 
     var hexArgs = _.map(args, _processSolidityBlake2b256Args);
 
     // console.log(args, hexArgs);
     // console.log('0x'+ hexArgs.join(''));
 
-    console.log("XXX", 'hexArgs =', hexArgs);
-    
-    console.log("XXX", 'call utils.blake2b256((0x'+ hexArgs.join('') + ')');
     return utils.blake2b256('0x'+ hexArgs.join(''));
 };
 

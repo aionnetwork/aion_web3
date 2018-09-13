@@ -439,7 +439,6 @@ var blake2b256 = function (value) {
     if (isHexStrict(value) && /^0x/i.test((value).toString())) {
         value = hexToBytes(value);
     }
-    console.log('XXX call aionLib.crypto.blake2b256(',value,')');
     var out = aionLib.crypto.blake2b256(value);
     return aionLib.formats.prependZeroX(out.toString('hex'));
 };
