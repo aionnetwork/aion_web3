@@ -47,7 +47,6 @@ describe('send raw transaction of 0.01337 aions and no data', () => {
       console.log("Tx signed.  Sending to kernel.");
       client.eth.sendSignedTransaction(res.rawTransaction).on('receipt', (r) => {
         let txHash = r.transactionHash;
-        console.log("Got tx receipt from server:", r);
         client.eth.getTransaction(txHash, (err, res) => {
           if (err !== null && err !== undefined) {
             done(err);
