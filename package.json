@@ -1,8 +1,8 @@
 {
   "name": "aion-web3",
   "namespace": "aion",
-  "version": "1.0.1",
-  "description": "Ethereum JavaScript API wrapper repository",
+  "version": "1.0.0",
+  "description": "Aion JavaScript API wrapper repository",
   "license": "LGPL-3.0",
   "main": "./packages/web3/src/index.js",
   "directories": {
@@ -35,10 +35,22 @@
   "keywords": [
     "Ethereum",
     "JavaScript",
-    "API"
+    "API",
+    "Aion"
   ],
-  "author": "ethereum.org",
-  "authors": [
+  "author": {
+      "name:": "Aion Network",
+      "url"  : "https://aion.network/"
+  },
+  "contributors": [
+    {
+       "name": "Kelvin Lam",
+       "email": "kelvin@aion.network"
+    },
+    {
+       "name": "Tony Crowe",
+       "email": "github@tonycrowe.com"
+    },
     {
       "name": "Fabian Vogelsteller",
       "email": "fabian@ethereum.org",
