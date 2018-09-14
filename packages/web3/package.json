@@ -1,7 +1,7 @@
 {
   "name": "aion-web3",
   "namespace": "aion",
-  "version": "1.0.0-alpha",
+  "version": "1.0.0",
   "description": "Ethereum JavaScript API",
   "repository": "https://github.com/aionnetwork/aion_web3/tree/master/packages/web3",
   "license": "LGPL-3.0",
@@ -42,10 +42,10 @@
     }
   ],
   "dependencies": {
-    "aion-web3-core": "1.0.0-alpha",
-    "aion-web3-eth": "1.0.0-alpha",
-    "aion-web3-eth-personal": "1.0.0-alpha",
-    "aion-web3-net": "1.0.0-alpha",
-    "aion-web3-utils": "1.0.0-alpha"
+    "aion-web3-core": "1.0.0",
+    "aion-web3-eth": "1.0.0",
+    "aion-web3-eth-personal": "1.0.0",
+    "aion-web3-net": "1.0.0",
+    "aion-web3-utils": "1.0.0"
   }
 }

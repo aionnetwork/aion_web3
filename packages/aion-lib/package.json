@@ -1,6 +1,6 @@
 {
   "name": "aion-lib",
-  "version": "1.0.0-alpha",
+  "version": "1.0.0",
   "description": "",
   "main": "src/index.js",
   "dependencies": {
@@ -13,6 +13,5 @@
     "scryptsy": "^2.0.0",
     "tweetnacl": "^1.0.0",
     "underscore": "^1.8.3"
-  },
-  "devDependencies": {}
+  }
 }

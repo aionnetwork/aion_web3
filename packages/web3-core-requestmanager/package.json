@@ -1,16 +1,16 @@
 {
     "name": "aion-web3-core-requestmanager",
     "namespace": "aion",
-    "version": "1.0.0-alpha",
+    "version": "1.0.0",
     "description": "Web3 module to handle requests to external providers.",
     "repository": "https://github.com/aionnetwork/aion_web3/tree/master/packages/web3-core-requestmanager",
     "license": "LGPL-3.0",
     "main": "src/index.js",
     "dependencies": {
-        "underscore": "1.8.3",
-        "aion-web3-core-helpers": "1.0.0-alpha",
-        "aion-web3-providers-http": "1.0.0-alpha",
-        "aion-web3-providers-ipc": "1.0.0-alpha",
-        "aion-web3-providers-ws": "1.0.0-alpha"
+        "aion-web3-core-helpers": "1.0.0",
+        "aion-web3-providers-http": "1.0.0",
+        "aion-web3-providers-ipc": "1.0.0",
+        "aion-web3-providers-ws": "1.0.0",
+        "underscore": "1.8.3"
     }
 }

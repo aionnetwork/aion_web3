@@ -1,18 +1,18 @@
 {
     "name": "aion-web3-eth-ens",
-    "version": "1.0.0-alpha",
+    "version": "1.0.0",
     "description": "ENS support for web3.",
     "repository": "https://github.com/aionnetwork/aion_web3/tree/master/packages/web3-eth-ens",
     "license": "LGPL-3.0",
     "main": "src/index.js",
     "dependencies": {
+        "aion-web3-core": "1.0.0",
+        "aion-web3-core-helpers": "1.0.0",
+        "aion-web3-core-promievent": "1.0.0",
+        "aion-web3-eth-abi": "1.0.0",
+        "aion-web3-eth-contract": "1.0.0",
+        "aion-web3-utils": "1.0.0",
         "eth-ens-namehash": "2.0.8",
-        "underscore": "1.8.3",
-        "aion-web3-core": "1.0.0-alpha",
-        "aion-web3-core-helpers": "1.0.0-alpha",
-        "aion-web3-eth-abi": "1.0.0-alpha",
-        "aion-web3-eth-contract": "1.0.0-alpha",
-        "aion-web3-core-promievent": "1.0.0-alpha",
-        "aion-web3-utils": "1.0.0-alpha"
+        "underscore": "1.8.3"
     }
 }
