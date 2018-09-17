@@ -21,8 +21,6 @@ describe('eth', function() {
         u.methodExists(eth, 'getBlockUncleCount');
         u.methodExists(eth, 'subscribe');
         u.methodExists(eth, 'Contract');
-        u.methodExists(eth, 'Iban');
-
 
         u.methodExists(eth, 'isMining');
         u.methodExists(eth, 'getCoinbase');

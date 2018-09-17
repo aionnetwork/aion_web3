@@ -33,7 +33,6 @@ var Net = require('aion-web3-net');
 var ENS = require('aion-web3-eth-ens');
 var Personal = require('aion-web3-eth-personal');
 var BaseContract = require('aion-web3-eth-contract');
-var Iban = require('aion-web3-eth-iban');
 var Accounts = require('aion-web3-eth-accounts');
 var abi = require('aion-web3-eth-abi');
 
@@ -174,9 +173,6 @@ var Eth = function Eth() {
     this.Contract.defaultAccount = this.defaultAccount;
     this.Contract.defaultBlock = this.defaultBlock;
     this.Contract.setProvider(this.currentProvider, this.accounts);
-
-    // add IBAN
-    this.Iban = Iban;
 
     // add ABI
     this.abi = abi;
