@@ -1,6 +1,6 @@
 {
     "name": "aion-web3-eth-ens",
-    "version": null,
+    "version": "1.0.0",
     "description": "ENS support for web3.",
     "repository": "https://github.com/aionnetwork/aion_web3/tree/master/packages/web3-eth-ens",
     "license": "LGPL-3.0",

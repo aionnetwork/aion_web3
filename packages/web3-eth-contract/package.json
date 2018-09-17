@@ -1,7 +1,7 @@
 {
     "name": "aion-web3-eth-contract",
     "namespace": "aion",
-    "version": null,
+    "version": "1.0.0",
     "description": "Web3 module to interact with Ethereum smart contracts.",
     "repository": "https://github.com/aionnetwork/aion_web3/tree/master/packages/web3-eth-contract",
     "license": "LGPL-3.0",
