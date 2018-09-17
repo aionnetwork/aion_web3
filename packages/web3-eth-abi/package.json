@@ -1,7 +1,7 @@
 {
   "name": "aion-web3-eth-abi",
   "namespace": "aion",
-  "version": "1.0.0",
+  "version": null,
   "description": "Web3 module encode and decode EVM in/output.",
   "repository": "https://github.com/aionnetwork/aion_web3/tree/master/packages/web3-eth-abi",
   "license": "LGPL-3.0",

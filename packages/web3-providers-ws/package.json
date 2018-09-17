@@ -1,7 +1,7 @@
 {
     "name": "aion-web3-providers-ws",
     "namespace": "aion",
-    "version": "1.0.0",
+    "version": null,
     "description": "Module to handle web3 RPC connections over WebSockets.",
     "repository": "https://github.com/aionnetwork/aion_web3/tree/master/packages/web3-providers-ws",
     "license": "LGPL-3.0",

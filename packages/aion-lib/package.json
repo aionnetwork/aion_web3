@@ -1,6 +1,6 @@
 {
   "name": "aion-lib",
-  "version": "1.0.0",
+  "version": null,
   "description": "",
   "main": "src/index.js",
   "dependencies": {
