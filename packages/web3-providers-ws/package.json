@@ -1,14 +1,15 @@
 {
     "name": "aion-web3-providers-ws",
     "namespace": "aion",
-    "version": "1.0.0",
+    "version": "1.0.2",
     "description": "Module to handle web3 RPC connections over WebSockets.",
     "repository": "https://github.com/aionnetwork/aion_web3/tree/master/packages/web3-providers-ws",
     "license": "LGPL-3.0",
     "main": "src/index.js",
     "dependencies": {
-        "aion-web3-core-helpers": "1.0.0",
+        "aion-web3-core-helpers": "1.0.2",
         "underscore": "1.8.3",
         "websocket": "git://github.com/frozeman/WebSocket-Node.git#browserifyCompatible"
-    }
+    },
+    "gitHead": "81a255f3f7d5abab61a33de8f9a4c09ed92a32f7"
 }

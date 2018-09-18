@@ -1,14 +1,15 @@
 {
     "name": "aion-web3-core-subscriptions",
     "namespace": "aion",
-    "version": "1.0.0",
+    "version": "1.0.2",
     "description": "Manages web3 subscriptions. This is an internal package.",
     "repository": "https://github.com/aionnetwork/aion_web3/tree/master/packages/web3-core-subscriptions",
     "license": "LGPL-3.0",
     "main": "src/index.js",
     "dependencies": {
-        "aion-web3-core-helpers": "1.0.0",
+        "aion-web3-core-helpers": "1.0.2",
         "eventemitter3": "1.1.1",
         "underscore": "1.8.3"
-    }
+    },
+    "gitHead": "81a255f3f7d5abab61a33de8f9a4c09ed92a32f7"
 }

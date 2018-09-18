@@ -1,16 +1,17 @@
 {
     "name": "aion-web3-eth-personal",
     "namespace": "aion",
-    "version": "1.0.0",
+    "version": "1.0.2",
     "description": "Web3 module to interact with the Ethereum blockchain accounts stored in the node.",
     "repository": "https://github.com/aionnetwork/aion_web3/tree/master/packages/web3-eth-personal",
     "license": "LGPL-3.0",
     "main": "src/index.js",
     "dependencies": {
-        "aion-web3-core": "1.0.0",
-        "aion-web3-core-helpers": "1.0.0",
-        "aion-web3-core-method": "1.0.0",
-        "aion-web3-net": "1.0.0",
-        "aion-web3-utils": "1.0.0"
-    }
+        "aion-web3-core": "1.0.2",
+        "aion-web3-core-helpers": "1.0.2",
+        "aion-web3-core-method": "1.0.2",
+        "aion-web3-net": "1.0.2",
+        "aion-web3-utils": "1.0.2"
+    },
+    "gitHead": "81a255f3f7d5abab61a33de8f9a4c09ed92a32f7"
 }
