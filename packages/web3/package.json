@@ -1,8 +1,8 @@
 {
-  "name": "aion-web3",
+  "name": "aion-web3-v1.0",
   "namespace": "aion",
-  "version": "1.0.2",
-  "description": "Ethereum JavaScript API",
+  "version": "1.0.3",
+  "description": "Aion JavaScript API",
   "repository": "https://github.com/aionnetwork/aion_web3/tree/master/packages/web3",
   "license": "LGPL-3.0",
   "main": "src/index.js",
@@ -10,12 +10,23 @@
     "url": "https://github.com/aionnetwork/aion_web3/issues"
   },
   "keywords": [
-    "Ethereum",
+    "Aion",
     "JavaScript",
     "API"
   ],
-  "author": "ethereum.org",
-  "authors": [
+  "author": {
+    "name:": "Aion Network",
+    "url": "https://aion.network/"
+  },
+  "contributors": [
+    {
+      "name": "Kelvin Lam",
+      "email": "kelvin@aion.network"
+    },
+    {
+      "name": "Tony Crowe",
+      "email": "github@tonycrowe.com"
+    },
     {
       "name": "Fabian Vogelsteller",
       "email": "fabian@ethereum.org",
@@ -42,11 +53,11 @@
     }
   ],
   "dependencies": {
-    "aion-web3-core": "1.0.2",
-    "aion-web3-eth": "1.0.2",
-    "aion-web3-eth-personal": "1.0.2",
-    "aion-web3-net": "1.0.2",
-    "aion-web3-utils": "1.0.2"
+    "aion-web3-core": "1.0.3",
+    "aion-web3-eth": "1.0.3",
+    "aion-web3-eth-personal": "1.0.3",
+    "aion-web3-net": "1.0.3",
+    "aion-web3-utils": "1.0.3"
   },
-  "gitHead": "81a255f3f7d5abab61a33de8f9a4c09ed92a32f7"
+  "gitHead": "d36131a6d8b1db7eeaaa545dafa1b5c74d4d2e68"
 }
