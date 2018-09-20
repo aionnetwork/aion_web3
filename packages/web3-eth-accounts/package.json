@@ -1,21 +1,21 @@
 {
   "name": "aion-web3-eth-accounts",
   "namespace": "aion",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Web3 module to generate Ethereum accounts and sign data and transactions.",
   "repository": "https://github.com/aionnetwork/aion_web3/tree/master/packages/web3-eth-accounts",
   "license": "LGPL-3.0",
   "main": "src/index.js",
   "dependencies": {
-    "aion-lib": "1.0.2",
+    "aion-lib": "1.0.3",
     "aion-rlp": "^0.0.1",
-    "aion-web3-core": "1.0.2",
-    "aion-web3-core-helpers": "1.0.2",
-    "aion-web3-core-method": "1.0.2",
-    "aion-web3-utils": "1.0.2",
+    "aion-web3-core": "1.0.3",
+    "aion-web3-core-helpers": "1.0.3",
+    "aion-web3-core-method": "1.0.3",
+    "aion-web3-utils": "1.0.3",
     "any-promise": "1.3.0",
     "underscore": "1.8.3",
     "uuid": "2.0.1"
   },
-  "gitHead": "81a255f3f7d5abab61a33de8f9a4c09ed92a32f7"
+  "gitHead": "d36131a6d8b1db7eeaaa545dafa1b5c74d4d2e68"
 }

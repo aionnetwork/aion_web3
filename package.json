@@ -37,17 +37,17 @@
     "Aion"
   ],
   "author": {
-      "name:": "Aion Network",
-      "url"  : "https://aion.network/"
+    "name:": "Aion Network",
+    "url": "https://aion.network/"
   },
   "contributors": [
     {
-       "name": "Kelvin Lam",
-       "email": "kelvin@aion.network"
+      "name": "Kelvin Lam",
+      "email": "kelvin@aion.network"
     },
     {
-       "name": "Tony Crowe",
-       "email": "github@tonycrowe.com"
+      "name": "Tony Crowe",
+      "email": "github@tonycrowe.com"
     },
     {
       "name": "Fabian Vogelsteller",

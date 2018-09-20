@@ -1,16 +1,16 @@
 {
     "name": "aion-web3-core",
     "namespace": "aion",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "description": "Web3 core tools for sub packages. This is an internal package.",
     "repository": "https://github.com/aionnetwork/aion_web3/tree/master/packages/web3-core",
     "license": "LGPL-3.0",
     "main": "src/index.js",
     "dependencies": {
-        "aion-web3-core-helpers": "1.0.2",
-        "aion-web3-core-method": "1.0.2",
-        "aion-web3-core-requestmanager": "1.0.2",
-        "aion-web3-utils": "1.0.2"
+        "aion-web3-core-helpers": "1.0.3",
+        "aion-web3-core-method": "1.0.3",
+        "aion-web3-core-requestmanager": "1.0.3",
+        "aion-web3-utils": "1.0.3"
     },
-    "gitHead": "81a255f3f7d5abab61a33de8f9a4c09ed92a32f7"
+    "gitHead": "d36131a6d8b1db7eeaaa545dafa1b5c74d4d2e68"
 }
