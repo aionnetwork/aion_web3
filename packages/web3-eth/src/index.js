@@ -30,7 +30,6 @@ var Method = require('aion-web3-core-method');
 var utils = require('aion-web3-utils');
 var Net = require('aion-web3-net');
 
-var ENS = require('aion-web3-eth-ens');
 var Personal = require('aion-web3-eth-personal');
 var BaseContract = require('aion-web3-eth-contract');
 var Accounts = require('aion-web3-eth-accounts');
@@ -176,9 +175,6 @@ var Eth = function Eth() {
 
     // add ABI
     this.abi = abi;
-
-    // add ENS
-    this.ens = new ENS(this);
 
     var methods = [
         new Method({
