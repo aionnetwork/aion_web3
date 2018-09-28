@@ -50,7 +50,7 @@ myFunc()
 ```
 
 
-[docs]: http://web3js.readthedocs.io/en/1.0/
-[repo]: https://github.com/ethereum/web3.js
+[docs]: https://web3js.readthedocs.io/en/1.0/
+[repo]: https://github.com/aionnetwork/aion_web3
 
 
