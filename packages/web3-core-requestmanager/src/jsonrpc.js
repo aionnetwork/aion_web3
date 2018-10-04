@@ -21,6 +21,7 @@
  *     Aion foundation.
  *     Marek Kotewicz <marek@parity.io>
  *     Fabian Vogelsteller <fabian@frozeman.de>
+ *     Aaron Kumavis <aaron@kumavis.me>
  */
 
 "use strict";

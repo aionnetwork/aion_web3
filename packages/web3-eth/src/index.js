@@ -19,9 +19,10 @@
  *
  * Contributors:
  *     Aion foundation.
- *     Marek Kotewicz <marek@parity.io>
  *     Fabian Vogelsteller <fabian@frozeman.de>
- */"use strict";
+ */
+
+ "use strict";
 
 var _ = require('underscore');
 var core = require('aion-web3-core');

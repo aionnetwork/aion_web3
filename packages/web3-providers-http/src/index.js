@@ -20,6 +20,7 @@
  * Contributors:
  *     Aion foundation.
  *     Marek Kotewicz <marek@parity.io>
+ *     Marian Oancea
  *     Fabian Vogelsteller <fabian@frozeman.de>
  */
 

@@ -18,9 +18,12 @@
  *     If not, see <https://www.gnu.org/licenses/>.
  *
  * Contributors:
- *     Aion foundation.
- *     Marek Kotewicz <marek@parity.io>
- *     Fabian Vogelsteller <fabian@frozeman.de>
+ *   Aion foundation.
+ *   Fabian Vogelsteller <fabian@ethereum.org>
+ *   Gav Wood <gav@parity.io>
+ *   Jeffrey Wilcke <jeffrey.wilcke@ethereum.org>
+ *   Marek Kotewicz <marek@parity.io>
+ *   Marian Oancea <marian@ethereum.org>
  */
 
 "use strict";

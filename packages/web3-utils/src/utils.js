@@ -19,9 +19,10 @@
  *
  * Contributors:
  *     Aion foundation.
- *     Marek Kotewicz <marek@parity.io>
  *     Fabian Vogelsteller <fabian@frozeman.de>
- */var _ = require('underscore');
+ */
+
+var _ = require('underscore');
 var BN = require('bn.js');
 var numberToBN = require('number-to-bn');
 var utf8 = require('utf8');

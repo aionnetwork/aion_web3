@@ -20,8 +20,9 @@
  * Contributors:
  *     Aion foundation.
  *     Marek Kotewicz <marek@parity.io>
- *     Fabian Vogelsteller <fabian@frozeman.de>
- */"use strict";
+ */
+
+ "use strict";
 
 var Jsonrpc = require('./jsonrpc');
 var errors = require('aion-web3-core-helpers').errors;

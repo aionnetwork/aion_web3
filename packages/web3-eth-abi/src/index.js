@@ -22,6 +22,7 @@
  *     Marek Kotewicz <marek@parity.io>
  *     Fabian Vogelsteller <fabian@frozeman.de>
  */
+ 
 var _ = require('underscore');
 var utils = require('aion-web3-utils');
 var isBN = utils.isBN;
