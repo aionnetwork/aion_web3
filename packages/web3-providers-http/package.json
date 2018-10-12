@@ -1,13 +1,13 @@
 {
     "name": "aion-web3-providers-http",
     "namespace": "aion",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "description": "Module to handle web3 RPC connections over HTTP.",
     "repository": "https://github.com/aionnetwork/aion_web3/tree/master/packages/web3-providers-http",
     "license": "LGPL-3.0",
     "main": "src/index.js",
     "dependencies": {
-        "aion-web3-core-helpers": "1.0.3",
+        "aion-web3-core-helpers": "1.0.4",
         "xhr2-cookies": "1.1.0"
     },
     "gitHead": "d36131a6d8b1db7eeaaa545dafa1b5c74d4d2e68"
