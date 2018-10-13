@@ -312,8 +312,8 @@ var Eth = function Eth() {
         new Method({
             name: 'signTransaction',
             call: 'eth_signTransaction',
-            params: 1,
-            inputFormatter: [formatter.inputTransactionFormatter]
+            params: 2,
+            inputFormatter: [formatter.inputTransactionFormatter, formatter.inputAddressFormatter]
         }),
         new Method({
             name: 'sendTransaction',
