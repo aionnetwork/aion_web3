@@ -361,6 +361,16 @@ var Eth = function Eth() {
             inputFormatter: [formatter.inputLogFormatter],
             outputFormatter: formatter.outputLogFormatter
         }),
+        new Method({
+            name: 'getCompilers',
+            call: 'eth_getCompilers',
+            params: 0
+        }),
+        new Method({
+            name: 'compile.solidity',
+            call: 'eth_compileSolidity',
+            params: 1
+        }),
 
         // subscriptions
         new Subscriptions({
