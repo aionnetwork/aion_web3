@@ -367,7 +367,7 @@ var Eth = function Eth() {
             params: 0
         }),
         new Method({
-            name: 'compile.solidity',
+            name: 'compileSolidity',
             call: 'eth_compileSolidity',
             params: 1
         }),
