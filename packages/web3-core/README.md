@@ -1,4 +1,4 @@
-# web3-core
+# aion-web3-core
 
 This is a sub package of [web3.js][repo]
 
@@ -10,7 +10,7 @@ Please read the [documentation][docs] for more.
 ### Node.js
 
 ```bash
-npm install web3-core
+npm install aion-web3-core
 ```
 
 
@@ -18,7 +18,7 @@ npm install web3-core
 
 ```js
 // in node.js
-var core = require('web3-core');
+var core = require('aion-web3-core');
 
 var CoolLib = function CoolLib() {
 
