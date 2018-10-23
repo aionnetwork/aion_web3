@@ -15,8 +15,8 @@ contract HelloWorld {
     _;
   }
 
-  function HelloWorld() { 
-    number = 10; //_number;
+  function HelloWorld(int _number) { 
+    number = _number;
     owner = msg.sender;
   } 
 
