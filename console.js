@@ -9,7 +9,7 @@ try {
     if(myURL.protocol == 'https:' || myURL.protocol == 'http:') {
       endpoint = process.argv[2];
     } else {
-      throw 'Invalid address, make sure your node address follow the format "protocol://host:port"(e.g. https://aion.node:8545)';
+      throw 'Invalid address, make sure your node address follow the format "protocol://host:port"(e.g. https://aion.node:8545). Supported protocols: http, https';
     }
   } else {
     endpoint = 'http://127.0.0.1:8545';
