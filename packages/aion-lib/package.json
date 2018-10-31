@@ -12,7 +12,8 @@
     "randomhex": "^0.1.5",
     "scryptsy": "^2.0.0",
     "tweetnacl": "^1.0.0",
-    "underscore": "^1.8.3"
+    "underscore": "^1.8.3",
+    "lodash.padstart": "^4.6.1"
   },
   "gitHead": "d36131a6d8b1db7eeaaa545dafa1b5c74d4d2e68"
 }
