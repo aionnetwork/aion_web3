@@ -26,7 +26,7 @@ npm install
 or
 
 ```bash
-npm install --save aion-web3-core
+npm install --save aion-web3
 ```
 
 ## API Use
