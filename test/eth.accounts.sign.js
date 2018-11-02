@@ -96,4 +96,72 @@ describe("eth", function () {
             });
         });
     });
+
+
+  describe("should properly sign arbitrary messages in different fashions", () => {
+    it("should sign a message in a fashion that can be recovered (AION compliant)", () => {
+      const accs = new Accounts();
+      const acc = accs.create();
+
+      const inputMsg = "hello world!";
+      const out = acc.sign(inputMsg);
+
+      console.log("acc", acc)
+      console.log("out", out)
+
+      const outputAddress = acc.recover(inputMsg, out.signature);
+      assert.equal(outputAddress, acc.address);
+    });
+
+    it("should fail when signature is incorrect (AION compliant)", () => {
+      const accs = new Accounts();
+      const acc = accs.create();
+
+      const inputMsg = "good day sir!";
+
+      const wrongInputMsg = "good day to you too!";
+      const wrongSignature = acc.sign(wrongInputMsg);
+
+      let caughtError = false;
+      try {
+        const outputAddress = acc.recover(inputMsg, wrongSignature);
+      } catch (e) {
+        // do nothing, this is expected case
+        caughtError = true;
+      }
+
+      assert.equal(caughtError, true);
+    });
+
+    it("should sign a message in a fashion that can be recovered", () => {
+      const accs = new Accounts();
+      const acc = accs.create();
+
+      const inputMsg = "hello world!";
+      const out = acc.signMessage(inputMsg);
+
+      const outputAddress = acc.recoverMessage(inputMsg, out.signature);
+      assert.equal(outputAddress, acc.address);
+    });
+
+    it("should fail when signature is incorrect", () => {
+      const accs = new Accounts();
+      const acc = accs.create();
+
+      const inputMsg = "good day sir!";
+
+      const wrongInputMsg = "good day to you too!";
+      const wrongSignature = acc.signMessage(wrongInputMsg);
+
+      let caughtError = false;
+      try {
+        const outputAddress = acc.recoverMessage(inputMsg, wrongSignature);
+      } catch (e) {
+        // do nothing, this is expected case
+        caughtError = true;
+      }
+
+      assert.equal(caughtError, true);
+    });
+  });
 });
