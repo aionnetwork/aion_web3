@@ -290,7 +290,18 @@ Accounts.prototype.hashMessage = function hashMessage(data) {
     return utils.blake2b256(ethMessage);
 };
 
+/**
+ * Signs an arbitrary data payload, when providing the message note that special
+ * treatment is given to strict (0x) prefixed hex strings. These will be
+ * automatically converted to Buffers before being input. Otherwise input
+ * strings will be treated as UTF-8.
+ *
+ * @param {string || buffer} data payload to be signed
+ * @param {buffer} privateKey
+ * @returns {{message: *, messageHash: *, signature: (string|*)}}
+ */
 Accounts.prototype.sign = function sign(data, privateKey) {
+    /*
     var account = this.privateKeyToAccount(privateKey);
     var publicKey = account.publicKey;
     var hash = this.hashMessage(data);
@@ -309,12 +320,55 @@ Accounts.prototype.sign = function sign(data, privateKey) {
         message: data,
         messageHash: hash,
         signature: bufferToZeroXHex(aionPubSig)
+    };*/
+
+    const account = this.privateKeyToAccount(privateKey);
+    const publicKey = account._publicKey;
+    const hash = hashMessageAion(data);
+    const signature = toBuffer(
+        nacl.sign.detached(
+            toBuffer(hash),
+            toBuffer(privateKey)
+        )
+    );
+
+    // address + message signature
+    const aionPubSig = Buffer.concat(
+        [toBuffer(publicKey), toBuffer(signature)],
+        aionPubSigLen
+    );
+    return {
+        message: data,
+        messageHash: hash,
+        signature: bufferToZeroXHex(aionPubSig)
     };
 };
 
+/**
+ * Recovers the address from an encoded payload, note that this is not the same as
+ * simply recovering a signature. The method in which the message is
+ * encoded is treated as defined in the sign method as well as the eth_sign
+ * API call.
+ *
+ * @param message
+ * @param signature
+ * @param {boolean} hasPreamble
+ * @returns {*}
+ */
 Accounts.prototype.recover = function recover(message, signature) {
-    var sig = signature || (message && message.signature);
-    var publicKey = toBuffer(sig).slice(0, nacl.sign.publicKeyLength);
+    const sig = signature || (message && message.signature);
+    const publicKey = toBuffer(sig).slice(0, nacl.sign.publicKeyLength);
+    const edsig = toBuffer(sig).slice(nacl.sign.publicKeyLength, sig.length);
+
+    const messageHash = hashMessageAion(message);
+
+    // debate whether we throw or return null here
+    // rationale is that this is closer to what eth-lib would do
+    if (!nacl.sign.detached.verify(toBuffer(messageHash), edsig, publicKey)) {
+        throw new Error("invalid signature, cannot recover public key");
+    }
+
+    //return createA0Address(publicKey);
     return aionLib.accounts.createA0Address(publicKey);
 };
 
