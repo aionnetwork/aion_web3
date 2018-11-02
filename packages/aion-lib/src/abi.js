@@ -3,8 +3,8 @@
  * @module abi
  */
 
-let padStart = require('lodash/padStart')
-let padEnd = require('lodash/padEnd')
+let padStart = require('lodash.padstart')
+let padEnd = require('lodash.padend')
 let {isString, isObject, isArray, isNumber} = require('underscore')
 let BN = require('bn.js')
 
