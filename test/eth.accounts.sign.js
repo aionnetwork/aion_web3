@@ -37,7 +37,8 @@ describe("eth", function () {
                 assert.equal(address, test.address);
             });
 
-            it("recover signature using a string and preFixed", function() {
+            // disabled because we don't support signing prefixed messages currently
+            xit("recover signature using a string and preFixed", function() {
                 var ethAccounts = new Accounts();
 
                 var address = ethAccounts.recover(ethAccounts.hashMessage(test.message), test.signature, true);
@@ -45,12 +46,17 @@ describe("eth", function () {
                 assert.equal(address, test.address);
             });
 
-            it("recover signature using a aion-pub-sig", function() {
+            it("recover message hash", function() {
                 var ethAccounts = new Accounts();
 
                 var signed = ethAccounts.sign(test.message, test.privateKey);
+
+                var sigObj = {
+                   messageHash: ethAccounts.hashMessageAion(test.message),
+                   signature: signed.signature
+                };
                 var signature = signed.signature;
-                var address = ethAccounts.recover(ethAccounts.hashMessage(test.message), signature, true);
+                var address = ethAccounts.recover(sigObj);
 
                 assert.equal(address, test.address);
             });
@@ -85,15 +91,6 @@ describe("eth", function () {
                 assert.equal(address, test.address);
             });
 
-            it("recover signature using aion-pub-sig", function() {
-                var ethAccounts = new Accounts();
-
-                var signed = ethAccounts.sign(test.message, test.privateKey);
-                var signature = signed.signature;
-                var address = ethAccounts.recover(test.message, signature);
-
-                assert.equal(address, test.address);
-            });
         });
     });
 
@@ -104,11 +101,7 @@ describe("eth", function () {
       const acc = accs.create();
 
       const inputMsg = "hello world!";
-      const out = acc.sign(inputMsg);
-
-      console.log("acc", acc)
-      console.log("out", out)
-
+      const out = acc.sign(inputMsg, acc.privateKey);
       const outputAddress = acc.recover(inputMsg, out.signature);
       assert.equal(outputAddress, acc.address);
     });

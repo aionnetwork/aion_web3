@@ -284,8 +284,7 @@ Accounts.prototype.signTransaction = function signTransaction(tx, privateKey, ca
 
 /* jshint ignore:start */
 Accounts.prototype.recoverTransaction = function recoverTransaction(rawTx) {
-    throw new Error("unsupported operation"); // TODO ... ????
-    //return this.recover(null, rlp.decode(rawTx).pop());
+     throw new Error("Unsupported operation");
 };
 /* jshint ignore:end */
 
@@ -304,7 +303,7 @@ Accounts.prototype.hashMessage = function hashMessage(data) {
  * @param data
  * @returns {string}
  */
-const hashMessageAion = function hashMessage(data) {
+Accounts.prototype.hashMessageAion = function hashMessage(data) {
     const message = isHexStrict(data) ? Buffer.from(data.substring(2), 'hex') : data;
     const messageBuffer = Buffer.from(message);
     const preamble = "\x19Aion Signed Message:\n" + message.length;
@@ -326,7 +325,7 @@ const hashMessageAion = function hashMessage(data) {
 Accounts.prototype.sign = function sign(data, privateKey) {
     const account = this.privateKeyToAccount(privateKey);
     const publicKey = toBuffer(account.publicKey);
-    const hash = hashMessageAion(data);
+    const hash = this.hashMessageAion(data);
     const signature = toBuffer(
         nacl.sign.detached(
             toBuffer(hash),
@@ -339,11 +338,6 @@ Accounts.prototype.sign = function sign(data, privateKey) {
         [toBuffer(publicKey), toBuffer(signature)],
         aionPubSigLen
     );
-
-    console.log("account", account);
-    console.log("publicKey", publicKey);
-    console.log("signature", signature);
-    console.log("aionPubSigLen", aionPubSigLen);
 
     return {
         message: data,
@@ -358,22 +352,25 @@ Accounts.prototype.sign = function sign(data, privateKey) {
  * encoded is treated as defined in the sign method as well as the eth_sign
  * API call.
  *
- * @param message
- * @param signature
- * @param {boolean} hasPreamble
+ * @param {(string|Object)} message Either a string of the plaintext message, or an Object
+ *                          of the following form: 
+ *                            { messageHash: "messageHash", 
+ *                              signature: "signature" }
+ * @param {string} signature Signature of message; this param is ignored if message param is Object
  * @returns {*}
  */
 Accounts.prototype.recover = function recover(message, signature) {
+    var messageHash;
+    if(_.isObject(message)) { 
+        messageHash = message.messageHash;
+        signature = message.signature;
+    } else { 
+        messageHash = this.hashMessageAion(message);
+    }
+
     const sig = signature || (message && message.signature);
     const publicKey = toBuffer(sig).slice(0, nacl.sign.publicKeyLength);
     const edsig = toBuffer(sig).slice(nacl.sign.publicKeyLength, sig.length);
-
-    const messageHash = hashMessageAion(message);
-
-    console.log("sig", sig);
-    console.log("publicKey", publicKey);
-    console.log("edsig", edsig);
-    console.log("messageHash", messageHash);
 
     // debate whether we throw or return null here
     // rationale is that this is closer to what eth-lib would do
@@ -381,7 +378,6 @@ Accounts.prototype.recover = function recover(message, signature) {
         throw new Error("invalid signature, cannot recover public key");
     }
 
-    //return createA0Address(publicKey);
     return aionLib.accounts.createA0Address(publicKey);
 };
 
@@ -398,8 +394,6 @@ Accounts.prototype.recover = function recover(message, signature) {
  */
 Accounts.prototype.signMessage = function signMessage(data, privateKey) {
     const account = this.privateKeyToAccount(toBuffer(privateKey));
-
-    console.log("account", account);
 
     const publicKey = account.publicKey;
     const hash = blake2b256(data);
