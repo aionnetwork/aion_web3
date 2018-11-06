@@ -8,7 +8,6 @@ let async = require('async')
 let Web3 = require('../')
 let should = require('should')
 let client = new Web3(new Web3.providers.HttpProvider('http://127.0.0.1:8545'))
-//let compiler = require("../packages/web3-eth");
 const crypto = require('crypto')
 
 let typesBinPath = path.join(__dirname, 'contracts', 'HelloWorld.bin')
@@ -47,13 +46,12 @@ describe('contracts', () => {
   let web3 = new Web3(client);
 
   let typesSrc;
+  let typesBin;
+  let typesAbi;
   let compiled;
-  let BIN;
-  let ABI;
   let contract;
 
   let testNumber = 31337;
-  let source = fs.readFileSync(typesSrcPath, 'utf-8');
 
   before(done => {
     if( test_cfg.TEST_ACCT_ADDR.length == 0 ) { 
@@ -64,19 +62,19 @@ describe('contracts', () => {
       typesSrc: async.apply(fs.readFile, typesSrcPath),
 
       compiled: ['typesSrc', async.apply(function (res, cb){
-          let compiled2 = web3.eth.compileSolidity(source, function(err,res){ //necessary callback function
+          let compiled2 = web3.eth.compileSolidity(res.typesSrc.toString('utf-8'), function(err,res){ //necessary callback function
             cb(null, res);
           });
 
       })],
 
-      BIN: ['compiled', async.apply(function(res, cb){
+      typesBin: ['compiled', async.apply(function(res, cb){
           let bin = res.compiled['HelloWorld'].code;
 
           cb(null, bin);
       })], 
 
-      ABI: ['compiled', async.apply(function(res, cb){
+      typesAbi: ['compiled', async.apply(function(res, cb){
           let abi = res.compiled['HelloWorld'].info.abiDefinition;
 
           cb(null, abi);
@@ -87,14 +85,14 @@ describe('contracts', () => {
                           test_cfg.TEST_ACCT_ADDR , 
                           test_cfg.TEST_ACCT_PW),
 
-      contract: ['ABI', async.apply(function (results,cb) {
-          let ct = new client.eth.Contract(results.ABI, opts);
+      contract: ['typesAbi', async.apply(function (results,cb) {
+          let ct = new client.eth.Contract(results.typesAbi, opts);
           cb(null, ct);
       })],
 
-      deploy: ['unlock', 'BIN', async.apply(function (res,cb) {
+      deploy: ['unlock', 'typesBin', async.apply(function (res,cb) {
           let deployedTo;
-          deployCt(res.contract, res.BIN.toString('utf8'), [testNumber], cb)
+          deployCt(res.contract, res.typesBin.toString('utf8'), [testNumber], cb)
               .catch(err => {
                   console.error("error", err);
                   return done(err);
@@ -115,7 +113,7 @@ describe('contracts', () => {
       
       ctInstAddress = res.deploy.contractAddress;
 
-      ct = new client.eth.Contract(res.ABI, ctInstAddress);
+      ct = new client.eth.Contract(res.typesAbi, ctInstAddress);
 
       done();
     })
