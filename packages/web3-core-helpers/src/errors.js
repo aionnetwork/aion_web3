@@ -28,6 +28,8 @@
 module.exports = {
     ErrorResponse: function (result) {
         var message = !!result && !!result.error && !!result.error.message ? result.error.message : JSON.stringify(result);
+        if (result && result.error && result.error.data)
+            message += "..." + result.error.data;
         return new Error('Returned error: ' + message);
     },
     InvalidNumberOfParams: function (got, expected, method) {
