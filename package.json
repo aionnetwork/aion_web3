@@ -15,7 +15,7 @@
     "build": "lerna bootstrap",
     "docs": "cd docs; make html;",
     "lint": "jshint *.js packages",
-    "browserify": "mkdir ./dist && browserify index.js -o dist/web3.min.js",
+    "browserify": "mkdir -p ./dist && browserify index.js -o dist/web3.min.js",
     "test": "jshint *.js packages; mocha --opts mocha.opt",
     "integ-test": "mocha --opts mocha.opt -t 50000 integ_test/*.js --exclude _integ_test_config.js",
     "coverage": "nyc mocha || true",
