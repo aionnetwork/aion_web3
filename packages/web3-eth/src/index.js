@@ -321,16 +321,6 @@ var Eth = function Eth() {
             outputFormatter: utils.hexToNumber
         }),
         new Method({
-            name: 'submitWork',
-            call: 'eth_submitWork',
-            params: 3
-        }),
-        new Method({
-            name: 'getWork',
-            call: 'eth_getWork',
-            params: 0
-        }),
-        new Method({
             name: 'getPastLogs',
             call: 'eth_getLogs',
             params: 1,
