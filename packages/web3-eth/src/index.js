@@ -49,18 +49,9 @@ var transactionFromBlockCall = function (args) {
     return (_.isString(args[0]) && args[0].indexOf('0x') === 0) ? 'eth_getTransactionByBlockHashAndIndex' : 'eth_getTransactionByBlockNumberAndIndex';
 };
 
-var uncleCall = function (args) {
-    return (_.isString(args[0]) && args[0].indexOf('0x') === 0) ? 'eth_getUncleByBlockHashAndIndex' : 'eth_getUncleByBlockNumberAndIndex';
-};
-
 var getBlockTransactionCountCall = function (args) {
     return (_.isString(args[0]) && args[0].indexOf('0x') === 0) ? 'eth_getBlockTransactionCountByHash' : 'eth_getBlockTransactionCountByNumber';
 };
-
-var uncleCountCall = function (args) {
-    return (_.isString(args[0]) && args[0].indexOf('0x') === 0) ? 'eth_getUncleCountByBlockHash' : 'eth_getUncleCountByBlockNumber';
-};
-
 
 var Eth = function Eth() {
     var _this = this;
@@ -254,23 +245,8 @@ var Eth = function Eth() {
             outputFormatter: formatter.outputBlockFormatter
         }),
         new Method({
-            name: 'getUncle',
-            call: uncleCall,
-            params: 2,
-            inputFormatter: [formatter.inputBlockNumberFormatter, utils.numberToHex],
-            outputFormatter: formatter.outputBlockFormatter,
-
-        }),
-        new Method({
             name: 'getBlockTransactionCount',
             call: getBlockTransactionCountCall,
-            params: 1,
-            inputFormatter: [formatter.inputBlockNumberFormatter],
-            outputFormatter: utils.hexToNumber
-        }),
-        new Method({
-            name: 'getBlockUncleCount',
-            call: uncleCountCall,
             params: 1,
             inputFormatter: [formatter.inputBlockNumberFormatter],
             outputFormatter: utils.hexToNumber
@@ -343,16 +319,6 @@ var Eth = function Eth() {
             params: 1,
             inputFormatter: [formatter.inputCallFormatter],
             outputFormatter: utils.hexToNumber
-        }),
-        new Method({
-            name: 'submitWork',
-            call: 'eth_submitWork',
-            params: 3
-        }),
-        new Method({
-            name: 'getWork',
-            call: 'eth_getWork',
-            params: 0
         }),
         new Method({
             name: 'getPastLogs',
