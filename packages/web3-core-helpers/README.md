@@ -1,31 +1,31 @@
-# web3-core-helpers
+# aion-web3-core-helpers
 
-This is a sub package of [web3.js][repo]
+This is a sub package of [aion_web3][repo].
 
-Helper functions used in [web3.js][repo] packages.
-Please read the [documentation][docs] for more.
+The core package contains core functions for aion_web3 packages.
+
+Please read the [documentation](https://docs.aion.network/docs/web3) for more information.
 
 ## Installation
 
 ### Node.js
 
 ```bash
-npm install web3-core-helpers
+npm install aion-web3-core-helpers
 ```
 
 ## Usage
 
 ```js
 // in node.js
-var helpers = require('web3-core-helpers');
+var helpers = require('aion-web3-core-helpers');
 
 helpers.formatters;
 helpers.errors;
 ...
 ```
 
-
-[docs]: http://web3js.readthedocs.io/en/1.0/
 [repo]: https://github.com/aionnetwork/aion_web3
+
 
 

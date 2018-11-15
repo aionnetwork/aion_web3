@@ -1,49 +1,20 @@
-# web3-core-method
+# aion-web3-core-method
 
-This is a sub package of [web3.js][repo]
+This is a sub package of [aion_web3][repo].
 
-The Method package used within most [web3.js][repo] packages.
-Please read the [documentation][docs] for more.
+The Method package used within most aion_web3 packages.
+
+Please read the [documentation](https://docs.aion.network/docs/web3) for more information.
 
 ## Installation
 
 ### Node.js
 
 ```bash
-npm install web3-core-method
+npm install aion-web3-core-method
 ```
 
-### In the Browser
-
-Build running the following in the [web3.js][repo] repository:
-
-```bash
-npm run-script build-all
-```
-
-Then include `dist/web3-core-method.js` in your html file.
-This will expose the `Web3Method` object on the window object.
-
-
-## Usage
-
-```js
-// in node.js
-var Web3Method = require('web3-core-method');
-
-var method = new Web3Method({
-    name: 'sendTransaction',
-    call: 'eth_sendTransaction',
-    params: 1,
-    inputFormatter: [inputTransactionFormatter]
-});
-method.attachToObject(myCoolLib);
-
-myCoolLib.sendTransaction({...}, function(){ ... });
-```
-
-
-[docs]: https://web3js.readthedocs.io/en/1.0/
 [repo]: https://github.com/aionnetwork/aion_web3
+
 
 
