@@ -1,35 +1,24 @@
-# web3-core-promievent
+# aion-web3-core-promievent
 
-This is a sub package of [web3.js][repo]
+This is a sub package of [aion_web3][repo].
 
 This is the PromiEvent package is used to return a EventEmitter mixed with a Promise to allow multiple final states as well as chaining.
-Please read the [documentation][docs] for more.
+
+Please read the [documentation](https://docs.aion.network/docs/web3) for more information.
 
 ## Installation
 
 ### Node.js
 
 ```bash
-npm install web3-core-promievent
+npm install aion-web3-core-promievent
 ```
-
-### In the Browser
-
-Build running the following in the [web3.js][repo] repository:
-
-```bash
-npm run-script build-all
-```
-
-Then include `dist/web3-core-promievent.js` in your html file.
-This will expose the `Web3PromiEvent` object on the window object.
-
 
 ## Usage
 
 ```js
 // in node.js
-var Web3PromiEvent = require('web3-core-promievent');
+var Web3PromiEvent = require('aion-web3-core-promievent');
 
 var myFunc = function(){
     var promiEvent = Web3PromiEvent();
@@ -49,8 +38,6 @@ myFunc()
 .on('done', console.log);
 ```
 
-
-[docs]: https://web3js.readthedocs.io/en/1.0/
 [repo]: https://github.com/aionnetwork/aion_web3
 
 

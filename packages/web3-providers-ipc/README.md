@@ -1,42 +1,9 @@
-# web3-providers-ipc
+# aion-web3-providers-ipc
 
-This is a sub package of [web3.js][repo]
+This is a sub package of [aion_web3][repo].
 
-This is a IPC provider for [web3.js][repo].   
-Please read the [documentation][docs] for more.
+Please read the [documentation](https://docs.aion.network/docs/web3) for more information.
 
-## Installation
+Note: Aion kernel does not currently support IPC.  This package is not intended for general usage.
 
-### Node.js
-
-```bash
-npm install web3-providers-ipc
-```
-
-### In the Browser
-
-Build running the following in the [web3.js][repo] repository:
-
-```bash
-npm run-script build-all
-```
-
-Then include `dist/web3-providers-ipc.js` in your html file.
-This will expose the `Web3IpcProvider` object on the window object.
-
-
-## Usage
-
-```js
-// in node.js
-var Web3IpcProvider = require('web3-providers-ipc');
-var net = require(net);
-
-var ipc = new Web3IpcProvider('/Users/me/Library/Ethereum/geth.ipc', net);
-```
-
-
-[docs]: http://web3js.readthedocs.io/en/1.0/
 [repo]: https://github.com/aionnetwork/aion_web3
-
-
