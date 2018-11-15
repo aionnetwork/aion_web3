@@ -170,7 +170,8 @@ describe("eth", function() {
                     .catch(done);
             });
 
-            it("recoverTransaction, must recover signature", function(done) {
+            // Operation not supported -- https://github.com/aionnetwork/aion_web3/issues/48
+            xit("recoverTransaction, must recover signature", function(done) {
                 var ethAccounts = new Accounts();
 
                 var testAccount = ethAccounts.privateKeyToAccount(test.privateKey);
