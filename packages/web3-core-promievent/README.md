@@ -2,7 +2,7 @@
 
 This is a sub package of [aion_web3][repo].
 
-This is the PromiEvent package is used to return a EventEmitter mixed with a Promise to allow multiple final states as well as chaining.
+This is the PromiEvent package to return a EventEmitter mixed with a Promise to allow multiple final states as well as chaining.
 
 Please read the [documentation](https://docs.aion.network/docs/web3) for more information.
 

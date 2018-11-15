@@ -2,7 +2,7 @@
 
 This is a sub package of [aion_web3][repo].
 
-This is the Aion version of the Eth package to be used [aion_web3][repo].
+This is the Aion version of the Eth package to be used by aion_web3.
 
 Please read the [documentation](https://docs.aion.network/docs/web3) for more information.
 
