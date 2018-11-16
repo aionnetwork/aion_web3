@@ -5,7 +5,7 @@ var Web3 = require('./packages/web3');
 
 try {
   if (process.argv[2]) {
-    let promptPrefix;
+    var promptPrefix;
     const myURL = url.parse(process.argv[2]);
     if(myURL.protocol == 'https:' || myURL.protocol == 'http:') {
       endpoint = process.argv[2];
