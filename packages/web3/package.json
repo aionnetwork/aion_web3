@@ -1,5 +1,5 @@
 {
-  "name": "aion-web3-v1.0",
+  "name": "aion-web3",
   "namespace": "aion",
   "version": "1.0.3",
   "description": "Aion JavaScript API",

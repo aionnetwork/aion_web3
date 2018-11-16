@@ -5,11 +5,11 @@ This project contains tools for using the Web3 application programming interface
 
 ## Requirements
 
-* **Node.js** version 8.9.1 <br/>
+* **Node.js** (recommended version: 10.x+) <br/>
     Download: https://nodejs.org/en/download/ <br/>
     Check version by running `node -v` in a terminal.
 
-* **npm**  version 5.5.1 <br/>
+* **npm**  (recommended version: 6.x+) <br/>
     Typically included with node installation. <br/>
     Check version by running `npm -v` in a terminal.
 
@@ -42,9 +42,6 @@ Some example uses cases are available in the project [wiki](https://github.com/a
     var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
     ```
 
-## Application Development
-```js
-var coinbase = web3.eth.coinbase;
-var balance = web3.eth.getBalance(coinbase);
-```
+## Documentation
 
+For API reference and tutorials, please consult our official [documentation](https://docs.aion.network/docs/web3).
