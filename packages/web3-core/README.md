@@ -1,9 +1,11 @@
 # aion-web3-core
 
-This is a sub package of [web3.js][repo]
+This is a sub package of [aion_web3][repo].
 
-The core package contains core functions for [web3.js][repo] packages.
-Please read the [documentation][docs] for more.
+The core package contains core functions for aion_web3 packages.
+
+Please read the [documentation](https://docs.aion.network/docs/web3) for more information.
+
 
 ## Installation
 
@@ -36,8 +38,6 @@ CoolLib.extend();
 ...
 ```
 
-
-[docs]: http://web3js.readthedocs.io/en/1.0/
 [repo]: https://github.com/aionnetwork/aion_web3
 
 

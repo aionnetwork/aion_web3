@@ -1,13 +1,15 @@
-# web3
+# aion-web3
 
-This is a main package of [web3.js](https://github.com/aionnetwork/aion_web3)
+This is a main package of [aion_web3][repo]
 
-Please read the main [readme](https://github.com/aionnetwork/aion_web3/blob/v1.0/README.md) and [documentation](https://web3js.readthedocs.io/en/1.0/) for more.
+Please read the [documentation](https://docs.aion.network/docs/web3) for more information.
 
 ## Installation
 
 ### Node.js
 
 ```bash
-npm install web3
+npm install aion-web3
 ```
+
+[repo]: https://github.com/aionnetwork/aion_web3

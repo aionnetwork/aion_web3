@@ -16,10 +16,7 @@ describe('eth', function() {
         u.methodExists(eth, 'call');
         u.methodExists(eth, 'getBlock');
         u.methodExists(eth, 'getTransaction');
-        u.methodExists(eth, 'getUncle');
         u.methodExists(eth, 'getBlockTransactionCount');
-        u.methodExists(eth, 'getBlockUncleCount');
-        u.methodExists(eth, 'subscribe');
         u.methodExists(eth, 'Contract');
 
         u.methodExists(eth, 'isMining');
@@ -30,6 +27,9 @@ describe('eth', function() {
         u.methodExists(eth, 'getBlockNumber');
 
         u.methodExists(eth, 'getProtocolVersion');
+
+        u.methodExists(eth, 'getCompilers');
+        u.methodExists(eth, 'compileSolidity');
 
         u.methodExists(eth, 'setProvider');
         u.propertyExists(eth, 'givenProvider');

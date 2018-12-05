@@ -5,11 +5,11 @@ This project contains tools for using the Web3 application programming interface
 
 ## Requirements
 
-* **Node.js** version 8.9.1 <br/>
+* **Node.js** (recommended version: 10.x+) <br/>
     Download: https://nodejs.org/en/download/ <br/>
     Check version by running `node -v` in a terminal.
 
-* **npm**  version 5.5.1 <br/>
+* **npm**  (recommended version: 6.x+) <br/>
     Typically included with node installation. <br/>
     Check version by running `npm -v` in a terminal.
 
@@ -26,7 +26,7 @@ npm install
 or
 
 ```bash
-npm install --save aion-web3-core
+npm install --save aion-web3
 ```
 
 ## API Use
@@ -38,13 +38,10 @@ Some example uses cases are available in the project [wiki](https://github.com/a
     &nbsp;&nbsp;&nbsp;&nbsp;Run `npm run browserify` to produce `dist/web3.min.js` and include it in your html file
 * Node use: 
     ```
-    var Web3 = require('aion-web3-core')
+    var Web3 = require('aion-web3')
     var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
     ```
 
-## Application Development
-```js
-var coinbase = web3.eth.coinbase;
-var balance = web3.eth.getBalance(coinbase);
-```
+## Documentation
 
+For API reference and tutorials, please consult our official [documentation](https://docs.aion.network/docs/web3).

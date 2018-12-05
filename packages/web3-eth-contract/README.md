@@ -1,48 +1,20 @@
-# web3-eth-contract
+# aion-web3-eth-contract
 
-This is a sub package of [web3.js][repo]
+This is a sub package of [aion_web3][repo].
 
-This is the contract package to be used in the `web3-eth` package.
-Please read the [documentation][docs] for more.
+This is the contract package to be used in aion_web3.
+
+Please read the [documentation](https://docs.aion.network/docs/web3) for more information.
 
 ## Installation
 
 ### Node.js
 
 ```bash
-npm install web3-eth-contract
+npm install aion-web3-eth-contract
 ```
 
-### In the Browser
-
-Build running the following in the [web3.js][repo] repository:
-
-```bash
-npm run-script build-all
-```
-
-Then include `dist/web3-eth-contract.js` in your html file.
-This will expose the `Web3EthContract` object on the window object.
-
-
-## Usage
-
-```js
-// in node.js
-var Web3EthContract = require('web3-eth-contract');
-
-// set provider for all later instances to use
-Web3EthContract.setProvider('ws://localhost:8546');
-
-var contract = new Web3EthContract(jsonInterface, address);
-contract.methods.somFunc().send({from: ....})
-.on('receipt', function(){
-    ...
-});
-```
-
-
-[docs]: http://web3js.readthedocs.io/en/1.0/
 [repo]: https://github.com/aionnetwork/aion_web3
+
 
 

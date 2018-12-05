@@ -27,7 +27,6 @@
 var _ = require('underscore');
 var core = require('aion-web3-core');
 var helpers = require('aion-web3-core-helpers');
-var Subscriptions = require('aion-web3-core-subscriptions').subscriptions;
 var Method = require('aion-web3-core-method');
 var utils = require('aion-web3-utils');
 var Net = require('aion-web3-net');
@@ -49,18 +48,9 @@ var transactionFromBlockCall = function (args) {
     return (_.isString(args[0]) && args[0].indexOf('0x') === 0) ? 'eth_getTransactionByBlockHashAndIndex' : 'eth_getTransactionByBlockNumberAndIndex';
 };
 
-var uncleCall = function (args) {
-    return (_.isString(args[0]) && args[0].indexOf('0x') === 0) ? 'eth_getUncleByBlockHashAndIndex' : 'eth_getUncleByBlockNumberAndIndex';
-};
-
 var getBlockTransactionCountCall = function (args) {
     return (_.isString(args[0]) && args[0].indexOf('0x') === 0) ? 'eth_getBlockTransactionCountByHash' : 'eth_getBlockTransactionCountByNumber';
 };
-
-var uncleCountCall = function (args) {
-    return (_.isString(args[0]) && args[0].indexOf('0x') === 0) ? 'eth_getUncleCountByBlockHash' : 'eth_getUncleCountByBlockNumber';
-};
-
 
 var Eth = function Eth() {
     var _this = this;
@@ -123,9 +113,6 @@ var Eth = function Eth() {
         },
         enumerable: true
     });
-
-
-    this.clearSubscriptions = _this._requestManager.clearSubscriptions;
 
     // add net
     this.net = new Net(this.currentProvider);
@@ -254,23 +241,8 @@ var Eth = function Eth() {
             outputFormatter: formatter.outputBlockFormatter
         }),
         new Method({
-            name: 'getUncle',
-            call: uncleCall,
-            params: 2,
-            inputFormatter: [formatter.inputBlockNumberFormatter, utils.numberToHex],
-            outputFormatter: formatter.outputBlockFormatter,
-
-        }),
-        new Method({
             name: 'getBlockTransactionCount',
             call: getBlockTransactionCountCall,
-            params: 1,
-            inputFormatter: [formatter.inputBlockNumberFormatter],
-            outputFormatter: utils.hexToNumber
-        }),
-        new Method({
-            name: 'getBlockUncleCount',
-            call: uncleCountCall,
             params: 1,
             inputFormatter: [formatter.inputBlockNumberFormatter],
             outputFormatter: utils.hexToNumber
@@ -345,16 +317,6 @@ var Eth = function Eth() {
             outputFormatter: utils.hexToNumber
         }),
         new Method({
-            name: 'submitWork',
-            call: 'eth_submitWork',
-            params: 3
-        }),
-        new Method({
-            name: 'getWork',
-            call: 'eth_getWork',
-            params: 0
-        }),
-        new Method({
             name: 'getPastLogs',
             call: 'eth_getLogs',
             params: 1,
@@ -370,86 +332,6 @@ var Eth = function Eth() {
             name: 'compileSolidity',
             call: 'eth_compileSolidity',
             params: 1
-        }),
-
-        // subscriptions
-        new Subscriptions({
-            name: 'subscribe',
-            type: 'eth',
-            subscriptions: {
-                'newBlockHeaders': {
-                    // TODO rename on RPC side?
-                    subscriptionName: 'newHeads', // replace subscription with this name
-                    params: 0,
-                    outputFormatter: formatter.outputBlockFormatter
-                },
-                'pendingTransactions': {
-                    subscriptionName: 'newPendingTransactions', // replace subscription with this name
-                    params: 0
-                },
-                'logs': {
-                    params: 1,
-                    inputFormatter: [formatter.inputLogFormatter],
-                    outputFormatter: formatter.outputLogFormatter,
-                    // DUBLICATE, also in web3-eth-contract
-                    subscriptionHandler: function (output) {
-                        if(output.removed) {
-                            this.emit('changed', output);
-                        } else {
-                            this.emit('data', output);
-                        }
-
-                        if (_.isFunction(this.callback)) {
-                            this.callback(null, output, this);
-                        }
-                    }
-                },
-                'syncing': {
-                    params: 0,
-                    outputFormatter: formatter.outputSyncingFormatter,
-                    subscriptionHandler: function (output) {
-                        var _this = this;
-
-                        // fire TRUE at start
-                        if(this._isSyncing !== true) {
-                            this._isSyncing = true;
-                            this.emit('changed', _this._isSyncing);
-
-                            if (_.isFunction(this.callback)) {
-                                this.callback(null, _this._isSyncing, this);
-                            }
-
-                            setTimeout(function () {
-                                _this.emit('data', output);
-
-                                if (_.isFunction(_this.callback)) {
-                                    _this.callback(null, output, _this);
-                                }
-                            }, 0);
-
-                            // fire sync status
-                        } else {
-                            this.emit('data', output);
-                            if (_.isFunction(_this.callback)) {
-                                this.callback(null, output, this);
-                            }
-
-                            // wait for some time before fireing the FALSE
-                            clearTimeout(this._isSyncingTimeout);
-                            this._isSyncingTimeout = setTimeout(function () {
-                                if(output.currentBlock > output.highestBlock - 200) {
-                                    _this._isSyncing = false;
-                                    _this.emit('changed', _this._isSyncing);
-
-                                    if (_.isFunction(_this.callback)) {
-                                        _this.callback(null, _this._isSyncing, _this);
-                                    }
-                                }
-                            }, 500);
-                        }
-                    }
-                }
-            }
         })
     ];
 
