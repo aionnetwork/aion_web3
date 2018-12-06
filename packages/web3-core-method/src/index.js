@@ -259,7 +259,7 @@ Method.prototype._confirmTransaction = function (defer, result, payload) {
             // if CONFIRMATION listener exists check for confirmations, by setting canUnsubscribe = false
             .then(function(receipt) {
                 if (!receipt.blockHash) {
-                    throw new Error('Receipt missing or blockHash null');                       throw new Error('blockHash null');
+                    throw new Error('Receipt missing or blockHash null');
                 }
 
                 // apply extra formatters
