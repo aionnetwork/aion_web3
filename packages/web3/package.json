@@ -1,7 +1,7 @@
 {
   "name": "aion-web3",
   "namespace": "aion",
-  "version": "1.1.0",
+  "version": "1.1.2",
   "description": "Aion JavaScript API",
   "repository": "https://github.com/aionnetwork/aion_web3/tree/master/packages/web3",
   "license": "LGPL-3.0",
