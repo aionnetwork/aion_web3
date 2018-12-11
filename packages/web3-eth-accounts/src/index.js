@@ -32,7 +32,7 @@ var uuid = require('uuid');
 var utils = require('aion-web3-utils');
 var isHex = utils.isHex;
 var isHexStrict = utils.isHexStrict;
-// var helpers = require('aion-web3-core-helpers');
+var formatters = require('aion-web3-core-helpers').formatters;
 var aionLib = require('aion-lib');
 var blake2b256 = aionLib.crypto.blake2b256;
 var nacl = aionLib.crypto.nacl;
@@ -202,7 +202,7 @@ Accounts.prototype.signTransaction = function signTransaction(tx, privateKey, ca
         }
 
         try {
-            // tx = helpers.formatters.inputCallFormatter(tx);
+            tx = formatters.inputCallFormatter(tx);
 
             var transaction = tx;
             transaction.to = tx.to;
