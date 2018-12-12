@@ -1,9 +1,0 @@
-{
-	"dependencies": {
-		"aion-web3-core-helpers": "1.1.0",
-		"aion-web3-providers-http": "1.1.0",
-		"aion-web3-providers-ipc": "1.1.0",
-		"aion-web3-providers-ws": "1.1.0",
-		"underscore": "1.8.3"
-	}
-}
