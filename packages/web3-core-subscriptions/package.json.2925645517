@@ -1,0 +1,7 @@
+{
+	"dependencies": {
+		"aion-web3-core-helpers": "1.1.0",
+		"eventemitter3": "1.1.1",
+		"underscore": "1.8.3"
+	}
+}
