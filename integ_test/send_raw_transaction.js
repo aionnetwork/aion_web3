@@ -52,7 +52,7 @@ describe('send raw transaction of 0.01337 aions and no data', () => {
             done(err);
           }
 
-          res.value.should.eql(tx.value.toString());
+          client.utils.toHex(res.value).should.eql(tx.value);
           res.from.toLowerCase().should.eql(opts.from.toLowerCase());
           res.to.toLowerCase().should.eql(tx.to.toLowerCase());
           done();

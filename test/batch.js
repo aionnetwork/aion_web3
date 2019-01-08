@@ -33,14 +33,14 @@ describe('lib/web3/batch', function () {
                 var second = payload[1];
 
                 assert.equal(first.method, 'eth_getBalance');
-                assert.deepEqual(first.params, ['0x0000000000000000000000000000000000000000000000000000000000000000', 'latest']);
+                assert.deepEqual(first.params, ['0xa000000000000000000000000000000000000000000000000000000000000000', 'latest']);
                 assert.equal(second.method, 'eth_getBalance');
-                assert.deepEqual(second.params, ['0x0000000000000000000000000000000000000000000000000000000000000005', 'latest']);
+                assert.deepEqual(second.params, ['0xa000000000000000000000000000000000000000000000000000000000000005', 'latest']);
             });
 
             var batch = new web3.BatchRequest();
-            batch.add(web3.eth.getBalance.request('0x0000000000000000000000000000000000000000000000000000000000000000', 'latest', callback));
-            batch.add(web3.eth.getBalance.request('0x0000000000000000000000000000000000000000000000000000000000000005', 'latest', callback2));
+            batch.add(web3.eth.getBalance.request('0xa000000000000000000000000000000000000000000000000000000000000000', 'latest', callback));
+            batch.add(web3.eth.getBalance.request('0xa000000000000000000000000000000000000000000000000000000000000005', 'latest', callback2));
             batch.execute();
         });
 
@@ -92,7 +92,7 @@ describe('lib/web3/batch', function () {
             }];
 
 
-            var address = '0x1000000000000000000000000000000000000000000000000000000000000001';
+            var address = '0xa000000000000000000000000000000000000000000000000000000000000001';
             var result = '0x126';
             var resultVal = '294';
             var result2 = '0x00000000000000000000000000000123';
@@ -120,48 +120,48 @@ describe('lib/web3/batch', function () {
 
 
                 assert.equal(payload[0].method, 'eth_getBalance');
-                assert.deepEqual(payload[0].params, ['0x0000000000000000000000000000000000000000000000000000000000000022', 'latest']);
+                assert.deepEqual(payload[0].params, ['0xa000000000000000000000000000000000000000000000000000000000000022', 'latest']);
 
                 assert.equal(payload[1].method, 'eth_call');
                 assert.deepEqual(payload[1].params, [{
-                    'to': '0x1000000000000000000000000000000000000000000000000000000000000001',
-                    'data': '0xe3d670d71000000000000000000000000000000000000000000000000000000000000001'
+                    'to': '0xa000000000000000000000000000000000000000000000000000000000000001',
+                    'data': '0xe3d670d7a000000000000000000000000000000000000000000000000000000000000001'
                 },
                     'latest' // default block
                 ]);
 
                 assert.equal(payload[2].method, 'eth_call');
                 assert.deepEqual(payload[2].params, [{
-                    'to': '0x1000000000000000000000000000000000000000000000000000000000000001',
-                    'from': '0x1000000000000000000000000000000000000000000000000000000000000002',
-                    'data': '0xe3d670d71000000000000000000000000000000000000000000000000000000000000001'
+                    'to': '0xa000000000000000000000000000000000000000000000000000000000000001',
+                    'from': '0xa000000000000000000000000000000000000000000000000000000000000002',
+                    'data': '0xe3d670d7a000000000000000000000000000000000000000000000000000000000000001'
                 },
                     'latest' // default block
                 ]);
 
                 assert.equal(payload[3].method, 'eth_call');
                 assert.deepEqual(payload[3].params, [{
-                    'to': '0x1000000000000000000000000000000000000000000000000000000000000001',
-                    'from': '0x1000000000000000000000000000000000000000000000000000000000000003',
-                    'data': '0xe3d670d71000000000000000000000000000000000000000000000000000000000000001'
+                    'to': '0xa000000000000000000000000000000000000000000000000000000000000001',
+                    'from': '0xa000000000000000000000000000000000000000000000000000000000000003',
+                    'data': '0xe3d670d7a000000000000000000000000000000000000000000000000000000000000001'
                 },
                     '0xa' // default block
                 ]);
 
                 assert.equal(payload[4].method, 'eth_call');
                 assert.deepEqual(payload[4].params, [{
-                    'to': '0x1000000000000000000000000000000000000000000000000000000000000001',
-                    'data': '0xe3d670d71000000000000000000000000000000000000000000000000000000000000001'
+                    'to': '0xa000000000000000000000000000000000000000000000000000000000000001',
+                    'data': '0xe3d670d7a000000000000000000000000000000000000000000000000000000000000001'
                 },
                     '0xa' // default block
                 ]);
             });
 
             var batch = new web3.BatchRequest();
-            batch.add(web3.eth.getBalance.request('0x0000000000000000000000000000000000000000000000000000000000000022', 'latest', callback));
+            batch.add(web3.eth.getBalance.request('0xa000000000000000000000000000000000000000000000000000000000000022', 'latest', callback));
             batch.add(new web3.eth.Contract(abi, address).methods.balance(address).call.request(callback2));
-            batch.add(new web3.eth.Contract(abi, address).methods.balance(address).call.request({from: '0x1000000000000000000000000000000000000000000000000000000000000002'}, callback2));
-            batch.add(new web3.eth.Contract(abi, address).methods.balance(address).call.request({from: '0x1000000000000000000000000000000000000000000000000000000000000003'}, 10, callback2));
+            batch.add(new web3.eth.Contract(abi, address).methods.balance(address).call.request({from: '0xa000000000000000000000000000000000000000000000000000000000000002'}, callback2));
+            batch.add(new web3.eth.Contract(abi, address).methods.balance(address).call.request({from: '0xa000000000000000000000000000000000000000000000000000000000000003'}, 10, callback2));
             batch.add(new web3.eth.Contract(abi, address).methods.balance(address).call.request(10, callback3));
             provider.injectBatchResults([result, result2, result2, result2, result2]);
             batch.execute();
@@ -187,7 +187,7 @@ describe('lib/web3/batch', function () {
             }];
 
 
-            var address = '0x1000000000000000000000000000000000000000000000000000000000000001';
+            var address = '0xa000000000000000000000000000000000000000000000000000000000000001';
             var result = 'Something went wrong';
             var result2 = 'Something went wrong 2';
 
@@ -209,19 +209,19 @@ describe('lib/web3/batch', function () {
                 var second = payload[1];
 
                 assert.equal(first.method, 'eth_getBalance');
-                assert.deepEqual(first.params, ['0x0000000000000000000000000000000000000000000000000000000000000000', 'latest']);
+                assert.deepEqual(first.params, ['0xa000000000000000000000000000000000000000000000000000000000000000', 'latest']);
                 assert.equal(second.method, 'eth_call');
                 assert.deepEqual(second.params, [{
-                    'to': '0x1000000000000000000000000000000000000000000000000000000000000001',
-                    'from': '0x0000000000000000000000000000000000000000000000000000000000000000',
-                    'data': '0xe3d670d71000000000000000000000000000000000000000000000000000000000000001'
+                    'to': '0xa000000000000000000000000000000000000000000000000000000000000001',
+                    'from': '0xa000000000000000000000000000000000000000000000000000000000000000',
+                    'data': '0xe3d670d7a000000000000000000000000000000000000000000000000000000000000001'
                 },
                 '0xa']);
             });
 
             var batch = new web3.BatchRequest();
-            batch.add(web3.eth.getBalance.request('0x0000000000000000000000000000000000000000000000000000000000000000', 'latest', callback));
-            batch.add(new web3.eth.Contract(abi, address).methods.balance(address).call.request({from: '0x0000000000000000000000000000000000000000000000000000000000000000'}, 10, callback2));
+            batch.add(web3.eth.getBalance.request('0xa000000000000000000000000000000000000000000000000000000000000000', 'latest', callback));
+            batch.add(new web3.eth.Contract(abi, address).methods.balance(address).call.request({from: '0xa000000000000000000000000000000000000000000000000000000000000000'}, 10, callback2));
             provider.injectBatchResults([result, result2], true); // injects error
             batch.execute();
         });
@@ -241,7 +241,7 @@ describe('lib/web3/batch', function () {
                 }]
             }];
 
-            const address = '0x1000000000000000000000000000000000000000000000000000000000000001';
+            const address = '0xa000000000000000000000000000000000000000000000000000000000000001';
             const result = '0x00000000000000000000000000000123';
 
             const callback = (err, _r) => {
@@ -252,7 +252,7 @@ describe('lib/web3/batch', function () {
             provider.injectValidation((payload) => {
                 assert.equal(payload[0].method, 'eth_call');
                 assert.deepEqual(payload[0].params, [{
-                    to: '0x1000000000000000000000000000000000000000000000000000000000000001',
+                    to: '0xa000000000000000000000000000000000000000000000000000000000000001',
                     data: '0x95d89b41'
                 },
                 'latest']);
@@ -296,14 +296,14 @@ describe('lib/web3/batch', function () {
                 var second = payload[1];
 
                 assert.equal(first.method, 'eth_getBalance');
-                assert.deepEqual(first.params, ['0x0000000000000000000000000000000000000000000000000000000000000000', 'latest']);
+                assert.deepEqual(first.params, ['0xa000000000000000000000000000000000000000000000000000000000000000', 'latest']);
                 assert.equal(second.method, 'eth_getBalance');
-                assert.deepEqual(second.params, ['0x0000000000000000000000000000000000000000000000000000000000000005', 'latest']);
+                assert.deepEqual(second.params, ['0xa000000000000000000000000000000000000000000000000000000000000005', 'latest']);
             });
 
             var batch = new web3.BatchRequest();
-            batch.add(web3.eth.getBalance.request('0x0000000000000000000000000000000000000000000000000000000000000000', 'latest', callback));
-            batch.add(web3.eth.getBalance.request('0x0000000000000000000000000000000000000000000000000000000000000005', 'latest', callback2));
+            batch.add(web3.eth.getBalance.request('0xa000000000000000000000000000000000000000000000000000000000000000', 'latest', callback));
+            batch.add(web3.eth.getBalance.request('0xa000000000000000000000000000000000000000000000000000000000000005', 'latest', callback2));
             batch.execute();
         });
 
