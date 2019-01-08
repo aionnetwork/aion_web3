@@ -4,7 +4,7 @@ console.log("Using cfg = ", test_cfg);
 
 let should = require('should')
 let Web3 = require('../')
-let client = new Web3(new Web3.providers.HttpProvider('http://127.0.0.1:8545'))
+let client = new Web3(new Web3.providers.HttpProvider('http://168.62.170.146:8545'))
 
 describe('send raw transaction of 0.01337 aions and no data', () => {
   let opts = { 
@@ -52,7 +52,10 @@ describe('send raw transaction of 0.01337 aions and no data', () => {
             done(err);
           }
 
-          res.value.should.eql(tx.value.toString());
+
+          console.log("XXX", "tx.value", tx.value);
+          console.log("XXX", "res.value", res.value);
+          client.utils.toHex(res.value).should.eql(tx.value);
           res.from.toLowerCase().should.eql(opts.from.toLowerCase());
           res.to.toLowerCase().should.eql(tx.to.toLowerCase());
           done();
