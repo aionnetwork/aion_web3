@@ -7,11 +7,11 @@
     "license": "LGPL-3.0",
     "main": "src/index.js",
     "dependencies": {
-        "aion-web3-core-helpers": "1.1.5",
-        "aion-web3-core-promievent": "1.1.5",
-        "aion-web3-core-subscriptions": "1.1.5",
-        "aion-web3-utils": "1.1.5",
+        "aion-web3-core-helpers": "1.1.4",
+        "aion-web3-core-promievent": "1.1.4",
+        "aion-web3-core-subscriptions": "1.1.4",
+        "aion-web3-utils": "1.1.4",
         "underscore": "1.8.3"
     },
-    "gitHead": "b9adc81c487ef3be6e4a1cac9827b6224b61a95e"
+    "gitHead": "ff767f05be375a019c4a9b52366a8b0683ea31a8"
 }
