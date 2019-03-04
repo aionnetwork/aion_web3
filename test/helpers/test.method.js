@@ -1,6 +1,7 @@
 var _ = require('underscore');
 var chai = require('chai');
 var assert = chai.assert;
+var NodeZip = require('node-zip');
 var FakeIpcProvider = require('./FakeIpcProvider');
 var Web3 = require('../../packages/web3');
 
@@ -25,7 +26,18 @@ var useLocalWallet = function (test, provider, web3) {
     });
 };
 
+var decodeZipfile = function(data) {
+    var result = [];
 
+    data.forEach(index => {
+        var zip = new NodeZip(index, {base64: true, checkCRC32: true});
+        for(var file in zip.files) {
+            result.push(file);
+        }
+    });
+
+    return result;
+};
 
 var runTests = function (obj, method, tests) {
     var objName;
@@ -54,13 +66,21 @@ var runTests = function (obj, method, tests) {
                         useLocalWallet(test, provider, web3);
                     }
 
-
-                    provider.injectResult(clone(test.result));
-                    provider.injectValidation(function (payload) {
-                        assert.equal(payload.jsonrpc, '2.0');
-                        assert.equal(payload.method, test.call);
-                        assert.deepEqual(payload.params, test.formattedArgs || []);
-                    });
+                    if(test.call == 'eth_compileSolidityZip') {
+                        provider.injectResult(clone(test.result));
+                        provider.injectValidation(function (payload) {
+                            assert.equal(payload.jsonrpc, '2.0');
+                            assert.equal(payload.method, test.call);
+                            assert.deepEqual(decodeZipfile(payload.params), test.formattedArgs || []);
+                        });
+                    } else {
+                        provider.injectResult(clone(test.result));
+                        provider.injectValidation(function (payload) {
+                            assert.equal(payload.jsonrpc, '2.0');
+                            assert.equal(payload.method, test.call);
+                            assert.deepEqual(payload.params, test.formattedArgs || []);
+                        });
+                    }
 
                     if (test.call2) {
                         provider.injectResult(clone(test.result2));
@@ -159,12 +179,21 @@ var runTests = function (obj, method, tests) {
                         useLocalWallet(test, provider, web3);
                     }
 
-                    provider.injectResult(clone(test.result));
-                    provider.injectValidation(function (payload) {
-                        assert.equal(payload.jsonrpc, '2.0');
-                        assert.equal(payload.method, test.call);
-                        assert.deepEqual(payload.params, test.formattedArgs || []);
-                    });
+                    if(test.call == 'eth_compileSolidityZip') {
+                        provider.injectResult(clone(test.result));
+                        provider.injectValidation(function (payload) {
+                            assert.equal(payload.jsonrpc, '2.0');
+                            assert.equal(payload.method, test.call);
+                            assert.deepEqual(decodeZipfile(payload.params), test.formattedArgs || []);
+                        });
+                    } else {
+                        provider.injectResult(clone(test.result));
+                        provider.injectValidation(function (payload) {
+                            assert.equal(payload.jsonrpc, '2.0');
+                            assert.equal(payload.method, test.call);
+                            assert.deepEqual(payload.params, test.formattedArgs || []);
+                        });
+                    }
 
                     if (test.call2) {
                         provider.injectResult(clone(test.result2));

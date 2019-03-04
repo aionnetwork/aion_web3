@@ -42,6 +42,10 @@
   },
   "contributors": [
     {
+      "name": "Rohan Morris",
+      "email": "rohan@aion.network"
+    },
+    {
       "name": "Kelvin Lam",
       "email": "kelvin@aion.network"
     },
@@ -81,14 +85,14 @@
     "bignumber.js": "^4.0.0",
     "bluebird": "3.3.1",
     "bn.js": "^4.11.8",
-    "bower": ">=1.4.1",
-    "browserify": "^14.4.0",
-    "chai": "^4.0.0",
-    "coveralls": "^3.0.2",
+    "bower": "^1.8.8",
+    "browserify": "^16.2.3",
+    "chai": "^4.2.0",
+    "coveralls": "^3.0.3",
     "del": ">=2.0.2",
     "exorcist": "^0.4.0",
     "istanbul": "^0.4.4",
-    "jshint": "^2.9.6",
+    "jshint": "^2.10.1",
     "lerna": "^2.5.1",
     "mocha": "^5.2.0",
     "nodemon": "^1.18.4",
@@ -97,9 +101,12 @@
     "vinyl-source-stream": "^2.0.0"
   },
   "dependencies": {
-    "async": "^2.6.1",
-    "colors": "^1.3.2",
+    "async": "^2.6.2",
+    "colors": "^1.3.3",
     "crypto-js": "^3.1.9-1",
+    "jszip": "^3.2.0",
+    "jszip-sync": "^3.1.3-sync",
+    "node-zip": "^1.1.1",
     "repl": "^0.1.3",
     "should": "^13.2.3",
     "underscore": "^1.9.1",

@@ -284,7 +284,7 @@ Accounts.prototype.recoverTransaction = function recoverTransaction(rawTx) {
 Accounts.prototype.hashMessage = function hashMessage(data) {
     var message = utils.isHexStrict(data) ? utils.hexToBytes(data) : data;
     var messageBuffer = Buffer.from(message);
-    var preamble = "\Aion Signed Message:\n" + message.length;
+    var preamble = "\u0015Aion Signed Message:\n" + message.length;
     var preambleBuffer = Buffer.from(preamble);
     var ethMessage = Buffer.concat([preambleBuffer, messageBuffer]);
     return utils.blake2b256(ethMessage);
