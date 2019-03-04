@@ -26,16 +26,16 @@
 
 
 var requestManager = require('aion-web3-core-requestmanager');
+var errors = require('aion-web3-core-helpers').errors;
 var extend = require('./extend.js');
 
-module.exports = {
+module.exports = {    
     packageInit: function (pkg, args) {
         args = Array.prototype.slice.call(args);
 
         if (!pkg) {
-            throw new Error('You need to instantiate using the "new" keyword.');
+            throw errors.InvalidInstantiation();
         }
-
 
         // make property of pkg._provider, which can properly set providers
         Object.defineProperty(pkg, 'currentProvider', {
@@ -80,6 +80,7 @@ module.exports = {
         // attach extend function
         pkg.extend = extend(pkg);
     },
+
     addProviders: function (pkg) {
         pkg.givenProvider = requestManager.Manager.givenProvider;
         pkg.providers = requestManager.Manager.providers;

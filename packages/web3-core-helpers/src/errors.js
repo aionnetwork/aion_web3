@@ -32,6 +32,9 @@ module.exports = {
             message += "..." + result.error.data;
         return new Error('Returned error: ' + message);
     },
+    MissingCoreProperty: function(property) {
+        return new Error('When creating a method you need to provide at least the "' + property + '" property.')
+    },
     InvalidNumberOfParams: function (got, expected, method) {
         return new Error('Invalid number of parameters for "'+ method +'". Got '+ got +' expected '+ expected +'!');
     },
@@ -41,7 +44,10 @@ module.exports = {
     InvalidProvider: function () {
         return new Error('Provider not set or invalid');
     },
-    InvalidResponse: function (result){
+    InvalidInstantiation: function() {
+        return new Error('You need to instantiate using the "new" keyword.')
+    },
+    InvalidResponse: function(result) {
         var message = !!result && !!result.error && !!result.error.message ? result.error.message : 'Invalid JSON RPC response: ' + JSON.stringify(result);
         return new Error(message);
     },
