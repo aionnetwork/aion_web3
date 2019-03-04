@@ -34,6 +34,7 @@ var core = require('aion-web3-core');
 var Eth = require('aion-web3-eth');
 var Net = require('aion-web3-net');
 var Personal = require('aion-web3-eth-personal');
+var errors = require('aion-web3-core-helpers').errors;
 var utils = require('aion-web3-utils');
 
 var Web3 = function Web3() {
@@ -49,6 +50,7 @@ var Web3 = function Web3() {
 
     // overwrite package setProvider
     var setProvider = this.setProvider;
+
     this.setProvider = function (provider, net) {
         setProvider.apply(_this, arguments);
 
