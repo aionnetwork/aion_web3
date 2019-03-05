@@ -27,6 +27,8 @@
 
 
 var _ = require('underscore');
+var fs = require('fs');
+var NodeZip = require('node-zip');
 var utils = require('aion-web3-utils');
 // var Iban = require('aion-web3-eth-iban');
 
@@ -426,6 +428,35 @@ var outputSyncingFormatter = function(result) {
     return result;
 };
 
+
+/**
+ * Takes a list of solidity files, puts them into a zipfile, and returns that zipfile's Base64 Encoding
+ *
+ * @method inputZipfileBase64EncodingFormatter
+ * @param {Array} list of solidity filepaths
+ * @returns {JsonObject}
+*/
+var inputZipfileBase64EncodingFormatter = function (paths) {
+    var zip = new NodeZip();
+
+    if(!Array.isArray(paths)) {
+        throw new Error('This must be a list of .sol filepaths');
+    };
+
+    paths.forEach(path => {
+        if(!_.isString(path) || !path.endsWith(".sol")) {
+            throw new Error('One of the provided filepaths does not include a valid .sol file');
+        }
+
+        var file = path.trim().split("/");
+        var content = fs.readFileSync(path).toString();
+
+        zip.file(file[file.length - 1], content);
+    });
+
+    return zip.generate({base64: true, compression: 'DEFLATE'});
+};
+
 module.exports = {
     inputDefaultBlockNumberFormatter: inputDefaultBlockNumberFormatter,
     inputBlockNumberFormatter: inputBlockNumberFormatter,
@@ -441,6 +472,6 @@ module.exports = {
     outputBlockFormatter: outputBlockFormatter,
     outputLogFormatter: outputLogFormatter,
     outputPostFormatter: outputPostFormatter,
-    outputSyncingFormatter: outputSyncingFormatter
+    outputSyncingFormatter: outputSyncingFormatter,
+    inputZipfileBase64EncodingFormatter: inputZipfileBase64EncodingFormatter
 };
-

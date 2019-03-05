@@ -30,6 +30,7 @@ describe('eth', function() {
 
         u.methodExists(eth, 'getCompilers');
         u.methodExists(eth, 'compileSolidity');
+        u.methodExists(eth, 'compileSolidityZip');
 
         u.methodExists(eth, 'setProvider');
         u.propertyExists(eth, 'givenProvider');
@@ -47,4 +48,3 @@ describe('eth', function() {
         u.methodExists(eth.personal, 'unlockAccount');
     });
 });
-

@@ -41,9 +41,6 @@ module.exports = {
     InvalidProvider: function () {
         return new Error('Provider not set or invalid');
     },
-    InvalidInstantiation: function() {
-        return new Error('You need to instantiate using the "new" keyword.');
-    },
     InvalidResponse: function(result) {
         var message = !!result && !!result.error && !!result.error.message ? result.error.message : 'Invalid JSON RPC response: ' + JSON.stringify(result);
         return new Error(message);
