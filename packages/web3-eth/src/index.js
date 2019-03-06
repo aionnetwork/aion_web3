@@ -25,6 +25,7 @@
  "use strict";
 
 var _ = require('underscore');
+var fs = require('fs');
 var core = require('aion-web3-core');
 var helpers = require('aion-web3-core-helpers');
 var Method = require('aion-web3-core-method');
@@ -332,6 +333,12 @@ var Eth = function Eth() {
             name: 'compileSolidity',
             call: 'eth_compileSolidity',
             params: 1
+        }),
+        new Method({
+            name: 'compileSolidityZip',
+            call: 'eth_compileSolidityZip',
+            params: 2,
+            inputFormatter: [formatter.inputZipfileBase64EncodingFormatter, null]
         })
     ];
 
@@ -348,4 +355,3 @@ core.addProviders(Eth);
 
 
 module.exports = Eth;
-
