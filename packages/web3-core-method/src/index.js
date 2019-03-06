@@ -39,7 +39,7 @@ var CONFIRMATIONBLOCKS = 24;
 var Method = function Method(options) {
 
     if(!options.call || !options.name) {
-        throw new Error('When creating a method you need to provide at least the "name" and "call" property.');
+        throw errors.MissingCoreProperty('name" or "call');
     }
 
     this.name = options.name;
@@ -259,7 +259,7 @@ Method.prototype._confirmTransaction = function (defer, result, payload) {
             // if CONFIRMATION listener exists check for confirmations, by setting canUnsubscribe = false
             .then(function(receipt) {
                 if (!receipt.blockHash) {
-                    throw new Error('Receipt missing or blockHash null');
+                    throw errors.MissingReceiptOrBlockHash();
                 }
 
                 // apply extra formatters
@@ -300,7 +300,7 @@ Method.prototype._confirmTransaction = function (defer, result, payload) {
                             promiseResolved = true;
                         }
 
-                        utils._fireError(new Error('The transaction receipt didn\'t contain a contract address.'), defer.eventEmitter, defer.reject);
+                        utils._fireError(errors.MissingContractAddress(), defer.eventEmitter, defer.reject);
                         return;
                     }
 
@@ -327,7 +327,7 @@ Method.prototype._confirmTransaction = function (defer, result, payload) {
                             }
 
                         } else {
-                            utils._fireError(new Error('The contract code couldn\'t be stored, please check your gas limit.'), defer.eventEmitter, defer.reject);
+                            utils._fireError(errors.ContractCodeStorageError(), defer.eventEmitter, defer.reject);
                         }
 
                         if (canUnsubscribe) {
@@ -358,11 +358,11 @@ Method.prototype._confirmTransaction = function (defer, result, payload) {
                     } else {
                         receiptJSON = JSON.stringify(receipt, null, 2);
                         if (receipt.status === false || receipt.status === '0x0') {
-                            utils._fireError(new Error("Transaction has been reverted by the EVM:\n" + receiptJSON),
+                            utils._fireError(errors.RevertedTransactionError(receiptJSON),
                                 defer.eventEmitter, defer.reject);
                         } else {
                             utils._fireError(
-                                new Error("Transaction ran out of gas. Please provide more gas:\n" + receiptJSON),
+                                errors.TransactionOutOfGasError(receiptJSON),
                                 defer.eventEmitter, defer.reject);
                         }
                     }
@@ -384,13 +384,13 @@ Method.prototype._confirmTransaction = function (defer, result, payload) {
                     if (timeoutCount - 1 >= POLLINGTIMEOUT) {
                         sub.unsubscribe();
                         promiseResolved = true;
-                        utils._fireError(new Error('Transaction was not mined within' + POLLINGTIMEOUT + ' seconds, please make sure your transaction was properly sent. Be aware that it might still be mined!'), defer.eventEmitter, defer.reject);
+                        utils._fireError(errors.PollingTimeoutError(POLLINGTIMEOUT), defer.eventEmitter, defer.reject);
                     }
                 } else {
                     if (timeoutCount - 1 >= TIMEOUTBLOCK) {
                         sub.unsubscribe();
                         promiseResolved = true;
-                        utils._fireError(new Error('Transaction was not mined within 50 blocks, please make sure your transaction was properly sent. Be aware that it might still be mined!'), defer.eventEmitter, defer.reject);
+                        utils._fireError(errors.BlockTimeoutError(50), defer.eventEmitter, defer.reject);
                     }
                 }
             });
@@ -399,7 +399,7 @@ Method.prototype._confirmTransaction = function (defer, result, payload) {
         } else {
             sub.unsubscribe();
             promiseResolved = true;
-            utils._fireError({message: 'Failed to subscribe to new newBlockHeaders to confirm the transaction receipts.', data: err}, defer.eventEmitter, defer.reject);
+            utils._fireError(errors.FailedSubscription(err), defer.eventEmitter, defer.reject);
         }
     };
 

@@ -32,9 +32,6 @@ module.exports = {
             message += "..." + result.error.data;
         return new Error('Returned error: ' + message);
     },
-    MissingCoreProperty: function(property) {
-        return new Error('When creating a method you need to provide at least the "' + property + '" property.')
-    },
     InvalidNumberOfParams: function(got, expected, method) {
         return new Error('Invalid number of parameters for "'+ method +'". Got '+ got +' expected '+ expected +'!');
     },
@@ -44,15 +41,39 @@ module.exports = {
     InvalidProvider: function() {
         return new Error('Provider not set or invalid');
     },
-    InvalidInstantiation: function() {
-        return new Error('You need to instantiate using the "new" keyword.')
-    },
     InvalidResponse: function(result) {
         var message = !!result && !!result.error && !!result.error.message ? result.error.message : 'Invalid JSON RPC response: ' + JSON.stringify(result);
         return new Error(message);
     },
     ConnectionTimeout: function(ms) {
         return new Error('CONNECTION TIMEOUT: timeout of ' + ms + ' ms achived');
+    },
+    InvalidInstantiation: function() {
+        return new Error('You need to instantiate using the "new" keyword.')
+    },
+    BlockTimeoutError: function(blocks) {
+        return new Error('Transaction was not mined within ' + blocks + ' blocks, please make sure your transaction was properly sent. Be aware that it might still be mined!')
+    },
+    PollingTimeoutError: function(seconds) {
+        return new Error('Transaction was not mined within' + seconds + ' seconds, please make sure your transaction was properly sent. Be aware that it might still be mined!');
+    },
+    TransactionOutOfGasError: function(json) {
+        return new Error('Transaction ran out of gas. Please provide more gas:\n' + json);
+    },
+    RevertedTransactionError: function(json) {
+        return new Error('Transaction has been reverted by the EVM:\n' + json);
+    },
+    ContractCodeStorageError: function() {
+        return new Error('The contract code couldn\'t be stored, please check your gas limit.');
+    },
+    MissingCoreProperty: function(property) {
+        return new Error('When creating a method you need to provide at least the "' + property + '" property.');
+    },
+    MissingContractAddress: function() {
+        return new Error('The transaction receipt didn\'t contain a contract address.');
+    },
+    MissingReceiptOrBlockHash: function() {
+        return new Error('Receipt missing or blockHash null');
     },
     TxInputFormatterDataInputError: function() {
         return new Error('You can\'t have "data" and "input" as properties of transactions at the same time, please use either "data" or "input" instead.');
@@ -74,5 +95,8 @@ module.exports = {
     },
     InputZipfileBase64FormatterInvalidContract: function() {
         return new Error('One of the provided filepaths does not include a valid .sol file');
+    },
+    FailedSubscription: function(err) {
+        return new Error('Failed to subscribe to new newBlockHeaders to confirm the transaction receipts.\n' + err);
     }
 };
