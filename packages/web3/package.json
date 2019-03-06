@@ -1,7 +1,7 @@
 {
   "name": "aion-web3",
   "namespace": "aion",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "Aion JavaScript API",
   "repository": "https://github.com/aionnetwork/aion_web3/tree/master/packages/web3",
   "license": "LGPL-3.0",
@@ -53,11 +53,11 @@
     }
   ],
   "dependencies": {
-    "aion-web3-core": "^1.1.4",
-    "aion-web3-eth": "^1.1.4",
-    "aion-web3-eth-personal": "^1.1.4",
-    "aion-web3-net": "^1.1.4",
-    "aion-web3-utils": "^1.1.4"
+    "aion-web3-core": "1.1.5",
+    "aion-web3-eth": "1.1.5",
+    "aion-web3-eth-personal": "1.1.5",
+    "aion-web3-net": "1.1.5",
+    "aion-web3-utils": "1.1.5"
   },
   "gitHead": "b9adc81c487ef3be6e4a1cac9827b6224b61a95e"
 }

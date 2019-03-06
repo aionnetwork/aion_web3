@@ -1,7 +1,7 @@
 {
     "name": "aion-web3-core-promievent",
     "namespace": "aion",
-    "version": "1.1.4",
+    "version": "1.1.5",
     "description": "This package extends eventEmitters with promises to allow chaining as well as multiple final states of a function.",
     "repository": "https://github.com/aionnetwork/aion_web3/tree/master/packages/web3-core-promievent",
     "license": "LGPL-3.0",

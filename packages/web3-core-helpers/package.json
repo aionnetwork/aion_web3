@@ -1,13 +1,13 @@
 {
     "name": "aion-web3-core-helpers",
     "namespace": "aion",
-    "version": "1.1.4",
+    "version": "1.1.5",
     "description": "Web3 core tools helper for sub packages. This is an internal package.",
     "repository": "https://github.com/aionnetwork/aion_web3/tree/master/packages/web3-core-helpers",
     "license": "LGPL-3.0",
     "main": "src/index.js",
     "dependencies": {
-        "aion-web3-utils": "^1.1.4",
+        "aion-web3-utils": "1.1.5",
         "underscore": "1.8.3"
     },
     "gitHead": "b9adc81c487ef3be6e4a1cac9827b6224b61a95e"
