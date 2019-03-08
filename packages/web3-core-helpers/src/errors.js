@@ -100,6 +100,9 @@ module.exports = {
         return new Error('Failed to subscribe to new newBlockHeaders to confirm the transaction receipts.\n' + err);
     },
     NoSubscriptionSupport: function(name) {
-        return new Error('The provider doesn\'t support subscriptions: ' + name)
+        return new Error('The provider doesn\'t support subscriptions: ' + name);
+    },
+    UnspecificedJSONRPCParams: function(params) {
+        return new Error('JSONRPC method should be specified for params: "'+ params +'"!');
     }
 };
