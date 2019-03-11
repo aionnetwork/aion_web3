@@ -152,5 +152,8 @@ module.exports = {
     },
     UnbalancedParenthesis: function() {
         return new Error('Unbalanced Parenthesis');
+    },
+    CannotCoderUtilsError: function(task) {
+        return new Error('Cannot ' + task);
     }
 };
