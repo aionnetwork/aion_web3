@@ -105,7 +105,52 @@ module.exports = {
     UnspecificedJSONRPCParams: function(params) {
         return new Error('JSONRPC method should be specified for params: "'+ params +'"!');
     },
-    SubscriptionAlreadyInstantiated: function {
+    SubscriptionAlreadyInstantiated: function() {
         return new Error('Only a callback is allowed as parameter on an already instantiated subscription.');
+    },
+    UnexpectedParam: function(param, pos, obj) {
+        return new Error('Unexpected character "' + param + '" at position ' + pos + ' in "' + obj + '"');
+    },
+    InvalidEvent: function(event) {
+        return new Error('Invalid Event: ' + event);
+    },
+    InvalidSignature: function() {
+        return new Error('Invalid Signature');
+    },
+    InvalidIdentifier: function(identifier) {
+        return new Error('Invalid Identifer: "' + identifier + '"');
+    },
+    InvalidBitLength: function(bit) {
+        return new Error('Invalid ' + bit + ' bit length')
+    },
+    InvalidBytesLength: function() {
+        return new Error('Invalid bytes');
+    },
+    UnexpectedEOF: function() {
+        return new Error('Unexpected EoF');
+    },
+    UnexpectedTokens: function() {
+        return new Error('Unexpected Tokens');
+    },
+    UnknownFragment: function() {
+        return new Error('Unknown Fragmenet');
+    },
+    InvalidCoderValue: function(value) {
+        return new Error('Invalid ' + value + '-value');
+    },
+    InsufficientData: function(value) {
+        return new Error('Insufficient data for ' + name + ' type');
+    },
+    ExcessiveBytes: function(field) {
+        return new Error(field + ' count is too large');
+    },
+    LengthMismatch: function(param) {
+        return new Error(param + ' length mismatch');
+    },
+    InvalidType: function() {
+        return new Error('Invalid type');
+    },
+    UnbalancedParenthesis: function() {
+        return new Error('Unbalanced Parenthesis');
     }
 };
