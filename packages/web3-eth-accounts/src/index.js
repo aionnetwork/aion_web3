@@ -344,19 +344,19 @@ Accounts.prototype.decrypt = function (v3Keystore, password, nonStrict) {
         kdfparams = json.crypto.kdfparams;
 
         if (kdfparams.prf !== 'hmac-sha256') {
-            throw errors.UnsupportedParametersFor('PBKDF2'); new Error('Unsupported parameters to PBKDF2');
+            throw errors.InvalidParamForMethod('PBKDF2');
         }
 
         derivedKey = cryp.pbkdf2Sync(new Buffer(password), new Buffer(kdfparams.salt, 'hex'), kdfparams.c, kdfparams.dklen, 'sha256');
     } else {
-        throw new Error('Unsupported key derivation scheme');
+        throw errors.UnsupportedParam('key derivation scheme');
     }
 
     var ciphertext = new Buffer(json.crypto.ciphertext, 'hex');
 
     var mac = utils.blake2b256(Buffer.concat([derivedKey.slice(16, 32), ciphertext ])).replace('0x','');
     if (mac !== json.crypto.mac) {
-        throw new Error('Key derivation failed - possibly wrong password');
+        throw errors.FailedKeyDerivation();
     }
 
     var decipher = cryp.createDecipheriv(json.crypto.cipher, derivedKey.slice(0, 16), new Buffer(json.crypto.cipherparams.iv, 'hex'));
@@ -391,12 +391,12 @@ Accounts.prototype.encrypt = function (privateKey, password, options) {
         kdfparams.p = options.p || 1;
         derivedKey = scryptsy(new Buffer(password), salt, kdfparams.n, kdfparams.r, kdfparams.p, kdfparams.dklen);
     } else {
-        throw new Error('Unsupported kdf');
+        throw errors.UnsupportedParam('kdf');
     }
 
     var cipher = cryp.createCipheriv(options.cipher || 'aes-128-ctr', derivedKey.slice(0, 16), iv);
     if (!cipher) {
-        throw new Error('Unsupported cipher');
+        throw errors.UnsupportedParam('cipher');
     }
 
     var ciphertext = Buffer.concat([
@@ -542,7 +542,7 @@ Wallet.prototype.decrypt = function (encryptedWallet, password) {
         if (account) {
             _this.add(account);
         } else {
-            throw new Error('Couldn\'t decrypt accounts. Password wrong?');
+            throw errors.FailedAccountDecryption();
         }
     });
 

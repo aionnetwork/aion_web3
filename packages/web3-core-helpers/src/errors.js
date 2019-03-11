@@ -48,8 +48,9 @@ module.exports = {
     ConnectionTimeout: function(ms) {
         return new Error('CONNECTION TIMEOUT: timeout of ' + ms + ' ms achived');
     },
-    InvalidInstantiation: function() {
-        return new Error('You need to instantiate using the "new" keyword.')
+    InvalidInstantiation: function(json) {
+        if(!json) return new Error('You need to instantiate using the "new" keyword.');
+        else return new Error('The JSON interface of the contract is required when instantiating its object');
     },
     BlockTimeoutError: function(blocks) {
         return new Error('Transaction was not mined within ' + blocks + ' blocks, please make sure your transaction was properly sent. Be aware that it might still be mined!')
@@ -69,8 +70,9 @@ module.exports = {
     MissingCoreProperty: function(property) {
         return new Error('When creating a method you need to provide at least the "' + property + '" property.');
     },
-    MissingContractAddress: function() {
-        return new Error('The transaction receipt didn\'t contain a contract address.');
+    MissingContractAddress: function(contract) {
+        if(!contract) return new Error('The transaction receipt didn\'t contain a contract address.');
+        else return new Error('The contract address is not set for this object');
     },
     MissingReceiptOrBlockHash: function() {
         return new Error('Receipt missing or blockHash null');
@@ -114,8 +116,9 @@ module.exports = {
     InvalidEvent: function(event) {
         return new Error('Invalid Event: ' + event);
     },
-    InvalidSignature: function() {
-        return new Error('Invalid Signature');
+    InvalidSignature: function(flag) {
+        if(flag == null) return new Error('Invalid Signature');
+        else return new Error('Failed to verify signature');
     },
     InvalidIdentifier: function(identifier) {
         return new Error('Invalid Identifer: "' + identifier + '"');
@@ -156,13 +159,57 @@ module.exports = {
     CannotCoderUtilsError: function(task) {
         return new Error('Cannot ' + task);
     },
-    InvalidParamForMethod: function(param, value, method) {
-        return new Error(param + ' ' + value + ' is not valid for the method "' + method + '"');
+    InvalidParamForMethod: function(method, param, value) {
+        if(param != null && value != null) return new Error(param + ' ' + value + ' is not valid for the method "' + method + '"');
+        else return new Error('Unsupported parameters for ' + method);
     },
     InvalidObject: function(obj) {
         return new Error('Invalid ' + obj + ' object');
     },
     MissingProperty: function(property) {
         return new Error('Missing ' + property);
+    },
+    LowerThanZeroError: function(param) {
+        return new Error(param + ' is lower than zero (0)');
+    },
+    FailureToFetch: function(values, args) {
+        return new Error('One or more of the value(s): ' + values + ' could not be fetched: ' _ args);
+    },
+    InvalidParam: function(param) {
+        return new Error('Invalid ' + password);
+    },
+    InvalidObjVersion: function(version, obj) {
+        return new Error('Invalid ' + version + ' ' + obj)
+    },
+    UnsupportedParam: function(comment) {
+        return new Error('Unsupported ' + comment);
+    },
+    FailedKeyDerivation: function() {
+        return new Error('Key derivation failed - possibly wrong password');
+    },
+    FailedAccountDecryption: function() {
+        return new Error('Account decryption failed - possibly wrong password');
+    },
+    ReservedEventName: function(name) {
+        return new Error('The event "'+ name +'" is a reserved event name')
+    },
+    ArgumentsMismatch: function(amount) {
+        return new Error('The number of arguments is not matching the methods required number. You need to pass '+ amount +' arguments.')
+    },
+    InvalidContractMethod: function(method) {
+        if(!method) return new Error('Couldn\'t find a matching contract method, or the number of parameters is wrong.');
+        else return new Error('Cannot find a contract method by the name "' + method + '"');
+    },
+    NoFieldSpecified: function(field) {
+        return new Error('No "' + field + '" specified in neither the given options, nor the default options.');
+    },
+    EventDoesNotExist: function(name) {
+        return new Error('Event "' + name + '" doesn\'t exist in this contract.')
+    },
+    InvalidCallback: function(method, pos) {
+        return new Error('The method "' + method + '" requires a callback as its ' + pos + ' parameter');
+    },
+    NonPayableMethodOrConstructor: function() {
+        return new Error('Can not send value to non-payable contract method or constructor');
     }
 };

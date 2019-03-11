@@ -50,7 +50,7 @@ var Contract = function Contract(jsonInterface, address, options) {
         args = Array.prototype.slice.call(arguments);
 
     if(!(this instanceof Contract)) {
-        throw new Error('Please use the "new" keyword to instantiate a web3.eth.contract() object!');
+        throw errors.InvalidInstantiation();
     }
 
     // sets _requestmanager
@@ -61,7 +61,7 @@ var Contract = function Contract(jsonInterface, address, options) {
 
 
     if(!jsonInterface || !(Array.isArray(jsonInterface))) {
-        throw new Error('You must provide the json interface of the contract when instantiating a contract object.');
+        throw errors.InvalidInstantiation(true);
     }
 
 
@@ -244,7 +244,7 @@ Contract.prototype._getCallback = function getCallback(args) {
  */
 Contract.prototype._checkListener = function(type, event){
     if(event === type) {
-        throw new Error('The event "'+ type +'" is a reserved event name, you can\'t use it.');
+        throw errors.ReservedEventName(type);
     }
 };
 
@@ -407,7 +407,7 @@ Contract.prototype._encodeMethodABI = function _encodeMethodABI() {
             var inputLength = (_.isArray(json.inputs)) ? json.inputs.length : 0;
 
             if (inputLength !== args.length) {
-                throw new Error('The number of arguments is not matching the methods required number. You need to pass '+ inputLength +' arguments.');
+                throw error ArgumentsMismatch(inputLength);
             }
 
             if (json.type === 'function') {
@@ -421,7 +421,7 @@ Contract.prototype._encodeMethodABI = function _encodeMethodABI() {
     // return constructor
     if(methodSignature === 'constructor') {
         if(!this._deployData)
-            throw new Error('The contract has no contract data option set. This is necessary to append the constructor parameters.');
+            throw errors.MissingProperty('contract data');
 
         return this._deployData + paramsABI;
 
@@ -431,7 +431,7 @@ Contract.prototype._encodeMethodABI = function _encodeMethodABI() {
         var returnValue = (signature) ? signature + paramsABI : paramsABI;
 
         if(!returnValue) {
-            throw new Error('Couldn\'t find a matching contract method named "'+ this._method.name +'".');
+            throw errors.InvalidContractMethod(this._method.name);
         } else {
             return returnValue;
         }
@@ -485,7 +485,7 @@ Contract.prototype.deploy = function(options, callback){
 
     // return error, if no "data" is specified
     if(!options.data) {
-        return utils._fireError(new Error('No "data" specified in neither the given options, nor the default options.'), null, null, callback);
+        return utils._fireError(errors.NoFieldSpecified('data'), null, null, callback);
     }
 
     var constructor = _.find(this.options.jsonInterface, function (method) {
@@ -529,11 +529,11 @@ Contract.prototype._generateEventOptions = function() {
         });
 
     if (!event) {
-        throw new Error('Event "' + event.name + '" doesn\'t exist in this contract.');
+        throw error.EventDoesNotExist(event.name);
     }
 
     if (!utils.isAddress(this.options.address)) {
-        throw new Error('This contract object doesn\'t have address set yet, please set an address first.');
+        throw errors.MissingContractAddress(true);
     }
 
     return {
@@ -570,7 +570,7 @@ Contract.prototype.once = function(event, options, callback) {
     callback = this._getCallback(args);
 
     if (!callback) {
-        throw new Error('Once requires a callback as the second parameter.');
+        throw errors.InvalidCallback('Once', 'second');
     }
 
     // don't allow fromBlock
@@ -734,14 +734,14 @@ Contract.prototype._processExecuteArguments = function _processExecuteArguments(
 
     // add contract address
     if(!this._deployData && !utils.isAddress(this._parent.options.address))
-        throw new Error('This contract object doesn\'t have address set yet, please set an address first.');
+        throw errors.MissingContractAddress(true);
 
     if(!this._deployData)
         processedArgs.options.to = this._parent.options.address;
 
     // return error, if no "data" is specified
     if(!processedArgs.options.data)
-        return utils._fireError(new Error('Couldn\'t find a matching contract method, or the number of parameters is wrong.'), defer.eventEmitter, defer.reject, processedArgs.callback);
+        return utils._fireError(errors.InvalidContractMethod(), defer.eventEmitter, defer.reject, processedArgs.callback);
 
     return processedArgs;
 };
@@ -821,11 +821,11 @@ Contract.prototype._executeMethod = function _executeMethod(){
 
                 // return error, if no "from" is specified
                 if(!utils.isAddress(args.options.from)) {
-                    return utils._fireError(new Error('No "from" address specified in neither the given options, nor the default options.'), defer.eventEmitter, defer.reject, args.callback);
+                    return utils._fireError(errors.NoFieldSpecified('"from" address'), defer.eventEmitter, defer.reject, args.callback);
                 }
 
                 if (_.isBoolean(this._method.payable) && !this._method.payable && args.options.value && args.options.value > 0) {
-                    return utils._fireError(new Error('Can not send value to non-payable contract method or constructor'), defer.eventEmitter, defer.reject, args.callback);
+                    return utils._fireError(errors.NonPayableMethodOrConstructor(), defer.eventEmitter, defer.reject, args.callback);
                 }
 
 
