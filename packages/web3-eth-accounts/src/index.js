@@ -33,6 +33,7 @@ var utils = require('aion-web3-utils');
 var isHex = utils.isHex;
 var isHexStrict = utils.isHexStrict;
 var formatters = require('aion-web3-core-helpers').formatters;
+var errors = require('aion-web3-core-helpers').errors;
 var aionLib = require('aion-lib');
 var blake2b256 = aionLib.crypto.blake2b256;
 var nacl = aionLib.crypto.nacl;
@@ -113,7 +114,7 @@ var Accounts = function Accounts() {
                 if (utils.isAddress(address)) {
                     return address;
                 } else {
-                    throw new Error('Address '+ address +' is not a valid address to get the "transactionCount".');
+                    throw errors.InvalidParamForMethod('transactionCount', 'Address', address);
                 }
             }, function () { return 'latest'; }]
         })
@@ -176,7 +177,7 @@ Accounts.prototype.signTransaction = function signTransaction(tx, privateKey, ca
     callback = callback || function () {};
 
     if (!tx) {
-        error = new Error('No transaction object given!');
+        error = errors.InvalidObject('transaction');
 
         callback(error);
         return Promise.reject(error);
@@ -185,7 +186,7 @@ Accounts.prototype.signTransaction = function signTransaction(tx, privateKey, ca
     function signed (tx) {
 
         if (!tx.gas && !tx.gasLimit) {
-            error = new Error('"gas" is missing');
+            error = errors.MissingParam('gas');
         }
 
         if (tx.nonce  < 0 ||
@@ -193,7 +194,7 @@ Accounts.prototype.signTransaction = function signTransaction(tx, privateKey, ca
             tx.gasPrice  < 0 ||
             tx.type  < 0 ||
             tx.timestamp < 0) {
-            error = new Error('Gas, gasPrice, nonce, type, or timestamp is lower than 0');
+            error = errors.LessThanZeroError('Gas, gasPrice, nonce, type, or timestamp');
         }
 
         if (error) {
@@ -230,7 +231,7 @@ Accounts.prototype.signTransaction = function signTransaction(tx, privateKey, ca
 
             // verify nacl signature
             if (nacl.sign.detached.verify(hash, signature, account.publicKey) === false) {
-                throw new Error('Could not verify signature.');
+                throw errors.InvalidSignature(true);
             }
 
             // aion-specific signature scheme
@@ -269,7 +270,7 @@ Accounts.prototype.signTransaction = function signTransaction(tx, privateKey, ca
         isNot(tx.nonce) ? _this._ethereumCall.getTransactionCount(_this.privateKeyToAccount(privateKey).address) : tx.nonce
     ]).then(function (args) {
         if (isNot(args[0]) || isNot(args[1])) {
-            throw new Error('One of the values "type", "gasPrice", or "nonce" couldn\'t be fetched: '+ JSON.stringify(args));
+            throw errors.FailureToFetch('"type", "gasPrice", or "nonce"', JSON.stringify(args))
         }
         return signed(_.extend(tx, {gasPrice: args[0], nonce: args[1]}));
     });
@@ -323,13 +324,13 @@ Accounts.prototype.decrypt = function (v3Keystore, password, nonStrict) {
     /* jshint maxcomplexity: 10 */
 
     if(!_.isString(password)) {
-        throw new Error('No password given.');
+        throw errors.InvalidParam('password');
     }
 
     var json = (_.isObject(v3Keystore)) ? v3Keystore : JSON.parse(nonStrict ? v3Keystore.toLowerCase() : v3Keystore);
 
     if (json.version !== 3) {
-        throw new Error('Not a valid V3 wallet');
+        throw errors.InvalidObjVersion('v3', 'Wallet');
     }
 
     var derivedKey;
@@ -343,7 +344,7 @@ Accounts.prototype.decrypt = function (v3Keystore, password, nonStrict) {
         kdfparams = json.crypto.kdfparams;
 
         if (kdfparams.prf !== 'hmac-sha256') {
-            throw new Error('Unsupported parameters to PBKDF2');
+            throw errors.UnsupportedParametersFor('PBKDF2'); new Error('Unsupported parameters to PBKDF2');
         }
 
         derivedKey = cryp.pbkdf2Sync(new Buffer(password), new Buffer(kdfparams.salt, 'hex'), kdfparams.c, kdfparams.dklen, 'sha256');

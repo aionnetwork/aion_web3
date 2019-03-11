@@ -155,5 +155,14 @@ module.exports = {
     },
     CannotCoderUtilsError: function(task) {
         return new Error('Cannot ' + task);
+    },
+    InvalidParamForMethod: function(param, value, method) {
+        return new Error(param + ' ' + value + ' is not valid for the method "' + method + '"');
+    },
+    InvalidObject: function(obj) {
+        return new Error('Invalid ' + obj + ' object');
+    },
+    MissingProperty: function(property) {
+        return new Error('Missing ' + property);
     }
 };
