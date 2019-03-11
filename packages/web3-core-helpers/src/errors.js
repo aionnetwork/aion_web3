@@ -104,5 +104,8 @@ module.exports = {
     },
     UnspecificedJSONRPCParams: function(params) {
         return new Error('JSONRPC method should be specified for params: "'+ params +'"!');
+    },
+    SubscriptionAlreadyInstantiated: function {
+        return new Error('Only a callback is allowed as parameter on an already instantiated subscription.');
     }
 };
