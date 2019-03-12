@@ -271,11 +271,11 @@ WebsocketProvider.prototype.send = function (payload, callback) {
     if (this.connection.readyState !== this.connection.OPEN) {
         console.error('connection not open on send()');
         if (typeof this.connection.onerror === 'function') {
-            this.connection.onerror(new Error('connection not open'));
+            this.connection.onerror(errors.ClosedConnection());
         } else {
             console.error('no error callback');
         }
-        callback(new Error('connection not open'));
+        callback(errors.ClosedConnection());
         return;
     }
 
@@ -293,7 +293,7 @@ WebsocketProvider.prototype.send = function (payload, callback) {
 WebsocketProvider.prototype.on = function (type, callback) {
 
     if(typeof callback !== 'function')
-        throw new Error('The second parameter callback must be a function.');
+        throw errors.InvalidCallback('on', 'second')
 
     switch(type){
         case 'data':

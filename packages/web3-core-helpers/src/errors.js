@@ -190,8 +190,8 @@ module.exports = {
     FailedAccountDecryption: function() {
         return new Error('Account decryption failed - possibly wrong password');
     },
-    ReservedEventName: function(name) {
-        return new Error('The event "'+ name +'" is a reserved event name')
+    ReservedEventName: function(event) {
+        return new Error('The event "'+ event +'" is a reserved event name');
     },
     ArgumentsMismatch: function(amount) {
         return new Error('The number of arguments is not matching the methods required number. You need to pass '+ amount +' arguments.')
@@ -204,12 +204,15 @@ module.exports = {
         return new Error('No "' + field + '" specified in neither the given options, nor the default options.');
     },
     EventDoesNotExist: function(name) {
-        return new Error('Event "' + name + '" doesn\'t exist in this contract.')
+        return new Error('Event "' + name + '" doesn\'t exist in this contract.');
     },
     InvalidCallback: function(method, pos) {
         return new Error('The method "' + method + '" requires a callback as its ' + pos + ' parameter');
     },
     NonPayableMethodOrConstructor: function() {
         return new Error('Can not send value to non-payable contract method or constructor');
+    },
+    ClosedConnection: function() {
+        return new Error('Connection is closed');
     }
 };
