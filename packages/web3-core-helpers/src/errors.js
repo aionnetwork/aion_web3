@@ -52,11 +52,8 @@ module.exports = {
         if(!json) return new Error('You need to instantiate using the "new" keyword.');
         else return new Error('The JSON interface of the contract is required when instantiating its object');
     },
-    BlockTimeoutError: function(blocks) {
-        return new Error('Transaction was not mined within ' + blocks + ' blocks, please make sure your transaction was properly sent. Be aware that it might still be mined!')
-    },
-    PollingTimeoutError: function(seconds) {
-        return new Error('Transaction was not mined within' + seconds + ' seconds, please make sure your transaction was properly sent. Be aware that it might still be mined!');
+    TransactionTimeout: function(amount, unit) {
+        return new Error('Transaction was not mined within ' + amount + ' ' + unit + ', please make sure your transaction was properly sent. Be aware that it might still be mined!')
     },
     TransactionOutOfGasError: function(json) {
         return new Error('Transaction ran out of gas. Please provide more gas:\n' + json);
@@ -173,7 +170,7 @@ module.exports = {
         return new Error(param + ' is lower than zero (0)');
     },
     FailureToFetch: function(values, args) {
-        return new Error('One or more of the value(s): ' + values + ' could not be fetched: ' _ args);
+        return new Error('One or more of the value(s): ' + values + ' could not be fetched: ' + args);
     },
     InvalidParam: function(param) {
         return new Error('Invalid ' + password);

@@ -39,8 +39,8 @@ var CONFIRMATIONBLOCKS = 24;
 var Method = function Method(options) {
 
     if(!options.call || !options.name) {
-        throw errors.MissingCoreProperty('name" or "call');
-    }
+        throw errors.MissingProperty('name" or "call');
+    };
 
     this.name = options.name;
     this.call = options.call;
@@ -259,7 +259,7 @@ Method.prototype._confirmTransaction = function (defer, result, payload) {
             // if CONFIRMATION listener exists check for confirmations, by setting canUnsubscribe = false
             .then(function(receipt) {
                 if (!receipt.blockHash) {
-                    throw errors.MissingReceiptOrBlockHash();
+                    throw errors.MissingProperty('receipt or block hash');
                 }
 
                 // apply extra formatters
@@ -299,8 +299,7 @@ Method.prototype._confirmTransaction = function (defer, result, payload) {
                             sub.unsubscribe();
                             promiseResolved = true;
                         }
-
-                        utils._fireError(errors.MissingContractAddress(), defer.eventEmitter, defer.reject);
+                        utils._fireError(errors.MissingProperty('contract address'), defer.eventEmitter, defer.reject);
                         return;
                     }
 
@@ -358,12 +357,9 @@ Method.prototype._confirmTransaction = function (defer, result, payload) {
                     } else {
                         receiptJSON = JSON.stringify(receipt, null, 2);
                         if (receipt.status === false || receipt.status === '0x0') {
-                            utils._fireError(errors.RevertedTransactionError(receiptJSON),
-                                defer.eventEmitter, defer.reject);
+                            utils._fireError(errors.RevertedTransaction(receiptJSON), defer.eventEmitter, defer.reject);
                         } else {
-                            utils._fireError(
-                                errors.TransactionOutOfGasError(receiptJSON),
-                                defer.eventEmitter, defer.reject);
+                            utils._fireError(errors.TransactionOutOfGas(receiptJSON), defer.eventEmitter, defer.reject);
                         }
                     }
 
@@ -384,13 +380,13 @@ Method.prototype._confirmTransaction = function (defer, result, payload) {
                     if (timeoutCount - 1 >= POLLINGTIMEOUT) {
                         sub.unsubscribe();
                         promiseResolved = true;
-                        utils._fireError(errors.PollingTimeoutError(POLLINGTIMEOUT), defer.eventEmitter, defer.reject);
+                        utils._fireError(errors.TransactionTimeout(POLLINGTIMEOUT, 'seconds'), defer.eventEmitter, defer.reject);
                     }
                 } else {
                     if (timeoutCount - 1 >= TIMEOUTBLOCK) {
                         sub.unsubscribe();
                         promiseResolved = true;
-                        utils._fireError(errors.BlockTimeoutError(50), defer.eventEmitter, defer.reject);
+                        utils._fireError(errors.TransactionTimeout(50, 'blocks'), defer.eventEmitter, defer.reject);
                     }
                 }
             });

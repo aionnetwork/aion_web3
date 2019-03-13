@@ -407,7 +407,7 @@ Contract.prototype._encodeMethodABI = function _encodeMethodABI() {
             var inputLength = (_.isArray(json.inputs)) ? json.inputs.length : 0;
 
             if (inputLength !== args.length) {
-                throw error ArgumentsMismatch(inputLength);
+                throw errors.ArgumentsMismatch(inputLength);
             }
 
             if (json.type === 'function') {
