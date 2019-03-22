@@ -7,7 +7,7 @@ let path = require('path')
 let async = require('async')
 let Web3 = require('../')
 let should = require('should')
-let client = new Web3(new Web3.providers.HttpProvider('http://127.0.0.1:8545'))
+let client = new Web3(new Web3.providers.HttpProvider('https://api.nodesmith.io/v1/aion/testnet/jsonrpc?apiKey=2375791dd8d7455fac3d91a392424277'))
 const crypto = require('crypto')
 
 let typesBinPath = path.join(__dirname, 'contracts', 'HelloWorld.bin')
@@ -33,7 +33,7 @@ function deployCt(ct, ctData, args, cb) {
         //.on('confirmation', (confirmationNumber, receipt) => { console.log(confirmationNumber, receipt) });
 }
 
-describe('contracts', () => {
+describe('fvm_contracts', () => {
   let opts = { 
       from: test_cfg.TEST_ACCT_ADDR,
       gas: test_cfg.GAS,
@@ -120,7 +120,7 @@ describe('contracts', () => {
   })
   
 
-  it('contract method call with event', done => {
+  it('fvm_contract method call with event', done => {
       ct.methods.sayHello()
           .send({from: test_cfg.TEST_ACCT_ADDR})
           .then(res => {

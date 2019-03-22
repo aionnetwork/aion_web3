@@ -53,6 +53,7 @@
     }
   ],
   "dependencies": {
+    "aion-web3-avm": "1.0.0",
     "aion-web3-core": "1.1.6",
     "aion-web3-eth": "1.1.6",
     "aion-web3-eth-personal": "1.1.6",
