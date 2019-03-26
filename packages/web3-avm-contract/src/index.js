@@ -31,19 +31,26 @@ class Contract {
 	constructor() {
 		this._abi = new ABI();
 
+		this._initializer = null;
+		this._jarPath = null;
+
 		this._method = null;
 		this._values = [];
 		this._types = [];
 	}
 
+	// Converts the Jar into a JarPath to be Encoded for Deployment
 	deploy(jar) {
-		this.args = function(types, values) {
-	        return this._abi.encode(types, values);
-	    }
-
-	    let jarPath = fs.readFileSync(jar);
-		this._constructor = this._abi.readyDeploy(jarPath, args);
+	    this._jarPath = fs.readFileSync(jar);
+	    return this;
 	}
+
+	// Defines the Arguments of a AVM Contract's Pseudo-Constructor
+	args(types, values) {
+		if(this._jarPath === null) { throw new Error('requires a jarFile to be set first through the deploy method'); }
+        let argsData = this._abi.encode(types, values);
+		this._initializer = this._abi.readyDeploy(this._jarPath, argsData);
+    }
 
 	// Sets the Method you wish to Call
     method(method) {
@@ -74,7 +81,7 @@ class Contract {
         return this._abi.encodeMethod(this._method, this._types, this._values);
     }
 
-    // Decodes some data returned for a
+    // Decodes some data returned for a Method
     decode(type, data) {
         return this._abi.decode(type, data);
     }

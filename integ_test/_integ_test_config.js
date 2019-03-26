@@ -14,7 +14,7 @@ let config = {
   OTHER_TEST_ACCT_ADDR: '0xa0b88269779d225510ca880ed742e445db0c70efb1ee3159b6d56479ae3501f9',
 
   // Populate with max gas for transactions (recommended: 4000000)
-  GAS: 4000000,                   
+  GAS: 2000000,                   
   // Populate with gas price (recommended: 10000000000)
   GAS_PRICE: 10000000000,           
 
@@ -22,10 +22,10 @@ let config = {
   AVM_TEST_PK: '742b442741b31a93cff3f9c114da4987cac8ec5fbdb1636440a735b307c05041852578c0cd4c5b1b2a39cfc692d064a5ca07c51654052e6f95f9d105e048c808',
 
   // AVM Testnet Contract Address
-  AVM_TEST_CT_ADDR: '0x0fa275f378bf81a68fe319844901f5687a7dafabdb575d125fc72db96ca40db3',
+  AVM_TEST_CT_ADDR: '0x0f8bde823790ac79795ec27ef2bd6edb53e69c259701bfba424e0265a8135ecf',
 
   // AVM Testnet Nodesmith API Key
-  AVM_TEST_NS_AK: '2375791dd8d7455fac3d91a392424277'
+  AVM_TEST_APIKEY: '2375791dd8d7455fac3d91a392424277'
 }
 module.exports = function() { 
     return config;

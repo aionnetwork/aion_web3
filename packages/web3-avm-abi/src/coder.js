@@ -51,12 +51,12 @@ class Writer {
         return utils.arrayify(bytes).length;
     }
 
-    writeLength(length, flag) {
-        if(flag === true) {
+    writeLength(length, checkMaxLength) {
+        if(checkMaxLength === true) {
             if (length > 0xffff) { throw new Error("length out of bounds"); }
             return this.writeBytes([ (length >> 16), (length & 0xff) ]);
         } else {
-            return this.writeBytes([ (length >> 16) ]);
+            return this.writeBytes([ length ]);
         }
     }
 }
@@ -78,7 +78,6 @@ class Reader {
 
     readBytes(count) {
         let value = this._data.slice(this._offset, this._offset + count);
-        console.log("Value Length: " + value.length);
         if (value.length !== count) { throw new Error("out-of-bounds"); }
         this._offset += count;
         return new Uint8Array(value);
@@ -113,7 +112,6 @@ class Coder {
 }
 
 class ByteCoder extends Coder {
-
     constructor(type, byteCount, tag, localName) {
         super(type, tag, localName);
         this.byteCount = byteCount;
@@ -121,12 +119,11 @@ class ByteCoder extends Coder {
 
     decode(reader) {
         let tag = reader.readByte();
-        if (tag !== this.tag) { 
-            this._throwError("invalid tag"); 
-        }
-        let value = utils.bigNumberify(this.byteCount).fromTwos(this.byteCount * 8);
-        if (this.byteCount <= 6) {
-            return value.toNumber();
+        if (tag !== this.tag) { this._throwError("invalid tag"); }
+        
+        let value = utils.bigNumberify(reader.readBytes(this.byteCount)).fromTwos(this.byteCount * 8);
+        if(this.type !== 'char') { 
+            return value.toNumber(); 
         }
         return value;
     }
@@ -135,7 +132,7 @@ class ByteCoder extends Coder {
         if (value == null) { 
             this._throwError("cannot be null"); 
         }
-        console.log("ByteCount: " + this.byteCount);
+
         let bytes = utils.padZeros(utils.arrayify(utils.bigNumberify(value).toTwos(this.byteCount * 8)), this.byteCount);
         writer.writeByte(this.tag);
         writer.writeBytes(bytes);
@@ -166,15 +163,12 @@ class CharCoder extends ByteCoder {
     }
 
     encode(writer, value) {
-        if (value.length !== 1) { 
-            throw new Error("char must be 1 char long"); 
-        }
+        if (value.length !== 1) { throw new Error("char must be 1 char long"); }
         super.encode(writer, value.charCodeAt(0));
     }
 }
 
 class FloatCoder extends Coder {
-
     constructor(type, byteCount, tag, localName) {
         super(type, tag, localName);
         this.byteCount = byteCount;
@@ -183,7 +177,7 @@ class FloatCoder extends Coder {
     decode(reader) {
         let tag = reader.readByte();
         if (tag !== this.tag) { 
-            throw new Error("wrong tag"); 
+            throw new Error("invalid tag"); 
         }
 
         let view = new DataView(reader.readBytes(this.byteCount).buffer);
@@ -214,13 +208,13 @@ class NullableCoder extends Coder {
         if (byte === TagNull) {
             return this.decodeNull(reader);
         }
-        if (byte !== this.tag) { throw new Error("wrong type"); }
+        if (byte !== this.tag) { throw new Error("invalid type"); }
         return this.decodeValue(reader);
     }
 
     decodeNull(reader) {
         let tag = reader.readByte()
-        if (tag !== this.tag) { throw new Error("wrong null type"); }
+        if (tag !== this.tag) { throw new Error("invalid null type"); }
         return null;
     }
 
@@ -241,11 +235,11 @@ class AddressCoder extends NullableCoder {
     }
 
     decodeValue(reader) {
-        return getAddress(utils.hexlify(reader.readBytes(32)));
+        return utils.getAddress(utils.hexlify(reader.readBytes(32)));
     }
 
     encodeValue(writer, value) {
-        getAddress(value);
+        utils.getAddress(value);
         writer.writeBytes(value);
     }
 }
@@ -257,13 +251,12 @@ class StringCoder extends NullableCoder {
 
     decodeValue(reader) {
         let length = reader.readLength();
-        console.log("Length: " + length);
         return utils.toUtf8String(reader.readBytes(length));
     }
 
     encodeValue(writer, value) {
         let bytes = utils.toUtf8Bytes(value);
-        writer.writeLength(bytes.length);
+        writer.writeLength(bytes.length, true);
         writer.writeBytes(bytes);
     }
 
@@ -271,7 +264,6 @@ class StringCoder extends NullableCoder {
 
 // Handling of the Arrays
 class ArrayCoder extends NullableCoder {
-
     constructor(coder, localName) {
         super(coder.type + "[]", 0x31, localName);
         this.coder = coder;
@@ -280,7 +272,7 @@ class ArrayCoder extends NullableCoder {
     decodeNull(reader) {
         let tag = reader.readByte();
         if (tag !== this.coder.tag) { 
-            throw new Error("wrong child tag"); 
+            throw new Error("invalid child tag"); 
         }
         return null;
     }
@@ -288,7 +280,7 @@ class ArrayCoder extends NullableCoder {
     decodeValue(reader) {
         let tag = reader.readByte();
         if (tag !== this.coder.tag) {
-            throw new Error("wrong child tag"); 
+            throw new Error("invalid child tag"); 
         }
 
         let length = reader.readLength();
@@ -301,7 +293,7 @@ class ArrayCoder extends NullableCoder {
 
     encodeValue(writer, value) {
         writer.writeByte(this.coder.tag);
-        writer.writeLength(value.length);
+        writer.writeLength(value.length, true);
         value.forEach((value) => {
             this.coder.encode(writer, value);
         });
