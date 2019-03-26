@@ -49,8 +49,8 @@ let callMethod = async(method, types, values, returnType) => {
   let txObject = {
     from: acc.address,
     data: data,
-    gasPrice: 10000000000,
-    gas: 2000000,
+    gasPrice: test_cfg.GAS_PRICE,
+    gas: test_cfg.GAS,
     type: '0xf',
   };
 
@@ -61,14 +61,14 @@ let callMethod = async(method, types, values, returnType) => {
 
 // Deploy an AVM Contract 
 let deploy = async() => {
-  let data = web3.avm.contract.deploy(jarPath).args(['String'], ['Integration Test']);
+  let data = web3.avm.contract.deploy(jarPath).init();
 
   //construct a transaction
   const txObject = {
     from: acc.address,
     data: data,
-    gasPrice: 10000000000,
-    gas: 2000000,
+    gasPrice: test_cfg.GAS_PRICE,
+    gas: test_cfg.GAS,
     type: '0xf',
   };
 

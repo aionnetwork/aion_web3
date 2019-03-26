@@ -97,7 +97,7 @@ class ABICoder {
         // Data (args), and the .jar Buffer Data (jarBufferWriter._data). The two are separated with 4 bytes
         // Between both.
         let combinedWriter = this.getWriter();
-        let combinedLength = 4 + jarBufferWriter._data.length + 4 + argsData.length;
+        let combinedLength =jarBufferWriter._data.length + argsData.length;
         let combinedCoder = new codec.ByteCoder("byte", combinedLength, 0x01, "byte");
         let combinedData = utils.concat([jarBufferWriter._data, argsData]);
 
