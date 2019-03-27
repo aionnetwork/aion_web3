@@ -17,7 +17,7 @@ function addSlice(array) {
     return array;
 }
 
-function OutputStream(uint8s)
+function endianEncoding(uint8s)
 {
     this._uint8s = uint8s;
     this._index = 0;
@@ -307,7 +307,6 @@ function hexlify(value) {
 }
 
 module.exports = {
-    OutputStream: OutputStream,
     arrayify: arrayify,
     defineProperty: defineProperty,
     padZeros: padZeros,
@@ -316,5 +315,6 @@ module.exports = {
     concat: concat,
     toUtf8Bytes: toUtf8Bytes,
     toUtf8String: toUtf8String,
-    hexlify: hexlify
+    hexlify: hexlify,
+    endianEncoding: endianEncoding
 }

@@ -89,7 +89,7 @@ class ABICoder {
         let argsLength = encodedArgs.length;
 
         var combinedBinary = new Uint8Array(4 + codeLength + 4 + argsLength);
-        var combinedStream = new utils.OutputStream(combinedBinary);
+        var combinedStream = new utils.endianEncoding(combinedBinary);
 
         combinedStream.writeFour(codeLength);
         combinedStream.writeBytes(jarArrayBuffer, codeLength);
