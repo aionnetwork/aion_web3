@@ -4,7 +4,7 @@ let path = require('path');
 let BN = require('bn.js');
 let Web3 = require('../');
 
-let jarPath = path.join(__dirname, 'contracts', 'dapp.jar')
+let jarPath = path.join(__dirname, 'contracts', 'HelloAvm-1.0-SNAPSHOT.jar')
 let web3 = new Web3(new Web3.providers.HttpProvider('http://127.0.0.1:8545'));
 let acc = web3.eth.accounts.privateKeyToAccount(test_cfg.AVM_TEST_PK);
 
@@ -71,7 +71,7 @@ let callMethod = async(method, types, values, returnType) => {
 
 // Deploy an AVM Contract 
 let deploy = async() => {
-  let data = web3.avm.contract.deploy(jarPath).init();
+  let data = web3.avm.contract.deploy(jarPath).args(['String'], ['Initialized']).init();
 
   //construct a transaction
   const txObject = {
@@ -89,8 +89,23 @@ let deploy = async() => {
 
 describe('avm_contract', () => {
 
-  it('deploying a contract..', done => {
-    deploy().then(console.log);
-    done();
+  it('deploying contract..', done => {
+    deploy().then(res => {
+      test_cfg.AVM_TEST_CT_ADDR = res.contractAddress;
+      res.status.should.eql(true);
+      done();
+    }).catch(err => {
+      done(err);
+    });
   })
+
+  it('sayHello', done => {
+    callMethod('sayHello').then(res => {
+      console.log(res);
+      done();
+    }).catch(err => {
+      done(err);
+    });
+  })
+
 });

@@ -17,6 +17,53 @@ function addSlice(array) {
     return array;
 }
 
+function OutputStream(uint8s)
+{
+    this._uint8s = uint8s;
+    this._index = 0;
+
+    this.getWrittenLength = function()
+    {
+        return this._index;
+    }
+
+    this.writeOne = function(oneByte)
+    {
+        this._uint8s[this._index] = oneByte;
+        this._index += 1;
+    }
+
+    this.writeTwo = function(twoBytes)
+    {
+        this._uint8s[this._index] = twoBytes >> 8;
+        this._uint8s[this._index + 1] = twoBytes;
+        this._index += 2;
+    }
+
+    this.writeFour = function(fourBytes)
+    {
+        this._uint8s[this._index] = fourBytes >> 24;
+        this._uint8s[this._index + 1] = fourBytes >> 16;
+        this._uint8s[this._index + 2] = fourBytes >> 8;
+        this._uint8s[this._index + 3] = fourBytes;
+        this._index += 4;
+    }
+
+    this.writeLength = function(length)
+    {
+        this.writeTwo(length);
+    }
+
+    this.writeBytes = function(buffer, length)
+    {
+        for (i = 0; i < length; ++i)
+        {
+            this._uint8s[this._index + i] = buffer[i];
+        }
+        this._index += length;
+    }
+}
+
 function isHexString(value, length) {
     if (typeof(value) !== 'string' || !value.match(/^0x[0-9A-Fa-f]*$/)) {
         return false
@@ -260,6 +307,7 @@ function hexlify(value) {
 }
 
 module.exports = {
+    OutputStream: OutputStream,
     arrayify: arrayify,
     defineProperty: defineProperty,
     padZeros: padZeros,

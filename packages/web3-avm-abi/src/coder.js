@@ -120,9 +120,8 @@ class ByteCoder extends Coder {
     decode(reader) {
         let tag = reader.readByte();
         if (tag !== this.tag) { this._throwError("invalid tag"); }
-        
         let value = utils.bigNumberify(reader.readBytes(this.byteCount)).fromTwos(this.byteCount * 8);
-        if(this.type !== 'char') { 
+        if(this.type <= 6) { 
             return value.toNumber(); 
         }
         return value;

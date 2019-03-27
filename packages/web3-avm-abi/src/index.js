@@ -23,8 +23,8 @@
 
 "use strict"; 
 
-var utils = require('./coder-utils');
-var codec = require('./coder');
+let utils = require('./coder-utils');
+let codec = require('./coder');
 
 class ABICoder {
 
@@ -82,37 +82,21 @@ class ABICoder {
         return new codec.Writer();
     }
 
-    readyDeploy(jarPath, argsData) {
-        // Define the Writer for the Data and the Array Buffer of the jar file
-        let jarBuffer = new Uint8Array(jarPath);
-        let jarBufferWriter = this.getWriter();
+    readyDeploy(jarPath, encodedArgs) {
+        let jarArrayBuffer = new Uint8Array(jarPath);
 
-        // Define the Data Coder and get the Psuedo-Constructor's Arguments (Encoded) Data
-        let jarBufferCoder = new codec.ByteCoder("byte", jarBuffer.length, 0x01, "byte");
+        let codeLength = jarArrayBuffer.byteLength;
+        let argsLength = encodedArgs.length;
 
-        // Use the Data Coder to Write the jar Buffer through the Data Writer
-        jarBufferCoder.encode(jarBufferWriter, jarBuffer);
+        var combinedBinary = new Uint8Array(4 + codeLength + 4 + argsLength);
+        var combinedStream = new utils.OutputStream(combinedBinary);
 
-        // Create a Combined Coder, Writer, and Data of both the Psuedo-Constructor's Arguments (Encoded) 
-        // Data (args), and the .jar Buffer Data (jarBufferWriter._data). The two are separated with 4 bytes
-        // Between both.
-        var combinedLength = 0;
-        var combinedData = null;
+        combinedStream.writeFour(codeLength);
+        combinedStream.writeBytes(jarArrayBuffer, codeLength);
+        combinedStream.writeFour(argsLength);
+        combinedStream.writeBytes(encodedArgs, argsLength);
 
-        if(argsData === null) {
-            combinedLength = 4 + jarBufferWriter._data.length;
-            combinedData = jarBufferWriter._data;
-        } else {
-            combinedLength = 4 + jarBufferWriter._data.length + 4 + argsData.length;
-            combinedData = utils.concat([jarBufferWriter._data, argsData]);
-        }
-
-        let combinedWriter = this.getWriter();
-        let combinedCoder = new codec.ByteCoder("byte", combinedLength, 0x01, "byte");
-
-        // Write the Combined Data into the Writer then Hexify it and store it to the Constructor
-        combinedCoder.encode(combinedWriter, combinedData);
-        return utils.hexlify(combinedWriter._data);
+        return utils.hexlify(combinedBinary);
     }
 
     // Encodes Data Types and their Values which are to be used in a Method

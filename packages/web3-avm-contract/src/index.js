@@ -56,8 +56,9 @@ class Contract {
     // Initialize 
     init() {
     	if(this._jarPath === null) { throw new Error('requires a jarFile to be set first through the deploy method'); }
-        console.log("...Deploying AVM Contract");
-    	this._initializer = this._abi.readyDeploy(this._jarPath, this._argsData);
+    	if(this._argsData === null) { this._argsData = this._abi.encode([], []); }
+        this._initializer = this._abi.readyDeploy(this._jarPath, this._argsData);
+        console.log("Deploying AVM Contract...");
 		return this._initializer;
     }
 

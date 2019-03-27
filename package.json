@@ -109,6 +109,7 @@
     "async": "^2.6.2",
     "colors": "^1.3.3",
     "crypto-js": "^3.1.9-1",
+    "endian-code": "^1.0.5",
     "jszip": "^3.2.0",
     "jszip-sync": "^3.1.3-sync",
     "node-zip": "^1.1.1",
