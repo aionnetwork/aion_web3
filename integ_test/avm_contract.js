@@ -4,8 +4,8 @@ let path = require('path');
 let BN = require('bn.js');
 let Web3 = require('../');
 
-let jarPath = path.join(__dirname, 'contracts', 'aion-1.0-SNAPSHOT.jar')
-let web3 = new Web3(new Web3.providers.HttpProvider('https://api.nodesmith.io/v1/aion/avmtestnet/jsonrpc?apiKey=' + test_cfg.AVM_TEST_APIKEY));
+let jarPath = path.join(__dirname, 'contracts', 'dapp.jar')
+let web3 = new Web3(new Web3.providers.HttpProvider('http://127.0.0.1:8545'));
 let acc = web3.eth.accounts.privateKeyToAccount(test_cfg.AVM_TEST_PK);
 
 let testData = {
@@ -44,19 +44,29 @@ let testData = {
 console.log("Using cfg = ", test_cfg);
 
 let callMethod = async(method, types, values, returnType) => {
+  if(types === undefined) types = [];
+  if(values === undefined) values = [];
+
   let data = web3.avm.contract.method(method).inputs(types, values).encode();
 
   let txObject = {
     from: acc.address,
+    to: test_cfg.AVM_TEST_CT_ADDR,
     data: data,
     gasPrice: test_cfg.GAS_PRICE,
     gas: test_cfg.GAS,
-    type: '0xf',
+    type: '0xf'
   };
 
-  let res1 = await web3.eth.call(txObject);
-  let res2 = web3.avm.contract.decode(returnType, res1);
-  return res2;
+  if(method == 'sayHello') {
+    let signTx = await web3.eth.accounts.signTransaction(txObject, test_cfg.AVM_TEST_PK);
+    let res = await web3.eth.sendSignedTransaction(signTx.rawTransaction);
+    return res;
+  } else {
+    let res1 = await web3.eth.call(txObject);
+    let res2 = web3.avm.contract.decode(returnType, res1);
+    return res2;
+  }
 }
 
 // Deploy an AVM Contract 
@@ -69,18 +79,18 @@ let deploy = async() => {
     data: data,
     gasPrice: test_cfg.GAS_PRICE,
     gas: test_cfg.GAS,
-    type: '0xf',
+    type: '0xf'
   };
 
-  let signTx = await web3.eth.accounts.signTransaction(txObject, test_cfg.AVM_TEST_PK);
-  let res = await web3.eth.sendSignedTransaction(signTx.rawTransaction);
+  let unlock = await web3.eth.personal.unlockAccount(test_cfg.TEST_ACCT_ADDR, test_cfg.TEST_ACCT_PW, 600);
+  let res = await web3.eth.sendTransaction(txObject);
   return res;
 }
 
 describe('avm_contract', () => {
 
-  it('deploying contract...', done => {
+  it('deploying a contract..', done => {
     deploy().then(console.log);
     done();
-  });
+  })
 });

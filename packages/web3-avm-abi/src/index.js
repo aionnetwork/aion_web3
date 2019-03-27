@@ -84,22 +84,31 @@ class ABICoder {
 
     readyDeploy(jarPath, argsData) {
         // Define the Writer for the Data and the Array Buffer of the jar file
-        let jarBufferWriter = this.getWriter();
         let jarBuffer = new Uint8Array(jarPath);
+        let jarBufferWriter = this.getWriter();
 
         // Define the Data Coder and get the Psuedo-Constructor's Arguments (Encoded) Data
-        let dataCoder = new codec.ByteCoder("byte", jarBuffer.length, 0x01, "byte");
+        let jarBufferCoder = new codec.ByteCoder("byte", jarBuffer.length, 0x01, "byte");
 
         // Use the Data Coder to Write the jar Buffer through the Data Writer
-        dataCoder.encode(jarBufferWriter, jarBuffer);
+        jarBufferCoder.encode(jarBufferWriter, jarBuffer);
 
         // Create a Combined Coder, Writer, and Data of both the Psuedo-Constructor's Arguments (Encoded) 
         // Data (args), and the .jar Buffer Data (jarBufferWriter._data). The two are separated with 4 bytes
         // Between both.
+        var combinedLength = 0;
+        var combinedData = null;
+
+        if(argsData === null) {
+            combinedLength = 4 + jarBufferWriter._data.length;
+            combinedData = jarBufferWriter._data;
+        } else {
+            combinedLength = 4 + jarBufferWriter._data.length + 4 + argsData.length;
+            combinedData = utils.concat([jarBufferWriter._data, argsData]);
+        }
+
         let combinedWriter = this.getWriter();
-        let combinedLength =jarBufferWriter._data.length + argsData.length;
         let combinedCoder = new codec.ByteCoder("byte", combinedLength, 0x01, "byte");
-        let combinedData = utils.concat([jarBufferWriter._data, argsData]);
 
         // Write the Combined Data into the Writer then Hexify it and store it to the Constructor
         combinedCoder.encode(combinedWriter, combinedData);
