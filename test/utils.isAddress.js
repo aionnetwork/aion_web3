@@ -18,7 +18,7 @@ var tests = [
     { value: '0xE247A45C287191D435A8A5D72A7C8DC030451E9F', is: false },
     { value: '0XE247A45C287191D435A8A5D72A7C8DC030451E9F', is: false },
     { value: '0xP06f640ced8bd31eb9e191887adde74888e9ca31fd8545dae3ae896773ccbc4f', is: false },
-    { value: '0x006f640ced8bd31eb9e191887adde74888e9ca31fd8545dae3ae896773ccbc4f', is: false },
+    { value: '0x006f640ced8bd31eb9e191887adde74888e9ca31fd8545dae3ae896773ccbc4f', is: true },
     { value: '0xc00dcc9fe51c73767fad07cd4da990a8aa7487f40ba5718f711b4fdc09ae5b6e', is: true},
     { value: 'c00dcc9fe51c73767fad07cd4da990a8aa7487f40ba5718f711b4fdc09ae5b6e', is: true}
 ];
