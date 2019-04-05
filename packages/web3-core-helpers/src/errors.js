@@ -62,7 +62,7 @@ module.exports = {
         return new Error('Transaction has been reverted by the EVM:\n' + json);
     },
     ContractCodeStorageError: function() {
-        return new Error('The contract code couldn\'t be stored, please check your gas limit.');
+        return new Error('The contract code couldn\'t be stored, please ensure your contract deployed successfully.');
     },
     MissingCoreProperty: function(property) {
         return new Error('When creating a method you need to provide at least the "' + property + '" property.');
