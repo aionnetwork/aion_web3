@@ -226,7 +226,7 @@ Subscribes to provider events.provider
 IpcProvider.prototype.on = function (type, callback) {
 
     if(typeof callback !== 'function')
-        throw new Error('The second parameter callback must be a function.');
+        throw errors.InvalidCallback('on', 'second');
 
     switch(type){
         case 'data':
@@ -250,7 +250,7 @@ IpcProvider.prototype.on = function (type, callback) {
 IpcProvider.prototype.once = function (type, callback) {
 
     if(typeof callback !== 'function')
-        throw new Error('The second parameter callback must be a function.');
+        throw errors.InvalidCallback('once', 'second');
 
     this.connection.once(type, callback);
 };

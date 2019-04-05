@@ -157,7 +157,7 @@ Subscription.prototype._toPayload = function (args) {
 
 
     if (args.length) {
-        throw new Error('Only a callback is allowed as parameter on an already instantiated subscription.');
+        throw errors.SubscriptionAlreadyInstantiated();
     }
 
     return {
@@ -205,7 +205,7 @@ Subscription.prototype.subscribe = function() {
 
     // throw error, if provider doesnt support subscriptions
     if(!this.options.requestManager.provider.on) {
-        var err2 = new Error('The current provider doesn\'t support subscriptions: '+ this.options.requestManager.provider.constructor.name);
+        var err2 = errors.NoSubscriptionSupport(this.options.requestManager.provider.constructor.name);
         this.callback(err2, null, this);
         this.emit('error', err2);
         return this;

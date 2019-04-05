@@ -1,5 +1,6 @@
 var BN = require('bn.js');
 var aionLib = require('aion-lib');
+var errors = require('aion-web3-core-helpers').errors;
 var HexCharacters = '0123456789abcdef';
 
 function getAddress(val) {
@@ -40,7 +41,7 @@ function defineProperty(object, name, value) {
 function padZeros(value, length) {
     value = arrayify(value);
 
-    if (length < value.length) { throw new Error('cannot pad'); }
+    if (length < value.length) { throw errors.CannotCoderUtilsError('pad'); }
 
     var result = Buffer.alloc(length);
     result.set(value, length - value.length);
@@ -196,7 +197,7 @@ function hexlify(value) {
 
     if (typeof(value) === 'number') {
         if (value < 0) {
-            throw new Error('cannot hexlify negative value');
+            throw errors.CannotCoderUtilsError('hexlify negative value');
         }
 
         var hex = '';
@@ -229,7 +230,7 @@ function hexlify(value) {
         return '0x' + result.join('');
     }
 
-    throw new Error('invalid hexlify value');
+    throw errors.InvalidCoderValue('hexlify'); 
 }
 
 module.exports = {

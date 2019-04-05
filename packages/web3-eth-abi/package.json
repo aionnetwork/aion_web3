@@ -1,14 +1,15 @@
 {
   "name": "aion-web3-eth-abi",
   "namespace": "aion",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "description": "Web3 module encode and decode EVM in/output.",
   "repository": "https://github.com/aionnetwork/aion_web3/tree/master/packages/web3-eth-abi",
   "license": "LGPL-3.0",
   "main": "src/index.js",
   "dependencies": {
-    "aion-lib": "1.1.4",
-    "aion-web3-utils": "1.1.6",
+    "aion-lib": "1.1.7",
+    "aion-web3-core-helpers": "1.1.7",
+    "aion-web3-utils": "1.1.7",
     "bn.js": "^4.11.8",
     "safe-buffer": "^5.1.2",
     "underscore": "1.8.3"

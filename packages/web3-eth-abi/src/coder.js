@@ -14,6 +14,7 @@ https://github.com/aionnetwork/aion_fastvm/wiki/Migration-Guide
 */
 
 var aionLib = require('aion-lib');
+var errors = require('aion-web3-core-helpers').errors;
 var Buffer = require('safe-buffer').Buffer;
 var utils = require('./coder-utils');
 
@@ -56,7 +57,7 @@ function verifyType(type) {
 
 function parseParam(param, allowIndexed) {
     function throwError(i) {
-        throw new Error('unexpected character "' + param[i] + '" at position ' + i + ' in "' + param + '"');
+        throw errors.UnexpectedParam(param[i], i, param);
     }
 
     var parent = { type: '', name: '', state: { allowType: true } };
@@ -163,7 +164,7 @@ function parseParam(param, allowIndexed) {
         }
     }
 
-    if (node.parent) { throw new Error("unexpected eof"); }
+    if (node.parent) { throw errors.UnexpectedEOF(); }
 
     delete parent.state;
     parent.type = verifyType(parent.type);
@@ -182,7 +183,7 @@ function parseSignatureEvent(fragment) {
     }
 
     var match = fragment.match(regexParen);
-    if (!match) { throw new Error('invalid event: ' + fragment); }
+    if (!match) { throw errors.InvalidEvent(fragment); }
 
     abi.name = match[1].trim();
 
@@ -205,7 +206,7 @@ function parseSignatureEvent(fragment) {
     });
 
     if (abi.name && !abi.name.match(regexIdentifier)) {
-        throw new Error('invalid identifier: "' + result.name + '"');
+        throw errors.InvalidIdentifier(result.name);
     }
 
     return abi;
@@ -222,11 +223,11 @@ function parseSignatureFunction(fragment) {
 
     var comps = fragment.split(' returns ');
     var left = comps[0].match(regexParen);
-    if (!left) { throw new Error('invalid signature'); }
+    if (!left) { throw errors.InvalidSignature(); }
 
     abi.name = left[1].trim();
     if (!abi.name.match(regexIdentifier)) {
-        throw new Error('invalid identifier: "' + left[1] + '"');
+        throw errors.InvalidIdentifier(left[1]);
     }
 
     splitNesting(left[2]).forEach(function(param) {
@@ -260,7 +261,7 @@ function parseSignatureFunction(fragment) {
     if (comps.length > 1) {
         var right = comps[1].match(regexParen);
         if (right[1].trim() != '' || right[3].trim() != '') {
-            throw new Error('unexpected tokens');
+            throw errors.UnexpectedTokens();
         }
 
         splitNesting(right[2]).forEach(function(param) {
@@ -289,7 +290,7 @@ function parseSignature(fragment) {
         }
     }
 
-    throw new Error('unknown fragment');
+    throw errors.UnknownFragment();
 }
 
 
@@ -304,7 +305,7 @@ var coderNull = function(coerceFunc) {
             return utils.arrayify([]);
         },
         decode: function(data, offset) {
-            if (offset > data.length) { throw new Error('invalid null'); }
+            if (offset > data.length) { throw errors.InvalidCoderValue('null'); } 
             return {
                 consumed: 0,
                 value: coerceFunc('null', undefined)
@@ -336,7 +337,7 @@ var coderNumber = function(coerceFunc, size, signed, localName) {
         },
         decode: function(data, offset) {
             if (data.length < offset + 16) {
-                throw new Error('insufficient data for ' + name + ' type');
+                throw errors.InsufficientData(name);
             }
             var junkLength = 16 - size;
             var sliced = data.slice(offset + junkLength, offset + 16)
@@ -395,7 +396,7 @@ var coderFixedBytes = function(coerceFunc, length, localName) {
                 // length, but that is a backward-incompatible change, so here
                 // we just check for things that can cause problems.
                 if (value.length > 32) {
-                    throw new Error('too many bytes for field');
+                    throw errors.ExcessiveBytes('field bytes');
                 }
 
             } catch (error) {
@@ -410,7 +411,7 @@ var coderFixedBytes = function(coerceFunc, length, localName) {
         },
         decode: function(data, offset) {
             if (data.length < offset + minLen) {
-                throw new Error('insufficient data for ' + name + ' type');
+                throw errors.InsufficientData(name);
             }
 
             return {
@@ -430,14 +431,14 @@ var coderAddress = function(coerceFunc, localName) {
             try {
                 value = utils.arrayify(utils.getAddress(value));
             } catch (error) {
-                throw new Error('invalid address');
+                throw errors.InvalidCoderValue('address');
             }
             var result = Buffer.from(value);
             return result;
         },
         decode: function(data, offset) {
             if (data.length < offset + 32) {
-                throw new Error('insufficent data for address type');
+                throw errors.InsufficientData('address');
             }
             return {
                 consumed: 32,
@@ -460,7 +461,7 @@ function _encodeDynamicBytes(value) {
 
 function _decodeDynamicBytes(data, offset, localName) {
     if (data.length < offset + 16) {
-        throw new Error('insufficient data for dynamicBytes length');
+        throw errors.InsufficientData('dynamicBytes');
     }
 
     var length = uint128Coder.decode(data, offset).value;
@@ -469,11 +470,11 @@ function _decodeDynamicBytes(data, offset, localName) {
     try {
         length = length.toNumber();
     } catch (error) {
-        throw new Error('dynamic bytes count too large');
+        throw errors.ExcessiveBytes('dynamicBytes');
     }
 
     if (data.length < offset + length) {
-        throw new Error('insufficient data for dynamicBytes type');
+        throw errors.InsufficientData('dynamicBytes');
     }
 
 
@@ -492,7 +493,7 @@ var coderDynamicBytes = function(coerceFunc, localName) {
             try {
                 value = utils.arrayify(value);
             } catch (error) {
-                throw new Error('invalid bytes value');
+                throw errors.InvalidCoderValue('bytes');
             }
             return _encodeDynamicBytes(value);
         },
@@ -512,7 +513,7 @@ var coderString = function(coerceFunc, localName) {
         type: 'string',
         encode: function(value) {
             if (typeof(value) !== 'string') {
-                throw new Error('invalid string value');
+                throw errors.InvalidCoderValue('string');
             }
             return _encodeDynamicBytes(utils.toUtf8Bytes(value));
         },
@@ -543,10 +544,11 @@ function pack(coders, values) {
 
     } else {
         throw new Error('invalid tuple value');
+        throw errors.InvalidCoderValue('tuple');
     }
 
     if (coders.length !== values.length) {
-        throw new Error('types/value length mismatch');
+        throw errors.LengthMismatch('Types/Value');
     }
 
     var parts = [];
@@ -642,7 +644,7 @@ function coderArray(coerceFunc, coder, length, localName) {
         type: type,
         encode: function(value) {
             if (!Array.isArray(value)) {
-                throw new Error('expected array value');
+                throw errors.InvalidCoderValue('array'); 
             }
 
             var count = length;
@@ -655,7 +657,7 @@ function coderArray(coerceFunc, coder, length, localName) {
             }
 
             if (count !== value.length) {
-                throw new Error('array value length mismatch');
+                throw errors.LengthMismatch('Array value');
             }
 
             var coders = [];
@@ -674,12 +676,12 @@ function coderArray(coerceFunc, coder, length, localName) {
                  try {
                       var decodedLength = uint128Coder.decode(data, offset);
                  } catch (error) {
-                     throw new Error('insufficient data for dynamic array length');
+                     throw errors.InsufficientData('dynamic array');
                  }
                  try {
                      count = decodedLength.value.toNumber();
                  } catch (error) {
-                     throw new Error('array count too large');
+                     throw errors.ExcessiveBytes('Array');
                  }
                  consumed += decodedLength.consumed;
                  offset += decodedLength.consumed;
@@ -756,7 +758,7 @@ function splitNesting(value) {
             } else if (c === ')') {
                 depth--;
                 if (depth === -1) {
-                    throw new Error('unbalanced parenthsis');
+                    throw errors.UnbalanceParenthesis();
                 }
             }
         }
@@ -791,7 +793,7 @@ function getParamCoder(coerceFunc, param) {
     if (match) {
         var size = parseInt(match[2] || 128);
         if (size === 0 || size > 128 || (size % 8) !== 0) {
-            throw new Error('invalid ' + match[1] + ' bit length');
+            throw errors.InvalidBitLength(match[1]);
         }
         return coderNumber(coerceFunc, size / 8, (match[1] === 'int'), param.name);
     }
@@ -800,7 +802,7 @@ function getParamCoder(coerceFunc, param) {
     if (match) {
         var size = parseInt(match[1]);
         if (size === 0 || size > 32) {
-            throw new Error('invalid bytes length');
+            throw errors.InvalidBytesLength();
         }
         return coderFixedBytes(coerceFunc, size, param.name);
     }
@@ -821,7 +823,7 @@ function getParamCoder(coerceFunc, param) {
         return coderNull(coerceFunc);
     }
 
-    throw new Error('invalid type');
+    throw errors.InvalidType();
 }
 
 function Coder(coerceFunc) {
@@ -837,7 +839,7 @@ function populateNames(type, name) {
 
     if (type.type.substring(0, 5) === 'tuple' && typeof(name) !== 'string') {
         if (type.components.length != name.names.length) {
-            throw new Error('names/types length mismatch');
+            throw errors.LengthMismatch('Names/Types');
         }
 
         name.names.forEach(function(name, index) {
@@ -862,7 +864,7 @@ utils.defineProperty(Coder.prototype, 'encode', function(names, types, values) {
     }
 
     if (types.length !== values.length) {
-        throw new Error('types/values length mismatch');
+        throw errors.LengthMismatch('Types/Values');
     }
 
     var coders = [];
