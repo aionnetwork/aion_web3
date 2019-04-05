@@ -26,7 +26,7 @@ let tests = [{
   type: 'call',
   inputs: 1,
   inputTypes: [ 'int' ],
-  inputValues: [ 2 ],
+  inputValues: [ 1 ],
   returnType: 'int'
 }, {
   name: 'getInt1DArray',
@@ -149,7 +149,7 @@ describe('avm_contract', () => {
 
   it('deploying contract..', done => {
     deploy().then(res => {
-      test_cfg.AVM_TEST_CT_ADDR = res.transactionHash;
+      test_cfg.AVM_TEST_CT_ADDR = res.contractAddress;
       res.status.should.eql(true);
       done();
     }).catch(err => {
@@ -161,33 +161,21 @@ describe('avm_contract', () => {
     it('testing method, ' + test.name, done => {
       if(test.type === 'call') {
         if(test.inputs === 1) {
-          methodCallWithInputs(test.name, test.inputTypes, test.inputValues, test.returnType).then(res => {
-            console.log(res);
-            done();
-          }).catch(err => {
+          methodCallWithInputs(test.name, test.inputTypes, test.inputValues, test.returnType).catch(err => {
             done(err);
           });
         } else {
-          methodCallWithoutInputs(test.name, test.returnType).then(res => {
-            console.log(res);
-            done();
-          }).catch(err => {
+          methodCallWithoutInputs(test.name, test.returnType).catch(err => {
             done(err);
           });
         }
       } else if(test.type === 'send') {
         if(test.inputs === 1) {
-          methodSendWithInputs(test.name, test.inputTypes, test.inputValues).then(res => {
-            console.log(res);
-            done();
-          }).catch(err => {
+          methodSendWithInputs(test.name, test.inputTypes, test.inputValues).catch(err => {
             done(err);
           });
         } else {
-          methodSendWithoutInputs(test.name).then(res => {
-            console.log(res);
-            done();
-          }).catch(err => {
+          methodSendWithoutInputs(test.name).catch(err => {
             done(err);
           });
         }
