@@ -28,6 +28,7 @@
 
 var _ = require('underscore');
 var fs = require('fs');
+var errors = require('./errors');
 var NodeZip = require('node-zip');
 var utils = require('aion-web3-utils');
 // var Iban = require('aion-web3-eth-iban');
@@ -80,7 +81,7 @@ var _txInputFormatter = function (options){
     }
 
     if (options.data && options.input) {
-        throw new Error('You can\'t have "data" and "input" as properties of transactions at the same time, please use either "data" or "input" instead.');
+        throw errors.TxInputFormatterDataInputError();
     }
 
     if (!options.data && options.input) {
@@ -89,7 +90,7 @@ var _txInputFormatter = function (options){
     }
 
     if(options.data && !utils.isHex(options.data)) {
-        throw new Error('The data field must be HEX encoded data.');
+        throw errors.TxInputFormatterDataHexError();
     }
 
     // allow both
@@ -143,7 +144,7 @@ var inputTransactionFormatter = function (options) {
         options.from = options.from || (this ? this.defaultAccount : null);
 
         if (!options.from && !_.isNumber(options.from)) {
-            throw new Error('The send transactions "from" field must be defined!');
+            throw errors.InputTransactionFormatterUndefinedFromField();
         }
 
         options.from = inputAddressFormatter(options.from);
@@ -202,7 +203,7 @@ var outputTransactionFormatter = function (tx){
 */
 var outputTransactionReceiptFormatter = function (receipt){
     if(typeof receipt !== 'object') {
-        throw new Error('Received receipt is invalid: '+ receipt);
+        throw errors.OutputTransactionReceiptFormatterInvalidReceipt(receipt);
     }
 
     if(receipt.blockNumber !== null)
@@ -411,7 +412,7 @@ var inputAddressFormatter = function (address) {
     if (utils.isAddress(address)) {
         return '0x' + address.toLowerCase().replace('0x','');
     }
-    throw new Error('Provided address "'+ address +'" is invalid, the capitalization checksum test failed, or its an indrect IBAN address which can\'t be converted.');
+    throw errors.InputAddressFormatterInvalidAddress(address);
 };
 
 
@@ -440,12 +441,12 @@ var inputZipfileBase64EncodingFormatter = function (paths) {
     var zip = new NodeZip();
 
     if(!Array.isArray(paths)) {
-        throw new Error('This must be a list of .sol filepaths');
+        throw errors.InputZipfileBase64FormatterInvalidArray();
     };
 
     paths.forEach(path => {
         if(!_.isString(path) || !path.endsWith(".sol")) {
-            throw new Error('One of the provided filepaths does not include a valid .sol file');
+            throw errors.InputZipfileBase64FormatterInvalidContract();
         }
 
         var file = path.trim().split("/");

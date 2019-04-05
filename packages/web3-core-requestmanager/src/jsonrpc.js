@@ -26,6 +26,8 @@
 
 "use strict";
 
+var errors = require('aion-web3-core-helpers').errors;
+
 // Initialize Jsonrpc as a simple object with utility functions.
 var Jsonrpc = {
     messageId: 0
@@ -41,7 +43,7 @@ var Jsonrpc = {
  */
 Jsonrpc.toPayload = function (method, params) {
     if (!method) {
-        throw new Error('JSONRPC method should be specified for params: "'+ JSON.stringify(params) +'"!');
+        throw errors.UnspecificedJSONRPCParams(JSON.stringify(params))
     }
 
     // advance message ID
