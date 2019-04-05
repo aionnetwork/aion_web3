@@ -7,7 +7,7 @@ let path = require('path')
 let async = require('async')
 let Web3 = require('../')
 let should = require('should')
-let client = new Web3(new Web3.providers.HttpProvider('https://api.nodesmith.io/v1/aion/testnet/jsonrpc?apiKey=2375791dd8d7455fac3d91a392424277'))
+let client = new Web3(new Web3.providers.HttpProvider('http://127.0.0.1:8545'))
 const crypto = require('crypto')
 
 let typesBinPath = path.join(__dirname, 'contracts', 'HelloWorld.bin')

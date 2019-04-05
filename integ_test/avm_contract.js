@@ -56,7 +56,7 @@ let deploy = async() => {
   const txObject = {
     from: acc.address,
     data: data,
-    gasPrice: test_cfg.AVM_TEST_CT_DEPLOY_GAS_PRICE,
+    gasPrice: test_cfg.GAS_PRICE,
     gas: test_cfg.AVM_TEST_CT_DEPLOY_GAS,
     type: '0xf'
   };
@@ -75,7 +75,7 @@ let methodCallWithInputs = async(methodName, inputTypes, inputValues, returnType
     to: test_cfg.AVM_TEST_CT_ADDR,
     data: data,
     gasPrice: test_cfg.GAS_PRICE,
-    gas: test_cfg.GAS,
+    gas: test_cfg.AVM_TEST_CT_TXN_GAS,
     type: '0xf'
   };
 
@@ -93,7 +93,7 @@ let methodCallWithoutInputs = async(methodName, returnType) => {
     to: test_cfg.AVM_TEST_CT_ADDR,
     data: data,
     gasPrice: test_cfg.GAS_PRICE,
-    gas: test_cfg.GAS,
+    gas: test_cfg.AVM_TEST_CT_TXN_GAS,
     type: '0xf'
   };
 
@@ -111,7 +111,7 @@ let methodSendWithInputs = async(methodName, inputTypes, inputValues) => {
     to: test_cfg.AVM_TEST_CT_ADDR,
     data: data,
     gasPrice: test_cfg.GAS_PRICE,
-    gas: test_cfg.GAS,
+    gas: test_cfg.AVM_TEST_CT_TXN_GAS,
     type: '0xf'
   };
 
@@ -129,7 +129,7 @@ let methodSendWithoutInputs = async(methodName) => {
     to: test_cfg.AVM_TEST_CT_ADDR,
     data: data,
     gasPrice: test_cfg.GAS_PRICE,
-    gas: test_cfg.GAS,
+    gas: test_cfg.AVM_TEST_CT_TXN_GAS,
     type: '0xf'
   };
 
