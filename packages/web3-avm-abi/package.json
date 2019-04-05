@@ -1,7 +1,7 @@
 {
   "name": "aion-web3-avm-abi",
   "namespace": "aion",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "Web3 module encode and decode AVM in/output.",
   "repository": "https://github.com/aionnetwork/aion_web3/tree/master/packages/web3-avm-abi",
   "license": "LGPL-3.0",

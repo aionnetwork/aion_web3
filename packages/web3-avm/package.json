@@ -1,14 +1,14 @@
 {
   "name": "aion-web3-avm",
   "namespace": "aion",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "Web3 module for AVM modulet.",
   "repository": "https://github.com/aionnetwork/aion_web3/tree/master/packages/web3-avm",
   "license": "LGPL-3.0",
   "main": "src/index.js",
   "dependencies": {
-  	"aion-web3-core": "1.1.6",
-    "aion-web3-avm-abi": "1.0.0",
-    "aion-web3-avm-contract": "1.0.0"
+    "aion-web3-avm-abi": "1.2.0",
+    "aion-web3-avm-contract": "1.2.0",
+    "aion-web3-core": "1.1.6"
   }
 }
