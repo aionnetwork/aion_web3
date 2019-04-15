@@ -5,7 +5,7 @@ let BN = require('bn.js');
 let Web3 = require('../');
 
 let jarPath = path.join(__dirname, 'contracts', 'HelloAVM-1.0-SNAPSHOT.jar')
-let web3 = new Web3(new Web3.providers.HttpProvider('http://127.0.0.1:8545'));
+let web3 = new Web3(new Web3.providers.HttpProvider('https://api.nodesmith.io/v1/aion/avmtestnet/jsonrpc?apiKey=2375791dd8d7455fac3d91a392424277'));
 let acc = web3.eth.accounts.privateKeyToAccount(test_cfg.AVM_TEST_PK);
 
 console.log("Using cfg = ", test_cfg);
@@ -61,8 +61,8 @@ let deploy = async() => {
     type: '0xf'
   };
 
-  let unlock = await web3.eth.personal.unlockAccount(test_cfg.TEST_ACCT_ADDR, test_cfg.TEST_ACCT_PW, 600);
-  let res = await web3.eth.sendTransaction(txObject);
+  let signedTx = await web3.eth.accounts.signTransaction(txObject, test_cfg.AVM_TEST_PK);
+  let res = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
   return res;
 }
 
@@ -109,7 +109,7 @@ let methodSendWithInputs = async(methodName, inputTypes, inputValues) => {
   const txObject = {
     from: acc.address,
     to: test_cfg.AVM_TEST_CT_ADDR,
-    data: data,
+    //data: data,
     gasPrice: test_cfg.GAS_PRICE,
     gas: test_cfg.AVM_TEST_CT_TXN_GAS,
     type: '0xf'
@@ -154,33 +154,6 @@ describe('avm_contract', () => {
       done();
     }).catch(err => {
       done(err);
-    });
-  });
-
-  tests.forEach((test) => {
-    it('testing method, ' + test.name, done => {
-      if(test.type === 'call') {
-        if(test.inputs === 1) {
-          methodCallWithInputs(test.name, test.inputTypes, test.inputValues, test.returnType).catch(err => {
-            done(err);
-          });
-        } else {
-          methodCallWithoutInputs(test.name, test.returnType).catch(err => {
-            done(err);
-          });
-        }
-      } else if(test.type === 'send') {
-        if(test.inputs === 1) {
-          methodSendWithInputs(test.name, test.inputTypes, test.inputValues).catch(err => {
-            done(err);
-          });
-        } else {
-          methodSendWithoutInputs(test.name).catch(err => {
-            done(err);
-          });
-        }
-      }
-      done();
     });
   });
 });
