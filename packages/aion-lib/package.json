@@ -1,6 +1,6 @@
 {
   "name": "aion-lib",
-  "version": "1.2.0",
+  "version": "1.2.3",
   "description": "",
   "main": "src/index.js",
   "dependencies": {
@@ -16,5 +16,5 @@
     "tweetnacl": "^1.0.0",
     "underscore": "^1.8.3"
   },
-  "gitHead": "ff767f05be375a019c4a9b52366a8b0683ea31a8"
+  "gitHead": "0c96a66aef3bcfc2b9ee49be24d8f14131db1c9d"
 }
