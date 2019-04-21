@@ -1,13 +1,13 @@
 {
     "name": "aion-web3-utils",
     "namespace": "aion",
-    "version": "1.2.3",
+    "version": "1.2.5-beta.0",
     "description": "Collection of utility functions used in web3.js.",
     "repository": "https://github.com/aionnetwork/aion_web3/tree/master/packages/web3-utils",
     "license": "LGPL-3.0",
     "main": "src/index.js",
     "dependencies": {
-        "aion-lib": "1.2.3",
+        "aion-lib": "1.2.5-beta.0",
         "bn.js": "4.11.6",
         "ethjs-unit": "0.1.6",
         "number-to-bn": "1.7.0",
@@ -16,5 +16,5 @@
         "underscore": "1.8.3",
         "utf8": "2.1.1"
     },
-    "gitHead": "0c96a66aef3bcfc2b9ee49be24d8f14131db1c9d"
+    "gitHead": "dd7ee9cfaba7316ff520c0e9ee1952c3538077d6"
 }

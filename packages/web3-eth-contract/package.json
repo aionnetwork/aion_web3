@@ -1,20 +1,20 @@
 {
     "name": "aion-web3-eth-contract",
     "namespace": "aion",
-    "version": "1.2.3",
+    "version": "1.2.5-beta.0",
     "description": "Web3 module to interact with Ethereum smart contracts.",
     "repository": "https://github.com/aionnetwork/aion_web3/tree/master/packages/web3-eth-contract",
     "license": "LGPL-3.0",
     "main": "src/index.js",
     "dependencies": {
-        "aion-web3-core": "1.2.3",
-        "aion-web3-core-helpers": "1.2.3",
-        "aion-web3-core-method": "1.2.3",
-        "aion-web3-core-promievent": "1.2.3",
-        "aion-web3-core-subscriptions": "1.2.3",
-        "aion-web3-eth-abi": "1.2.3",
-        "aion-web3-utils": "1.2.3",
+        "aion-web3-core": "1.2.5-beta.0",
+        "aion-web3-core-helpers": "1.2.5-beta.0",
+        "aion-web3-core-method": "1.2.5-beta.0",
+        "aion-web3-core-promievent": "1.2.5-beta.0",
+        "aion-web3-core-subscriptions": "1.2.5-beta.0",
+        "aion-web3-eth-abi": "1.2.5-beta.0",
+        "aion-web3-utils": "1.2.5-beta.0",
         "underscore": "1.8.3"
     },
-    "gitHead": "0c96a66aef3bcfc2b9ee49be24d8f14131db1c9d"
+    "gitHead": "dd7ee9cfaba7316ff520c0e9ee1952c3538077d6"
 }

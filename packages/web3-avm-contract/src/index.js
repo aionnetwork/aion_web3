@@ -24,7 +24,7 @@
 "use strict"; 
 
 var fs = require('fs');
-var ABI = require('aion-web3-avm-abi');
+var ABI = require('aion-web3-avm-codec');
 
 class Contract {
 
