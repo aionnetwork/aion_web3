@@ -5,10 +5,11 @@ let BN = require('bn.js');
 let Web3 = require('../');
 
 let jarPath = path.join(__dirname, 'contracts', 'HelloAVM-1.0-SNAPSHOT.jar')
-let web3 = new Web3(new Web3.providers.HttpProvider('https:127.0.0.1:8545'));
+let web3 = new Web3(new Web3.providers.HttpProvider('https://api.nodesmith.io/v1/aion/avmtestnet/jsonrpc?apiKey=2375791dd8d7455fac3d91a392424277')); 
 let acc = web3.eth.accounts.privateKeyToAccount(test_cfg.AVM_TEST_PK);
 
 console.log("Using cfg = ", test_cfg);
+console.log("ACC: ", acc.address);
 
 let tests = [{
   name: 'setString',
@@ -58,7 +59,7 @@ let deploy = async() => {
     data: data,
     gasPrice: test_cfg.GAS_PRICE,
     gas: test_cfg.AVM_TEST_CT_DEPLOY_GAS,
-    type: '0xf'
+    type: '0x2'
   };
 
   let signedTx = await web3.eth.accounts.signTransaction(txObject, test_cfg.AVM_TEST_PK);

@@ -1,4 +1,4 @@
-# aion-web3-avm-abi
+# aion-web3-codec
 
 This is a sub package of [aion_web3][repo].
 
@@ -11,7 +11,7 @@ Please read the [documentation](https://docs.aion.network/docs/web3) for more in
 ### Node.js
 
 ```bash
-npm install aion-web3-avm-abi
+npm install aion-web3-codec
 ```
 
 [repo]: https://github.com/aionnetwork/aion_web3

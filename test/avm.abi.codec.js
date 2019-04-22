@@ -1,7 +1,7 @@
 let chai = require('chai');
 let assert = chai.assert;
-let utils = require('../packages/web3-avm-abi/src/coder-utils');
-let Abi = require('../packages/web3-avm-abi');
+let utils = require('../packages/web3-avm-codec/src/coder-utils');
+let Abi = require('../packages/web3-avm-codec');
 
 let abi = new Abi();
 
