@@ -9,4 +9,4 @@ dist/
 lerna-debug.log
 *.sublime-*
 tmp.js
-*.package-lock.json
+package-lock.json
