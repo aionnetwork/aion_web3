@@ -95,8 +95,13 @@ let methodSendWithInputs = async(methodName, inputTypes, inputValues) => {
     type: '0x1'
   };
 
-  let unlock = await web3.eth.personal.unlockAccount(test_cfg.TEST_ACCT_ADDR, test_cfg.TEST_ACCT_PW, 600);
-  let res = await web3.eth.sendTransaction(txObject);
+  let signedTx = await web3.eth.accounts.signTransaction(txObject, test_cfg.AVM_TEST_PK);
+  let res = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+  
+
+  let unlock = await web3.eth.personal.unlockAccount(test_cfg.TEST_ACCT_ADDR, test_cfg.TEST_ACCT_PW, 6000);
+  console.log(unlock);
+  //let res = await web3.eth.sendTransaction(txObject);
   return res;
 }
 
@@ -123,6 +128,7 @@ describe('avm_contract', () => {
   it('deploying contract..', done => {
     deploy().then(res => {
       test_cfg.AVM_TEST_CT_ADDR = res.contractAddress;
+      //console.log(JSON.stringify(res));
       res.status.should.eql(true);
       done();
     }).catch(err => {
