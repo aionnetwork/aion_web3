@@ -5,7 +5,7 @@ let BN = require('bn.js');
 let Web3 = require('../');
 
 let jarPath = path.join(__dirname, 'contracts', 'Counter.jar')
-let web3 = new Web3(new Web3.providers.HttpProvider('http://127.0.0.1:8545')); 
+let web3 = new Web3(new Web3.providers.HttpProvider('https://api.nodesmith.io/v1/aion/avmtestnet/jsonrpc?apiKey=2375791dd8d7455fac3d91a392424277')); 
 let acc = web3.eth.accounts.privateKeyToAccount(test_cfg.AVM_TEST_PK);
 
 console.log("Using cfg = ", test_cfg);
@@ -15,14 +15,14 @@ let tests = [{
   name: 'incrementCounter',
   type: 'send',
   inputs: 1,
-  inputTypes: [ 'int' ], 
-  inputValues: [ 5 ]
+  inputTypes: ['int'], 
+  inputValues: [5476545]
 }, {
   name: 'decrementCounter',
   type: 'send',
   inputs: 1,
   inputTypes: [ 'int' ], 
-  inputValues: [ 30 ]
+  inputValues: [ 300000 ]
 }, {
   name: 'getCount',
   type: 'call',
@@ -99,8 +99,8 @@ let methodSendWithInputs = async(methodName, inputTypes, inputValues) => {
   let res = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
   
 
-  let unlock = await web3.eth.personal.unlockAccount(test_cfg.TEST_ACCT_ADDR, test_cfg.TEST_ACCT_PW, 6000);
-  console.log(unlock);
+  //let unlock = await web3.eth.personal.unlockAccount(test_cfg.TEST_ACCT_ADDR, test_cfg.TEST_ACCT_PW, 6000);
+  //console.log(unlock);
   //let res = await web3.eth.sendTransaction(txObject);
   return res;
 }
