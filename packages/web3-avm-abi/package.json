@@ -1,0 +1,17 @@
+{
+  "name": "aion-web3-avm-abi",
+  "namespace": "aion",
+  "version": "1.2.5-beta.0",
+  "description": "Web3 module encode and decode AVM in/output.",
+  "repository": "https://github.com/aionnetwork/aion_web3/tree/avm-support-update/packages/web3-avm-abi",
+  "license": "LGPL-3.0",
+  "main": "src/index.js",
+  "dependencies": {
+    "aion-lib": "1.1.4",
+    "aion-web3-utils": "1.1.4",
+    "bn.js": "^4.11.8",
+    "safe-buffer": "^5.1.2",
+    "underscore": "1.8.3"
+  },
+  "gitHead": "dd7ee9cfaba7316ff520c0e9ee1952c3538077d6"
+}
