@@ -25,7 +25,7 @@
 
 let utils = require('./coder-utils');
 let codec = require('./coder');
-
+let AvmInterface = require('./interface');
 class ABICoder {
 
     constructor() {
@@ -169,6 +169,11 @@ class ABICoder {
         if(type.substring(type.length - 2) === "[]") array = true;
 
         return coder.decode(reader, array);
+    }
+
+    //
+    interface(abi){
+        return AvmInterface.fromString(abi);
     }
 }
 

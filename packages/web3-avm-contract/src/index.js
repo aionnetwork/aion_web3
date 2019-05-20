@@ -38,7 +38,20 @@ class Contract {
 		this._method = null;
 		this._values = [];
 		this._types = [];
+
+		//
+		this._call = null;
+		this._send null;
 	}
+
+	//
+	initBinding(contractAddress, interface, key) {
+	    console.log("Initializing AVM Contract binding...");
+	    //create methods
+	    //
+	}
+	//mock method
+
 
 	// Converts the Jar into a JarPath to be Encoded for Initialization
 	deploy(jar) {
@@ -92,6 +105,11 @@ class Contract {
     // Decodes some data returned for a Method
     decode(type, data) {
         return this._abi.decode(type, data);
+    }
+
+    //
+    interface(abi) {
+        return this._abi.AvmInterface(abi);
     }
 }
 
