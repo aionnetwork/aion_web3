@@ -25,7 +25,7 @@
 
 let utils = require('./coder-utils');
 let codec = require('./coder');
-let AvmInterface = require('./interface');
+let ABI = require('./interface');
 class ABICoder {
 
     constructor() {
@@ -172,8 +172,8 @@ class ABICoder {
     }
 
     //
-    interface(abi){
-        return AvmInterface.fromString(abi);
+    AvmInterface(abi){
+        return ABI.Interface.fromString(abi);
     }
 }
 

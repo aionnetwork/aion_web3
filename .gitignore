@@ -10,3 +10,4 @@ lerna-debug.log
 *.sublime-*
 tmp.js
 package-lock.json
+_integ_test_config.js

@@ -5,7 +5,7 @@ let BN = require('bn.js');
 let Web3 = require('../');
 
 let jarPath = path.join(__dirname, 'contracts', 'Counter.jar')
-let web3 = new Web3(new Web3.providers.HttpProvider('192.168.1.69:9545'));
+let web3 = new Web3(new Web3.providers.HttpProvider('https://aion.api.nodesmith.io/v1/mastery/jsonrpc?apiKey=b1b87cf833044eee8d2636176301ae09'));
 let acc = web3.eth.accounts.privateKeyToAccount(test_cfg.AVM_TEST_PK);
 
 console.log("Using cfg = ", test_cfg);
@@ -123,12 +123,36 @@ let methodSendWithoutInputs = async(methodName) => {
   return res;
 }
 
+let abi = `
+    0.0
+    Counter
+    int getCount()
+    void setString(String)
+`
+
+let iface = web3.avm.contract.Interface(abi);//aion.utils.AvmInterface.fromString(abi);
+
+let contract = web3.avm.contract.initBinding("0xa0ddef877dba8f4e407f94d70d83757327b9c9641f9244da3240b2927d493ebc", iface, test_cfg.AVM_TEST_PK, web3);//Interface
+
+let abiMethods = async(methodName) => {
+
+   try {
+
+      let contractAddress = test_cfg.AVM_TEST_CT_ADDR;
+
+      let contract = web3.avm.contract.initBinding(contractAddress, iface, test_cfg.AVM_TEST_PK, web3);//Interface
+      let result0 = await contract.readOnly.getCount();
+      console.log("RESULT: ", result0);
+
+    } catch (error) {
+      console.log(error);
+    }
+ }
+
 describe('avm_contract', () => {
 
   it('deploying contract..', done => {
     deploy().then(res => {
-      test_cfg.AVM_TEST_CT_ADDR = res.contractAddress;
-      //console.log(JSON.stringify(res));
       res.status.should.eql(true);
       done();
     }).catch(err => {
@@ -168,6 +192,14 @@ describe('avm_contract', () => {
         }
       }
     });
+  });
+
+  it('Calling contract abi binding methods..', done => {
+      abiMethods().then(res => {
+        done();
+      }).catch(err => {
+        done(err);
+      });
   });
 
 });

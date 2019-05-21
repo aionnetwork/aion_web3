@@ -306,6 +306,14 @@ function hexlify(value) {
     throw new Error('invalid hexlify value');
 }
 
+function defineReadOnly(object, name, value) {
+    Object.defineProperty(object, name, {
+        enumerable: true,
+        value: value,
+        writable: false,
+    });
+}
+
 module.exports = {
     arrayify: arrayify,
     defineProperty: defineProperty,
@@ -316,5 +324,6 @@ module.exports = {
     toUtf8Bytes: toUtf8Bytes,
     toUtf8String: toUtf8String,
     hexlify: hexlify,
-    endianEncoding: endianEncoding
+    endianEncoding: endianEncoding,
+    defineReadOnly: defineReadOnly
 }

@@ -7,8 +7,12 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var errors = __importStar(require("@ethersproject/errors"));
-var properties_1 = require("@ethersproject/properties");
+
+//TODO: replace below with aion version
+//var errors = __importStar(require("@ethersproject/errors"));
+var errors = require('./abi-errors');
+var properties_1 = require('./coder-utils');
+
 var _constructorGuard = {};
 var validBaseTypes = [
     "address", "boolean", "byte", "char", "double", "float", "int", "long", "short", "String"
@@ -21,7 +25,7 @@ function checkIdentifier(value) {
 }
 function checkType(value) {
     var throwError = function () {
-        errors.throwArgumentError("invalid type", "value", value);
+        throw new Error("invalid type", "value", value);
     };
     var match = value.match(/^([a-z0-9_]*)(|\[\]|\[\]\[\])$/i);
     if (!match) {
@@ -42,11 +46,13 @@ var ParamType = /** @class */ (function () {
         properties_1.defineReadOnly(this, "type", checkType(type));
     }
     ParamType.fromString = function (value) {
+        console.log("This is ParamType.fromString: "+value);
         var comps = value.trim().replace(/\[\s*\]/g, "[]").replace(/\s+/g, " ").split(" ");
-        if (comps.length !== 2) {
+        console.log("comps: ["+comps.length+"] "+comps[0]+" "+comps[1]);
+        if (comps.length >= 2) {
             errors.throwArgumentError("invalid param type", "value", value);
         }
-        return new ParamType(_constructorGuard, comps[1].trim(), comps[0].trim());
+        return new ParamType(_constructorGuard, comps[0].trim(), comps[0].trim());
     };
     return ParamType;
 }());
