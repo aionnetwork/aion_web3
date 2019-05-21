@@ -32,7 +32,7 @@ function deployCt(ct, ctData, args, cb) {
 }
 
 
-describe('contracts', () => {
+describe('fvm_contracts', () => {
   let opts = { 
       from: test_cfg.TEST_ACCT_ADDR,
       gas: test_cfg.GAS,

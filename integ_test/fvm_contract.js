@@ -33,7 +33,7 @@ function deployCt(ct, ctData, args, cb) {
         //.on('confirmation', (confirmationNumber, receipt) => { console.log(confirmationNumber, receipt) });
 }
 
-describe('contracts', () => {
+describe('fvm_contracts', () => {
   let opts = { 
       from: test_cfg.TEST_ACCT_ADDR,
       gas: test_cfg.GAS,
@@ -120,7 +120,7 @@ describe('contracts', () => {
   })
   
 
-  it('contract method call with event', done => {
+  it('fvm_contract method call with event', done => {
       ct.methods.sayHello()
           .send({from: test_cfg.TEST_ACCT_ADDR})
           .then(res => {

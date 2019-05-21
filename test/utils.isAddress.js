@@ -32,10 +32,12 @@ accounts.forEach(function(item) {
 
 describe('lib/utils/utils', function () {
     describe('isAddress', function () {
+        let i=1;
         tests.forEach(function (test) {
-            it('shoud test if value ' + test.value + ' is address: ' + test.is, function () {
+            it('should test if value '+ i +' ' + test.value + ' is address: ' + test.is, function () {
                 assert.equal(utils.isAddress(test.value), test.is);
             });
+            i++;
         });
     });
 });
