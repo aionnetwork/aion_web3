@@ -55,26 +55,16 @@ class Contract {
 		this._key = null;
 		this.sendTransaction = async (txObject,key) => {
 
-                //TODO:new web3 object
-                let signedTx = await this.instance.eth.accounts.signTransaction(txObject, key);
-                let res = await this.instance.eth.sendSignedTransaction(signedTx.rawTransaction);
-                //let ethRes = await web3.eth.call(txObject);
-                //let avmRes = await web3.avm.contract.decode(returnType, ethRes);
-                console.log("*********");
-                console.log(res);
-                console.log("*******");
-                return res;
+            let signedTx = await this.instance.eth.accounts.signTransaction(txObject, key);
+            let res = await this.instance.eth.sendSignedTransaction(signedTx.rawTransaction);
+               
+            return res;
         };
         this.call = async (txObject,returnType) => {
-           //TODO:new web3 object
-                   //let signedTx = await this.instance.eth.accounts.signTransaction(txObject, key);
-                   //let res = await this.instance.eth.sendSignedTransaction(signedTx.rawTransaction);
-                   let ethRes = await this.instance.eth.call(txObject);
-                   let res = await this.instance.avm.contract.decode(returnType, ethRes);
-                   console.log("*********");
-                   console.log(res);
-                   console.log("*******");
-                   return res;
+          let ethRes = await this.instance.eth.call(txObject);
+          let res = await this.instance.avm.contract.decode(returnType, ethRes);
+                   
+          return res;
         };
 
 	}
@@ -83,7 +73,6 @@ class Contract {
 
     data(method, inputTypes, inputValues){
         let contract = new Contract()
-        console.log("length:::::" + inputTypes.length);
         if(inputTypes.length > 0 && inputValues.length > 0){
             return contract.method(method).inputs(inputTypes, inputValues).encode();
         }else{
@@ -101,19 +90,15 @@ class Contract {
             gas: gas,
             type: type
         };
-        console.log("txObject:::::"+JSON.stringify(txObject));
         return txObject;
     }
 
     initFunctions(fns,obj){
-        console.log("initFunctions");
         fns.forEach(function(fn){
 
             Object.defineProperty(obj.readOnly, fn.name,{
              value: function(){
                     const props = fn;
-                    //handle params
-                    console.log(props);
                     let params = [];
                     let inputs = [];
                     for (var _i = 0; _i < arguments.length; _i++) {
@@ -121,7 +106,6 @@ class Contract {
                         params[_i] = arguments[_i];
                         inputs[_i] = props.inputTypes[_i];
                     }
-                    console.log(props.name+" $$$$$$ "+inputs+" $$$$$$ "+params);
                     var data = obj.data(props.name, inputs, params);
                     var txn = obj.txnObj(obj._address, obj._contract, data);
                     return obj.call(txn, props.output);
@@ -140,7 +124,6 @@ class Contract {
     }
 
 	initBinding(contractAddress, abi, key, instance) {
-	    console.log("Initializing AVM Contract binding...");
 	    this._key = key;
 	    this._contract = contractAddress;
 	    this._interface = abi;

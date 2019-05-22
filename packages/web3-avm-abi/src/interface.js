@@ -46,9 +46,9 @@ var ParamType = /** @class */ (function () {
         properties_1.defineReadOnly(this, "type", checkType(type));
     }
     ParamType.fromString = function (value) {
-        console.log("This is ParamType.fromString: "+value);
+        //console.log("This is ParamType.fromString: "+value);
         var comps = value.trim().replace(/\[\s*\]/g, "[]").replace(/\s+/g, " ").split(" ");
-        console.log("comps: ["+comps.length+"] "+comps[0]+" "+comps[1]);
+        //console.log("comps: ["+comps.length+"] "+comps[0]+" "+comps[1]);
         if (comps.length >= 2) {
             errors.throwArgumentError("invalid param type", "value", value);
         }
@@ -72,7 +72,7 @@ var FunctionFragment = /** @class */ (function () {
     FunctionFragment.fromString = function (value) {
         // Remove leader/trailing whitespace and remove space from brackets
         value = value.trim().replace(/\s*\[\s*\]/g, "[]");
-        console.log(value);
+        //console.log(value);
         var match = value.match(/^([a-z0-9_\]\[]+)\s+([a-z_][a-z0-9_]*)\s*\(([^)]*)\)\s*$/i);
         if (!match) {
             errors.throwArgumentError("invalid abi fragment", "value", value);

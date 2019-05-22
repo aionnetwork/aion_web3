@@ -5,11 +5,14 @@ let BN = require('bn.js');
 let Web3 = require('../');
 
 let jarPath = path.join(__dirname, 'contracts', 'Counter.jar')
-let web3 = new Web3(new Web3.providers.HttpProvider('https://aion.api.nodesmith.io/v1/mastery/jsonrpc?apiKey=b1b87cf833044eee8d2636176301ae09'));
+let web3 = new Web3(new Web3.providers.HttpProvider('http://192.168.1.69:9545'));
 let acc = web3.eth.accounts.privateKeyToAccount(test_cfg.AVM_TEST_PK);
 
-console.log("Using cfg = ", test_cfg);
-console.log("ACC: ", acc.address);
+//console.log("Using cfg = ", test_cfg);
+//console.log("ACC: ", acc.address);
+
+var chai = require('chai');
+var assert = chai.assert;
 
 let tests = [{
   name: 'incrementCounter',
@@ -22,7 +25,7 @@ let tests = [{
   type: 'send',
   inputs: 1,
   inputTypes: [ 'int' ], 
-  inputValues: [ 300000 ]
+  inputValues: [ 30000000 ]
 }, {
   name: 'getCount',
   type: 'call',
@@ -130,22 +133,24 @@ let abi = `
     void setString(String)
 `
 
-let iface = web3.avm.contract.Interface(abi);//aion.utils.AvmInterface.fromString(abi);
-
-let contract = web3.avm.contract.initBinding("0xa0ddef877dba8f4e407f94d70d83757327b9c9641f9244da3240b2927d493ebc", iface, test_cfg.AVM_TEST_PK, web3);//Interface
+//let contract = web3.avm.contract.initBinding("0xa0ddef877dba8f4e407f94d70d83757327b9c9641f9244da3240b2927d493ebc", iface, test_cfg.AVM_TEST_PK, web3);//Interface
 
 let abiMethods = async(methodName) => {
 
    try {
 
+      let iface = web3.avm.contract.Interface(abi);//aion.utils.AvmInterface.fromString(abi);
+
       let contractAddress = test_cfg.AVM_TEST_CT_ADDR;
 
       let contract = web3.avm.contract.initBinding(contractAddress, iface, test_cfg.AVM_TEST_PK, web3);//Interface
-      let result0 = await contract.readOnly.getCount();
-      console.log("RESULT: ", result0);
-
+      
+      //console.log("Contract: ",web3.avm.contract);
+      let result = await web3.avm.contract.readOnly.getCount();
+      return(result);
     } catch (error) {
-      console.log(error);
+      console.log("call error:",error);
+      return false;
     }
  }
 
@@ -153,6 +158,7 @@ describe('avm_contract', () => {
 
   it('deploying contract..', done => {
     deploy().then(res => {
+      console.log(res);
       res.status.should.eql(true);
       done();
     }).catch(err => {
@@ -196,6 +202,7 @@ describe('avm_contract', () => {
 
   it('Calling contract abi binding methods..', done => {
       abiMethods().then(res => {
+        assert.isNumber(res,"Is not a Number")
         done();
       }).catch(err => {
         done(err);
@@ -203,3 +210,5 @@ describe('avm_contract', () => {
   });
 
 });
+
+
