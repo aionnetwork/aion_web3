@@ -1,13 +1,13 @@
 let test_cfg = require('./_integ_test_config.js');
 
-console.log("Using cfg = ", test_cfg);
+//console.log("Using cfg = ", test_cfg);
 
 let fs = require('fs')
 let path = require('path')
 let async = require('async')
 let Web3 = require('../')
 let should = require('should')
-let client = new Web3(new Web3.providers.HttpProvider('http://127.0.0.1:8545'))
+let client = new Web3(new Web3.providers.HttpProvider(test_cfg.JAVA_IP))
 const crypto = require('crypto')
 
 let typesBinPath = path.join(__dirname, 'contracts', 'HelloWorld.bin')
@@ -35,7 +35,7 @@ function deployCt(ct, ctData, args, cb) {
 
 describe('fvm_contracts', () => {
   let opts = { 
-      from: test_cfg.TEST_ACCT_ADDR,
+      from: test_cfg.TEST_ACCT_2_ADDR,
       gas: test_cfg.GAS,
       gasPrice: test_cfg.GAS_PRICE,
   };
@@ -82,8 +82,8 @@ describe('fvm_contracts', () => {
 
       //-------------------------------------------------------------
       unlock: async.apply(client.eth.personal.unlockAccount, 
-                          test_cfg.TEST_ACCT_ADDR , 
-                          test_cfg.TEST_ACCT_PW),
+                          test_cfg.TEST_ACCT_2_ADDR , 
+                          test_cfg.TEST_ACCT_2_PW),
 
       contract: ['typesAbi', async.apply(function (results,cb) {
           let ct = new client.eth.Contract(results.typesAbi, opts);
@@ -92,6 +92,7 @@ describe('fvm_contracts', () => {
 
       deploy: ['unlock', 'typesBin', async.apply(function (res,cb) {
           let deployedTo;
+          console.log("FVM",res);
           deployCt(res.contract, res.typesBin.toString('utf8'), [testNumber], cb)
               .catch(err => {
                   console.error("error", err);
@@ -122,9 +123,9 @@ describe('fvm_contracts', () => {
 
   it('fvm_contract method call with event', done => {
       ct.methods.sayHello()
-          .send({from: test_cfg.TEST_ACCT_ADDR})
+          .send({from: test_cfg.TEST_ACCT_2_ADDR})
           .then(res => {
-              res.events['Hello'].returnValues['_owner'].toLowerCase().should.eql(test_cfg.TEST_ACCT_ADDR);
+              res.events['Hello'].returnValues['_owner'].toLowerCase().should.eql(test_cfg.TEST_ACCT_2_ADDR.toLowerCase());
               res.events['Hello'].returnValues['_number'].should.eql(testNumber.toString());
               done();
           })

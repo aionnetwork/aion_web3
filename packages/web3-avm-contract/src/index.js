@@ -29,6 +29,7 @@ class Contract {
 
 	constructor() {
 		this._abi = new ABI();
+        
 
 		this._initializer = null;
 		this._argsData = null;
@@ -44,27 +45,65 @@ class Contract {
 
 		this._address = null
 		this._contract = null
-		this._key = null;
 		this._interface = null;
 
 		this.readOnly = {};
 		this.transaction = {};
-		this.instance = {};
 
+		this.instance = {};
+        
 		this._data = null;
 		this._key = null;
-		this.sendTransaction = async (txObject,key) => {
-
-            let signedTx = await this.instance.eth.accounts.signTransaction(txObject, key);
+        this.send = async(methodName, inputTypes, inputValues,address,contract) => {
+            let contr = new Contract();
+            let data = contr.method(methodName).inputs(inputTypes, inputValues).encode();
+  
+            const txObject = {
+                from: address,
+                to: contract,
+                data: data,
+                gasPrice: 2000000,
+                gas: 5000000,
+                type: '0x1'
+            };
+            let signedTx = await this.instance.eth.accounts.signTransaction(txObject, this._key);
             let res = await this.instance.eth.sendSignedTransaction(signedTx.rawTransaction);
-               
+            console.log(res);
             return res;
-        };
-        this.call = async (txObject,returnType) => {
-          let ethRes = await this.instance.eth.call(txObject);
-          let res = await this.instance.avm.contract.decode(returnType, ethRes);
+        }
+
+		this.sendTransaction = async (txObject,returnType=null) => {
+            
+            let signedTx = await this.instance.eth.accounts.signTransaction(txObject, this._key);
+            
+            try{
+                let res = await this.instance.eth.sendSignedTransaction(signedTx.rawTransaction);
+                console.log('returnType: ',returnType);
+                if(returnType!==null){
+                    let result = await this.instance.avm.contract.decode(returnType, res);
                    
-          return res;
+                    return result;   
+                }else{
+                    return true;
+                }
+
+            }catch(err){
+                //throw error
+                console.log("Transaction Failed!", err);
+            }
+                        
+        };
+        this.call = async (txObject,returnType=null) => {
+          let ethRes = await this.instance.eth.call(txObject); 
+
+          if(returnType!==null){
+            let res = await this.instance.avm.contract.decode(returnType, ethRes);             
+            return res;   
+          }else{
+            return;
+          }  
+
+          
         };
 
 	}
@@ -72,7 +111,8 @@ class Contract {
 	//AVM Binding
 
     data(method, inputTypes, inputValues){
-        let contract = new Contract()
+        let contract = new Contract();
+        
         if(inputTypes.length > 0 && inputValues.length > 0){
             return contract.method(method).inputs(inputTypes, inputValues).encode();
         }else{
@@ -81,8 +121,9 @@ class Contract {
 
     }
 
-    txnObj(address,contract,data,gasPrice=2000000,gas=5000000,type='0x1'){
-        const txObject = {
+    txnObj(address,contract,data,gasPrice=10000000000,gas=2000000,type='0x1'){
+        
+        let txObject = {
             from: address,
             to: contract,
             data: data,
@@ -108,16 +149,36 @@ class Contract {
                     }
                     var data = obj.data(props.name, inputs, params);
                     var txn = obj.txnObj(obj._address, obj._contract, data);
-                    return obj.call(txn, props.output);
+                    
+                    if(props.output){
+                        return obj.call(txn, props.output);
+                    }else{
+                        return obj.call(txn);
+                    }
              },
              writable: false
             });
 
             Object.defineProperty(obj.transaction, fn.name,{
-                     value: function(){
-                        return 0;
-                     },
-                     writable: false
+                value: function(){
+                    const props = fn;
+                    let params = [];
+                    let inputs = [];
+                    for (var _i = 0; _i < arguments.length; _i++) {
+                        params[_i] = arguments[_i];
+                        inputs[_i] = props.inputs[_i].name; 
+                        console.log("<<<<####",arguments[_i],"#####>>>>");                      
+                    }
+                    var data = obj.data(props.name, inputs, params);
+                    var txn = obj.txnObj(obj._address, obj._contract, data);
+                    //console.log("[[###]]: ",txn," :[[###]]");
+                    if(props.output){
+                        return obj.sendTransaction(txn, props.output);
+                    }else{
+                        return obj.sendTransaction(txn);
+                    }
+                },
+                writable: false
             });
 
         })
@@ -141,13 +202,15 @@ class Contract {
 
 	// Converts the Jar into a JarPath to be Encoded for Initialization
 	deploy(jar) {
-	    this._jarPath = fs.readFileSync(jar);
+	    
+        this._jarPath = fs.readFileSync(jar);
 	    return this;
 	}
 
 	// Defines the Arguments of a AVM Contract's Initializer
 	args(types, values) {
-		if(this._jarPath === null) { throw new Error('requires a jarFile to be set first through the deploy method'); }
+		
+        if(this._jarPath === null) { throw new Error('requires a jarFile to be set first through the deploy method'); }
         this._argsData = this._abi.encode(types, values);
         return this;
     }
@@ -184,7 +247,6 @@ class Contract {
         if(this._method === null) {
             throw new Error('a method must be set first');
         }
-
         return this._abi.encodeMethod(this._method, this._types, this._values);
     }
 

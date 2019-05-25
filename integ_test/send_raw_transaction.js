@@ -4,7 +4,7 @@ console.log("Using cfg = ", test_cfg);
 
 let should = require('should')
 let Web3 = require('../')
-let client = new Web3(new Web3.providers.HttpProvider('http://127.0.0.1:8545'))
+let client = new Web3(new Web3.providers.HttpProvider(test_cfg.JAVA_IP))
 
 describe('send raw transaction of 0.01337 aions and no data', () => {
   let opts = { 
@@ -27,18 +27,18 @@ describe('send raw transaction of 0.01337 aions and no data', () => {
 
   it('sendRawTransaction', done => { 
     let tx = {
-        to: test_cfg.OTHER_TEST_ACCT_ADDR,
+        to: test_cfg.TEST_ACCT_2_ADDR,
         value: 13370000000000000,  // 0.01337 Aions
         gas: 54321
     }
 
-    client.eth.getBalance(tx.to).then((bal) => {
+    client.eth.getBalance(opts.from).then((bal) => {
         if(bal < tx.value) { 
             done(Error("Account balance too low.  Want to send "+ tx.value +" but only have "+bal));
         }
     });
 
-    let account = client.eth.accounts.privateKeyToAccount(test_cfg.TEST_ACCT_PRIVKEY);
+    let account = client.eth.accounts.privateKeyToAccount(test_cfg.AVM_TEST_PK);
     account.signTransaction(tx, (err, res) => {
       if (err !== null && err !== undefined) {
         done(err);
