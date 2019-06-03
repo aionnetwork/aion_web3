@@ -54,6 +54,7 @@ class Contract {
         
 		this._data = null;
 		this._key = null;
+
         this.send = async(methodName, inputTypes, inputValues,address,contract) => {
             let contr = new Contract();
             let data = contr.method(methodName).inputs(inputTypes, inputValues).encode();
@@ -69,7 +70,7 @@ class Contract {
             let signedTx = await this.instance.eth.accounts.signTransaction(txObject, this._key);
             let res = await this.instance.eth.sendSignedTransaction(signedTx.rawTransaction);
             return res;
-        }
+        };
 
 		this.sendTransaction = async (txObject,returnType=null) => {
             
@@ -79,7 +80,6 @@ class Contract {
                 let res = await this.instance.eth.sendSignedTransaction(signedTx.rawTransaction);
                 if(returnType!==null){
                     let result = await this.instance.avm.contract.decode(returnType, res);
-                   
                     return result;   
                 }else{
                     return true;
@@ -88,19 +88,25 @@ class Contract {
             }catch(err){
                 //throw error
                 console.log("Transaction Failed!", err);
+                return false;
             }
                         
         };
+
         this.call = async (txObject,returnType=null) => {
-          let ethRes = await this.instance.eth.call(txObject); 
-
-          if(returnType!==null){
-            let res = await this.instance.avm.contract.decode(returnType, ethRes);             
-            return res;   
-          }else{
-            return;
+          
+          try{
+              let ethRes = await this.instance.eth.call(txObject); 
+              if(returnType!==null){
+                let res = await this.instance.avm.contract.decode(returnType, ethRes);             
+                return res;   
+              }else{
+                return true;
+              }
+          }catch(err){
+            console.log("Call Failed!", err);
+            return false;
           }  
-
           
         };
 
@@ -133,58 +139,67 @@ class Contract {
     }
 
     initFunctions(fns,obj){
-        fns.forEach(function(fn){
+        try{
+                fns.forEach(function(fn){
 
-            Object.defineProperty(obj.readOnly, fn.name,{
-             value: function(){
-                    const props = fn;
-                    let params = [];
-                    let inputs = [];
-                    for (var _i = 0; _i < arguments.length; _i++) {
-                        //TODO:add a check here
-                        params[_i] = arguments[_i];
-                        inputs[_i] = props.inputTypes[_i];
-                    }
-                    var data = obj.data(props.name, inputs, params);
-                    var txn = obj.txnObj(obj._address, obj._contract, data);
-                    
-                    if(props.output){
-                        return obj.call(txn, props.output);
-                        //TODO:extend to return decoded output
-                    }else{
-                        return obj.call(txn);
-                    }
-             },
-             writable: false
-            });
+                    Object.defineProperty(obj.readOnly, fn.name,{
+                     value: function(){
+                            const props = fn;
+                            let params = [];
+                            let inputs = [];
+                            for (var _i = 0; _i < arguments.length; _i++) {
+                                //TODO:add a check here
+                                params[_i] = arguments[_i];
+                                inputs[_i] = props.inputTypes[_i];
+                            }
+                            var data = obj.data(props.name, inputs, params);
+                            var txn = obj.txnObj(obj._address, obj._contract, data);
+                            
+                            if(props.output){
+                                return obj.call(txn, props.output);
+                                //TODO:extend to return decoded output
+                            }else{
+                                return obj.call(txn);
+                            }
+                     },
+                     writable: false
+                    });
 
-            Object.defineProperty(obj.transaction, fn.name,{
-                value: function(){
-                    const props = fn;
-                    let params = [];
-                    let inputs = [];
-                    for (var _i = 0; _i < arguments.length; _i++) {
-                        params[_i] = arguments[_i];
-                        inputs[_i] = props.inputs[_i].name; 
-                                              
-                    }
-                    var data = obj.data(props.name, inputs, params);
-                    var txn = obj.txnObj(obj._address, obj._contract, data);
-                    
-                    if(props.output){
-                        return obj.sendTransaction(txn, props.output);
-                    }else{
-                        return obj.sendTransaction(txn);
-                    }
-                },
-                writable: false
-            });
+                    Object.defineProperty(obj.transaction, fn.name,{
+                        value: function(){
+                            const props = fn;
+                            let params = [];
+                            let inputs = [];
+                            for (var _i = 0; _i < arguments.length; _i++) {
+                                params[_i] = arguments[_i];
+                                inputs[_i] = props.inputs[_i].name; 
+                                                      
+                            }
+                            var data = obj.data(props.name, inputs, params);
+                            var txn = obj.txnObj(obj._address, obj._contract, data);
+                            
+                            if(props.output){
+                                return obj.sendTransaction(txn, props.output);
+                            }else{
+                                return obj.sendTransaction(txn);
+                            }
+                        },
+                        writable: false
+                    });
 
-        })
+                })
+
+        }catch(err){
+            throw new Error('Unable to initialize functions');
+        }
     }
 
-	initBinding(contractAddress, abi, key, instance) {
-	    this._key = key;
+	initBinding(contractAddress=null, abi=null, key=null, instance=null) {
+	    if((contractAddress === null)||(abi === null)||(key === null)||(instance === null)) {
+            throw new Error('Missing input parameter(s)');
+        }
+
+        this._key = key;
 	    this._contract = contractAddress;
 	    this._interface = abi;
 	    this.instance = instance;//web3 intance to process transactions
