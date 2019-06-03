@@ -19,7 +19,7 @@ function random(from, to){
 
 function deployCt(ct, ctData, args, cb) { 
     console.log("SETUP: Deploying test contract...");
-    return ct.deploy( {data: ctData, arguments: args} )
+    return ct.deploy( {data: '0x'+ctData, arguments: args} )
         .send()
         .on('error', err => { console.log("ERROR: ",err); cb(err,null); })
         .on('transactionHash', transactionHash => { console.log('transactionHash', transactionHash) })
@@ -49,18 +49,21 @@ describe('abi_encoding', () => {
         done(Error("Error during setup. No test account address was configured."));
     }
 
+    //let ac = client.eth.personal.unlockAccount(test_cfg.TEST_ACCT_2_ADDR,test_cfg.TEST_ACCT_2_PW,6000).then(res =>{console.log("Account status: ",res)}); 
+        
     let steps = {
       typesBin: async.apply(fs.readFile, typesBinPath),
       typesAbi: async.apply(fs.readFile, typesAbiPath),
       unlock: async.apply(client.eth.personal.unlockAccount, 
                           test_cfg.TEST_ACCT_2_ADDR , 
-                          test_cfg.TEST_ACCT_2_PW),
+                          test_cfg.TEST_ACCT_2_PW ,600),
       contract: ['typesAbi',async.apply(function (results,cb) {
           let ct = new client.eth.Contract(JSON.parse(results.typesAbi), opts);
           cb(null, ct);
       })],
       deploy: ['unlock', 'typesBin', async.apply(function (res,cb) {
-          let deployedTo;          
+          let deployedTo; 
+          //console.log(res);         
           deployCt(res.contract, res.typesBin.toString('utf8'), [], cb)
               .catch(err => {
                   console.error("Deploy error", err);
@@ -76,6 +79,8 @@ describe('abi_encoding', () => {
 
 
       if(! res.unlock ) { 
+        //res.unlock= client.eth.personal.unlockAccount(test_cfg.TEST_ACCT_2_ADDR ,test_cfg.TEST_ACCT_2_PW ,600);
+
         return done(new Error("can't unlock"));
       }
 

@@ -54,7 +54,7 @@ describe('fvm_contracts', () => {
   let testNumber = 31337;
 
   before(done => {
-    if( test_cfg.TEST_ACCT_ADDR.length == 0 ) { 
+    if( test_cfg.TEST_ACCT_2_ADDR.length == 0 ) { 
         done(Error("Error during setup.  No test account address was configured."));
     }
 
@@ -83,7 +83,7 @@ describe('fvm_contracts', () => {
       //-------------------------------------------------------------
       unlock: async.apply(client.eth.personal.unlockAccount, 
                           test_cfg.TEST_ACCT_2_ADDR , 
-                          test_cfg.TEST_ACCT_2_PW),
+                          test_cfg.TEST_ACCT_2_PW,600),
 
       contract: ['typesAbi', async.apply(function (results,cb) {
           let ct = new client.eth.Contract(results.typesAbi, opts);
@@ -92,10 +92,10 @@ describe('fvm_contracts', () => {
 
       deploy: ['unlock', 'typesBin', async.apply(function (res,cb) {
           let deployedTo;
-          console.log("FVM",res);
+          //console.log("CONTRACT: ",res.contract);
           deployCt(res.contract, res.typesBin.toString('utf8'), [testNumber], cb)
               .catch(err => {
-                  console.error("error", err);
+                  console.error("Deploy error: ", err);
                   return done(err);
               });
       })],
@@ -104,7 +104,7 @@ describe('fvm_contracts', () => {
     async.auto(steps, (err, res) => {
 
       if (err !== null && err !== undefined) {
-        console.error('error reading bin & abi', err)
+        console.error('Error reading Bin & Abi', err)
         return done(err)
       }
 

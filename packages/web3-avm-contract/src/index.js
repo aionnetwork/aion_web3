@@ -68,7 +68,6 @@ class Contract {
             };
             let signedTx = await this.instance.eth.accounts.signTransaction(txObject, this._key);
             let res = await this.instance.eth.sendSignedTransaction(signedTx.rawTransaction);
-            console.log(res);
             return res;
         }
 
@@ -78,7 +77,6 @@ class Contract {
             
             try{
                 let res = await this.instance.eth.sendSignedTransaction(signedTx.rawTransaction);
-                console.log('returnType: ',returnType);
                 if(returnType!==null){
                     let result = await this.instance.avm.contract.decode(returnType, res);
                    
@@ -152,6 +150,7 @@ class Contract {
                     
                     if(props.output){
                         return obj.call(txn, props.output);
+                        //TODO:extend to return decoded output
                     }else{
                         return obj.call(txn);
                     }
@@ -167,11 +166,11 @@ class Contract {
                     for (var _i = 0; _i < arguments.length; _i++) {
                         params[_i] = arguments[_i];
                         inputs[_i] = props.inputs[_i].name; 
-                        console.log("<<<<####",arguments[_i],"#####>>>>");                      
+                                              
                     }
                     var data = obj.data(props.name, inputs, params);
                     var txn = obj.txnObj(obj._address, obj._contract, data);
-                    //console.log("[[###]]: ",txn," :[[###]]");
+                    
                     if(props.output){
                         return obj.sendTransaction(txn, props.output);
                     }else{

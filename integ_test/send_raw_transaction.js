@@ -1,6 +1,6 @@
 let test_cfg = require('./_integ_test_config.js');
 
-console.log("Using cfg = ", test_cfg);
+//console.log("Using cfg = ", test_cfg);
 
 let should = require('should')
 let Web3 = require('../')

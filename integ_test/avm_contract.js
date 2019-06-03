@@ -123,33 +123,113 @@ let methodSendWithoutInputs = async(methodName) => {
 }
 
 let abi = `
-    0.0
-    Counter
-    int getCount()
-    void incrementCounter(int)
+    0.0    
+    HelloAvm    
+    void setByte(byte)
+    void setBoolean(boolean)
+    void setChar(char)
+    void setShort(short)
+    void setInt(int)
+    void setFloat(float)
+    void setLong(long)
+    void setDouble(double)
     void setString(String)
+    byte getByte()
+    boolean getBoolean()
+    char getChar()
+    short getShort()
+    int getInt()
+    float getFloat()
+    long getLong()
+    double getDouble()
+    String getStr()
+    byte[] getByteArr()
+    boolean[] getBooleanArr()
+    char[] getCharArr()
+    short[] getShortArr()
+    int[] getIntArr()
+    float[] getFloatArr()
+    long[] getLongArr()
+    double[] getDoubleArr()
+    String[] getStrArr()
+    byte[][] get2DByteArr()
+    boolean[][] get2DBooleanArr()
+    char[][] get2DCharArr()
+    short[][] get2DShortArr()
+    int[][] get2DIntArr()
+    float[][] get2DFloatArr()
+    long[][] get2DLongArr()
+    double[][] get2DDoubleArr()
 `
 
 //let contract = web3.avm.contract.initBinding("0xa0ddef877dba8f4e407f94d70d83757327b9c9641f9244da3240b2927d493ebc", iface, test_cfg.AVM_TEST_PK, web3);//Interface
 let iface = web3.avm.contract.Interface(abi);//aion.utils.AvmInterface.fromString(abi);
-
-let contractAddress = test_cfg.AVM_TEST_CT_ADDR;
+//console.log(iface.functions);
+let contractAddress = test_cfg.AVM_TEST_CT_2_ADDR;
 
 let contract = web3.avm.contract.initBinding(contractAddress, iface, test_cfg.AVM_TEST_PK, web3);//Interface
+
+let arrData = function(str,str1){
+  let n = str.indexOf('[]');
+  let n1 = str1.indexOf('2D');
+  if(n>0){ 
+    if(n1>0){ 
+      return "TWO_D_"+str.substring(0,str.length - 4).toUpperCase()
+      }else{ 
+        return "ONE_D_"+str.substring(0,str.length - 2).toUpperCase();
+      }
+    }else{
+    return str.toUpperCase();
+  }   
+  
+}
       
-let abiMethodCall = async(methodName) => {
+let abiMethodCall = async(methodName,inputs,output) => {
+    let arr = [];
+    inputs.forEach((input)=>{arr.push(test_cfg[intput.toUpperCase()])});
 
    try {      
       //console.log("Contract: ",web3.avm.contract);
-      let result = await web3.avm.contract.readOnly.getCount();
-      return(result);
+      let result;
+      if(arr[0]){
+        result = await web3.avm.contract.readOnly[methodName](arr[0]);
+      }else{
+        result = await web3.avm.contract.readOnly[methodName]();
+      }
+        return result;      
     } catch (error) {
       console.log("Call error:",error);
       return false;
     }
  }
 
- let abiMethodSend = async(methodName) => {
+ let abiMethodSend = async(methodName,inputs=null) => {
+    let arr = [];
+    if(inputs!==null)
+    {
+      inputs.forEach((input)=>{
+        arr.push(test_cfg[input.name.toUpperCase()]);
+      });
+    }
+
+   try {      
+      //console.log("Contract: ",web3.avm.contract);
+      let result;
+      if(arr[0]){
+        result = await web3.avm.contract.transaction[methodName](arr[0]);
+      }else{
+        result = await web3.avm.contract.transaction[methodName]();
+      } 
+
+      return result;
+
+    } catch (error) {
+      console.log("Send error:",error);
+      return false;
+    }
+ }
+
+ /*let abiMethodSend = async(methodName) => {
 
    try {      
       console.log("Contract Send: ");
@@ -160,7 +240,9 @@ let abiMethodCall = async(methodName) => {
       console.log("Send error:",error);
       return false;
     }
- }
+ }*/
+
+
 
 describe('avm_contract', () => {
 
@@ -208,23 +290,47 @@ describe('avm_contract', () => {
     });
   });
 
-  it('Calling AVM Call function using abi binding method..', done => {
+  /*it('Calling AVM Call function using abi binding method..', done => {
       abiMethodCall().then(res => {
         assert.isNumber(res,"Call Failed!")
         done();
       }).catch(err => {
         done(err);
       });
+  });*/
+
+  iface.functions.forEach((method)=>{
+    console.log(method);
+    if(method.output!==null){
+    it('Testing method call..'+method.name, done => {
+      abiMethodCall(method.name,method.inputs,method.output).then(res => {
+        //console.log("Test data: ",arrData(method.output,method.name),test_cfg[arrData(method.output,method.name)]);
+        assert.deepEqual(res,test_cfg[arrData(method.output,method.name)],"Call Failed!")
+        done();
+      }).catch(err => {
+        done(err);
+      });
+    });
+    }else{
+    it('Testing method send..'+method.name, done => {
+      abiMethodSend(method.name,method.inputs).then(res => {
+        assert.isTrue(res,"Send Failed!");        
+        done();
+      }).catch(err => {
+        done(err);
+      });
+    });
+    }
   });
 
-  it('Calling AVM Send function using abi binding method..', done => {
+  /*it('Calling AVM Send function using abi binding method..', done => {
       abiMethodSend().then(res => {
         assert.isTrue(res,"Send Failed!");        
         done();
       }).catch(err => {
         done(err);
       });
-  });
+  });*/
 
 });
 

@@ -216,8 +216,9 @@ class FloatCoder extends Coder {
 
         let view = new DataView(reader.readBytes(this.byteCount).buffer);
         if (this.byteCount === 4) {
-            return view.getFloat32(0);
+            return view.getFloat32(0);            
         }
+       
         return view.getFloat64(0);
     }
 
