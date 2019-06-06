@@ -1,6 +1,7 @@
 node_modules
 bower_components
 /bower
+
 .idea/
 .npm/
 .vscode/
@@ -11,3 +12,4 @@ lerna-debug.log
 tmp.js
 package-lock.json
 _integ_test_config.js
+/example
