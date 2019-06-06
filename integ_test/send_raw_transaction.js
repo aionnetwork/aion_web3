@@ -6,7 +6,7 @@ let should = require('should')
 let Web3 = require('../')
 let client = new Web3(new Web3.providers.HttpProvider(test_cfg.JAVA_IP))
 
-describe('send raw transaction of 0.1337 aions and no data', () => {
+describe('send raw transaction of 1.337 aions and no data', () => {
   let opts = { 
       from: test_cfg.TEST_ACCT_ADDR,
       gas: test_cfg.GAS,

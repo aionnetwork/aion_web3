@@ -8,9 +8,6 @@ let jarPath = path.join(__dirname, 'contracts', 'Counter.jar')
 let web3 = new Web3(new Web3.providers.HttpProvider(test_cfg.JAVA_IP));
 let acc = web3.eth.accounts.privateKeyToAccount(test_cfg.AVM_TEST_PK);
 
-//console.log("Using cfg = ", test_cfg);
-//console.log("ACC: ", acc.address);
-
 var chai = require('chai');
 var assert = chai.assert;
 
@@ -160,6 +157,9 @@ let abi = `
     float[][] get2DFloatArr()
     long[][] get2DLongArr()
     double[][] get2DDoubleArr()
+    int[] getEdgeEmptyIntArr()
+    int[] getEdgeNullIntArr()
+    int getEdgeSum(int, int)
 `
 
 //let contract = web3.avm.contract.initBinding("0xa0ddef877dba8f4e407f94d70d83757327b9c9641f9244da3240b2927d493ebc", iface, test_cfg.AVM_TEST_PK, web3);//Interface
@@ -172,27 +172,42 @@ let contract = web3.avm.contract.initBinding(contractAddress, iface, test_cfg.AV
 let arrData = function(str,str1){
   let n = str.indexOf('[]');
   let n1 = str1.indexOf('2D');
-  if(n>0){ 
-    if(n1>0){ 
-      return "TWO_D_"+str.substring(0,str.length - 4).toUpperCase()
+  let n2 = str1.indexOf('Edge');
+  
+  if(n2>0){
+    return "EDGE_TEST_"+str1.toUpperCase();
+  }else{
+    if(n>0){ 
+      if(n1>0){ 
+        return "TWO_D_"+str.substring(0,str.length - 4).toUpperCase()
       }else{ 
         return "ONE_D_"+str.substring(0,str.length - 2).toUpperCase();
       }
     }else{
-    return str.toUpperCase();
-  }   
+      return str.toUpperCase();
+    }
+  } 
   
 }
       
 let abiMethodCall = async(methodName,inputs,output) => {
-    let arr = [];
-    inputs.forEach((input)=>{arr.push(test_cfg[intput.toUpperCase()])});
+    let arr = [];    
+    if(inputs!==null)
+    {
+      inputs.forEach((input)=>{
+        arr.push(test_cfg[input.name.toUpperCase()]);
+      });
+    }
 
    try {      
       //console.log("Contract: ",web3.avm.contract);
       let result;
       if(arr[0]){
-        result = await web3.avm.contract.readOnly[methodName](arr[0]);
+        if(arr[1]){
+          result = await web3.avm.contract.readOnly[methodName](arr[0],arr[1]);
+        }else{
+          result = await web3.avm.contract.readOnly[methodName](arr[0]);        
+        }
       }else{
         result = await web3.avm.contract.readOnly[methodName]();
       }
@@ -229,26 +244,12 @@ let abiMethodCall = async(methodName,inputs,output) => {
     }
  }
 
- /*let abiMethodSend = async(methodName) => {
-
-   try {      
-      console.log("Contract Send: ");
-      let result = await web3.avm.contract.transaction.incrementCounter(242);
-      
-      return(result);
-    } catch (error) {
-      console.log("Send error:",error);
-      return false;
-    }
- }*/
-
-
-
+ 
 describe('avm_contract', () => {
 
   it('deploying contract..', done => {
     deploy().then(res => {
-      //console.log(res);
+      
       res.status.should.eql(true);
       done();
     }).catch(err => {
@@ -290,21 +291,12 @@ describe('avm_contract', () => {
     });
   });
 
-  /*it('Calling AVM Call function using abi binding method..', done => {
-      abiMethodCall().then(res => {
-        assert.isNumber(res,"Call Failed!")
-        done();
-      }).catch(err => {
-        done(err);
-      });
-  });*/
 
   iface.functions.forEach((method)=>{
     console.log(method);
     if(method.output!==null){
     it('Testing method call..'+method.name, done => {
       abiMethodCall(method.name,method.inputs,method.output).then(res => {
-        //console.log("Test data: ",arrData(method.output,method.name),test_cfg[arrData(method.output,method.name)]);
         assert.deepEqual(res,test_cfg[arrData(method.output,method.name)],"Call Failed!")
         done();
       }).catch(err => {
@@ -322,15 +314,6 @@ describe('avm_contract', () => {
     });
     }
   });
-
-  /*it('Calling AVM Send function using abi binding method..', done => {
-      abiMethodSend().then(res => {
-        assert.isTrue(res,"Send Failed!");        
-        done();
-      }).catch(err => {
-        done(err);
-      });
-  });*/
 
 });
 

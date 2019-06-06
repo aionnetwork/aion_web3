@@ -144,13 +144,17 @@ class Contract {
 
                     Object.defineProperty(obj.readOnly, fn.name,{
                      value: function(){
-                            const props = fn;
+                            const props = fn;                            
                             let params = [];
                             let inputs = [];
-                            for (var _i = 0; _i < arguments.length; _i++) {
-                                //TODO:add a check here
-                                params[_i] = arguments[_i];
-                                inputs[_i] = props.inputTypes[_i];
+                            if(arguments.length > 0){
+                              for (var _i = 0; _i < arguments.length; _i++) {
+                                
+                                if(props.inputs[_i]){
+                                    params[_i] = arguments[_i];
+                                    inputs[_i] = props.inputs[_i].name;
+                                }
+                              }
                             }
                             var data = obj.data(props.name, inputs, params);
                             var txn = obj.txnObj(obj._address, obj._contract, data);
@@ -170,11 +174,17 @@ class Contract {
                             const props = fn;
                             let params = [];
                             let inputs = [];
-                            for (var _i = 0; _i < arguments.length; _i++) {
-                                params[_i] = arguments[_i];
-                                inputs[_i] = props.inputs[_i].name; 
-                                                      
+
+                            if(arguments.length > 0){
+                              for (var _i = 0; _i < arguments.length; _i++) {
+                                
+                                if(props.inputs[_i]){
+                                    params[_i] = arguments[_i];
+                                    inputs[_i] = props.inputs[_i].name;
+                                }
+                              }
                             }
+
                             var data = obj.data(props.name, inputs, params);
                             var txn = obj.txnObj(obj._address, obj._contract, data);
                             
