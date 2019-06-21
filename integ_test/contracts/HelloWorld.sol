@@ -7,6 +7,7 @@ pragma solidity ^0.4.15;
 contract HelloWorld {
   address public owner;
   int public number;
+  int private count = 200;
 
   event Hello(address _owner, int _number);
 
@@ -23,4 +24,21 @@ contract HelloWorld {
   function sayHello () public {
     Hello(owner, number);
   }
+
+  function saySum (int _num1, int _num2) public {
+    Hello(owner, number);
+  }
+
+  function incrementCounter(int i) public{
+    count += i;
+  }
+
+  function decrementCounter(int i) public{
+    count -= i;
+  }
+
+  function getCount() public constant returns (int){
+      return count;
+  }
+
 }

@@ -25,10 +25,12 @@ describe('send raw transaction of 1.337 aions and no data', () => {
     done();
   })
 
+  
+
   it('sendRawTransaction', done => { 
     let tx = {
-        to: test_cfg.TEST_ACCT_2_ADDR,
-        value: 133700000000000000,  // 0.1337 Aions
+        to: test_cfg.TEST_ACCT_ADDR,
+        value: 1337000000000000,  // 0.001337 Aions
         gas: 54321
     }
 
@@ -38,13 +40,14 @@ describe('send raw transaction of 1.337 aions and no data', () => {
         }
     });
 
+    //let account = client.eth.accounts.privateKeyToAccount('0x935c250733f2f100d92b7247c50ea4dda8170d311ec61034b433cc5bf946b45eeeaf880df6e5d9fad143940a079b6cc1bb3877b84eb10bdd1fa222ee266941fc');
     let account = client.eth.accounts.privateKeyToAccount(test_cfg.AVM_TEST_PK);
     account.signTransaction(tx, (err, res) => {
       if (err !== null && err !== undefined) {
         done(err);
       }
 
-      console.log("Tx signed.  Sending to kernel.");
+      console.log("Tx signed.  Sending to kernel.:"+res.rawTransaction);
       client.eth.sendSignedTransaction(res.rawTransaction).on('receipt', (r) => {
         let txHash = r.transactionHash;
         client.eth.getTransaction(txHash, (err, res) => {

@@ -8,7 +8,11 @@ let async = require('async')
 let Web3 = require('../')
 let should = require('should')
 let client = new Web3(new Web3.providers.HttpProvider(test_cfg.JAVA_IP))
-const crypto = require('crypto')
+let rustClient = new Web3(new Web3.providers.HttpProvider(test_cfg.RUST_IP))
+const crypto = require('crypto');
+
+var chai = require('chai');
+var assert = chai.assert;
 
 let typesBinPath = path.join(__dirname, 'contracts', 'HelloWorld.bin')
 let typesAbiPath = path.join(__dirname, 'contracts', 'HelloWorld.abi')
@@ -40,16 +44,31 @@ describe('fvm_contracts', () => {
       gasPrice: test_cfg.GAS_PRICE,
   };
 
+  let rustOpts = { 
+      from: test_cfg.TEST_ACCT_3_ADDR,
+      gas: test_cfg.GAS,
+      gasPrice: test_cfg.GAS_PRICE,
+  };
+
   let ct;
+  let rCt;
   let ctInstAddress;
+  let rustctInstAddress;
 
   let web3 = new Web3(client);
+  let web3R = new Web3(rustClient);
 
   let typesSrc;
   let typesBin;
   let typesAbi;
   let compiled;
   let contract;
+
+  let typesSrcR;
+  let typesBinR;
+  let typesAbiR;
+  let compiledR;
+  let contractR;
 
   let testNumber = 31337;
 
@@ -92,33 +111,41 @@ describe('fvm_contracts', () => {
 
       deploy: ['unlock', 'typesBin', async.apply(function (res,cb) {
           let deployedTo;
-          //console.log("CONTRACT: ",res.contract);
+          
           deployCt(res.contract, res.typesBin.toString('utf8'), [testNumber], cb)
               .catch(err => {
-                  console.error("Deploy error: ", err);
+                  console.error("Rust Deploy error: ", err);
                   return done(err);
               });
       })],
     }
 
-    async.auto(steps, (err, res) => {
+    try{
 
-      if (err !== null && err !== undefined) {
-        console.error('Error reading Bin & Abi', err)
-        return done(err)
-      }
+        async.auto(steps, (err, res) => {
 
-      if(! res.unlock ) { 
-        return done(new Error("can't unlock"));
-      }
-      
-      ctInstAddress = res.deploy.contractAddress;
+          if (err !== null && err !== undefined) {
+            console.error('Error reading Bin & Abi', err)
+            return done(err)
+          }
 
-      ct = new client.eth.Contract(res.typesAbi, ctInstAddress);
+          if(! res.unlock ) { 
+            return done(new Error("can't unlock"));
+          }
+          
+          ctInstAddress = res.deploy.contractAddress;
 
-      done();
-    })
-  })
+          ct = new client.eth.Contract(res.typesAbi, ctInstAddress);
+
+          done();
+        });
+    }catch(err){
+      console.error("Error: ", err);
+    };
+
+    
+
+  });
   
 
   it('fvm_contract method call with event', done => {
@@ -133,4 +160,42 @@ describe('fvm_contracts', () => {
               done(err);
           });
   });
+
+  it('fvm_contract incrementCounter method call ', done => {
+      ct.methods.incrementCounter(250)
+          .send({from: test_cfg.TEST_ACCT_2_ADDR})
+          .then(res => {
+              assert.isTrue(res.status,"Send Failed!");
+              done();
+          })
+          .catch( err => {
+              done(err);
+          });
+  });
+
+   it('fvm_contract decrementCounter method call ', done => {
+      ct.methods.decrementCounter(250)
+          .send({from: test_cfg.TEST_ACCT_2_ADDR})
+          .then(res => {
+              assert.isTrue(res.status,"Send Failed!");
+              done();
+          })
+          .catch( err => {
+              done(err);
+          });
+  });
+
+  it('fvm_contract getCount method call ', done => {
+      ct.methods.getCount()
+          .call({from: test_cfg.TEST_ACCT_2_ADDR})
+          .then(res => {
+              assert.equal(res,200,"Call Failed!");
+              done();
+          })
+          .catch( err => {
+              done(err);
+          });
+  });
+
+  
 })

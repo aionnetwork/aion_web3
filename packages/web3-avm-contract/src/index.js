@@ -30,7 +30,6 @@ class Contract {
 	constructor() {
 		this._abi = new ABI();
         
-
 		this._initializer = null;
 		this._argsData = null;
 		this._jarPath = null;
@@ -54,6 +53,8 @@ class Contract {
         
 		this._data = null;
 		this._key = null;
+
+        this._provider = null;
 
         this.send = async(methodName, inputTypes, inputValues,address,contract) => {
             let contr = new Contract();
@@ -112,8 +113,14 @@ class Contract {
 
 	}
 
-	//AVM Binding
+    //assign default provider
+    provider(provider=null){
+        if(provider !== null){
+            this.instance = provider;
+        }
+    }
 
+	//AVM Binding. Creates the data for the transaction.
     data(method, inputTypes, inputValues){
         let contract = new Contract();
         
@@ -125,6 +132,7 @@ class Contract {
 
     }
 
+    //Prepare transaction object
     txnObj(address,contract,data,gasPrice=10000000000,gas=2000000,type='0x1'){
         
         let txObject = {
@@ -138,6 +146,7 @@ class Contract {
         return txObject;
     }
 
+    //create functions and make them available.
     initFunctions(fns,obj){
         try{
                 fns.forEach(function(fn){
@@ -205,16 +214,21 @@ class Contract {
     }
 
 	initBinding(contractAddress=null, abi=null, key=null, instance=null) {
-	    if((contractAddress === null)||(abi === null)||(key === null)||(instance === null)) {
+	    if((contractAddress === null)||(abi === null)||(key === null)) {
             throw new Error('Missing input parameter(s)');
         }
 
         this._key = key;
 	    this._contract = contractAddress;
 	    this._interface = abi;
-	    this.instance = instance;//web3 intance to process transactions
-	    //TODO:Improve the following
-	    let ac = instance.eth.accounts.privateKeyToAccount(key);
+	    
+        if(instance!==null){
+            this.instance = instance;//web3 intance to process transactions
+        }
+
+        //TODO:Improve the following
+	    //console.log(this._provider);
+        let ac = this.instance.eth.accounts.privateKeyToAccount(key);
 	    this._address = ac.address;
 
 	    var methods = abi.functions ? abi.functions : [];
