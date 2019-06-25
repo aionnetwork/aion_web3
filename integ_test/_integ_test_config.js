@@ -3,6 +3,7 @@
  */
 
 let config = {
+<<<<<<< HEAD
    
   // Sender account private key (hex with leading 0x)
   TEST_ACCT_PRIVKEY: '0xc0a97b1d6d68f3aed19e1d460287efcfd9e93cd294dd86963e08ab24622e4fc6b7dfe3a9fd46fbd034687a6c2a3ddfd61896b8e7521402369383d6a52a591a5b', 
@@ -28,3 +29,23 @@ let config = {
 module.exports = function() { 
     return config;
 }();
+=======
+  // Account with which deploy and send Txs (needs to have Aions for tests to work)
+  TEST_ACCT_ADDR: '',       
+  // Sender account password
+  TEST_ACCT_PW: '', 
+  // Sender account private key (hex with leading 0x)
+  TEST_ACCT_PRIVKEY: '', 
+
+  // Account with which to receive Txs (No aion will be consumed for tests)
+  OTHER_TEST_ACCT_ADDR: '',
+
+  // Populate with max gas for transactions (recommended: 4000000)
+  GAS: 0,                   
+  // Populate with gas price (recommended: 10000000000)
+  GAS_PRICE: 0,             
+}
+module.exports = function() { 
+    return config;
+}();
+>>>>>>> v1.1

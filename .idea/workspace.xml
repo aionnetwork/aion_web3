@@ -2,10 +2,440 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="66666208-23fe-4849-b29f-d1fc144a2718" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/integ_test/avm_contract.js" beforeDir="false" afterPath="$PROJECT_DIR$/integ_test/avm_contract.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/integ_test/contracts/Counter.jar" beforeDir="false" afterPath="$PROJECT_DIR$/integ_test/contracts/Counter.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/web3-avm-contract/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/packages/web3-avm-contract/src/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/web3-avm/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/packages/web3-avm/src/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.github/issue_template.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.jshintignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.npmignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.nyc_output/7e54fd5a-487b-4303-8ca5-14067e707a7a.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.nyc_output/d1c76110-bd4c-44fe-86f0-4b2c362eb7a9.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.versions" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Jenkinsfile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/Makefile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/doctrees/callbacks-promises-events.doctree" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/doctrees/environment.pickle" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/doctrees/getting-started.doctree" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/doctrees/glossary.doctree" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/doctrees/include_announcement.doctree" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/doctrees/include_package-core.doctree" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/doctrees/include_package-net.doctree" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/doctrees/index.doctree" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/doctrees/web3-bzz.doctree" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/doctrees/web3-eth-abi.doctree" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/doctrees/web3-eth-accounts.doctree" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/doctrees/web3-eth-contract.doctree" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/doctrees/web3-eth-iban.doctree" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/doctrees/web3-eth-net.doctree" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/doctrees/web3-eth-personal.doctree" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/doctrees/web3-eth-subscribe.doctree" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/doctrees/web3-eth.doctree" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/doctrees/web3-net.doctree" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/doctrees/web3-shh.doctree" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/doctrees/web3-utils.doctree" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/doctrees/web3.doctree" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/.buildinfo" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/_sources/callbacks-promises-events.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/_sources/getting-started.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/_sources/glossary.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/_sources/include_announcement.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/_sources/include_package-core.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/_sources/include_package-net.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/_sources/index.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/_sources/web3-bzz.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/_sources/web3-eth-abi.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/_sources/web3-eth-accounts.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/_sources/web3-eth-contract.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/_sources/web3-eth-iban.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/_sources/web3-eth-net.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/_sources/web3-eth-personal.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/_sources/web3-eth-subscribe.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/_sources/web3-eth.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/_sources/web3-net.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/_sources/web3-shh.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/_sources/web3-utils.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/_sources/web3.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/_static/ajax-loader.gif" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/_static/alabaster.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/_static/basic.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/_static/classic.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/_static/comment-bright.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/_static/comment-close.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/_static/comment.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/_static/custom.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/_static/default.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/_static/doctools.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/_static/down-pressed.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/_static/down.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/_static/file.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/_static/jquery-1.11.1.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/_static/jquery.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/_static/minus.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/_static/plus.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/_static/pygments.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/_static/searchtools.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/_static/sidebar.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/_static/underscore-1.3.1.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/_static/underscore.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/_static/up-pressed.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/_static/up.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/_static/websupport.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/callbacks-promises-events.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/genindex.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/getting-started.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/glossary.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/include_announcement.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/include_package-core.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/include_package-net.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/objects.inv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/search.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/searchindex.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/web3-bzz.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/web3-eth-abi.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/web3-eth-accounts.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/web3-eth-contract.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/web3-eth-iban.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/web3-eth-net.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/web3-eth-personal.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/web3-eth-subscribe.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/web3-eth.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/web3-net.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/web3-shh.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/web3-utils.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/_build/html/web3.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/callbacks-promises-events.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/conf.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/getting-started.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/glossary.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/include_announcement.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/include_package-core.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/include_package-net.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/index.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/make.bat" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/web3-bzz.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/web3-eth-abi.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/web3-eth-accounts.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/web3-eth-contract.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/web3-eth-ens.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/web3-eth-iban.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/web3-eth-net.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/web3-eth-personal.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/web3-eth-subscribe.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/web3-eth.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/web3-net.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/web3-shh.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/web3-utils.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/web3.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/integ_test/abi_encoding.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/integ_test/compile_solidity_zip.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/integ_test/contract.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/integ_test/contracts/HelloWorld.abi" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/integ_test/contracts/HelloWorld.bin" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/integ_test/contracts/HelloWorld.sol" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/integ_test/contracts/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/integ_test/contracts/Types.abi" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/integ_test/contracts/Types.bin" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/integ_test/send_raw_transaction.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lerna.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mocha.opts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/package.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/aion-lib/.editorconfig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/aion-lib/package.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/aion-lib/readme.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/aion-lib/src/abi.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/aion-lib/src/accounts.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/aion-lib/src/crypto.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/aion-lib/src/formats.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/aion-lib/src/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/aion-lib/src/patterns.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/aion-lib/src/solidity.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/aion-lib/src/values.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-core-helpers/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-core-helpers/package.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-core-helpers/src/errors.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-core-helpers/src/formatters.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-core-helpers/src/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-core-method/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-core-method/package.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-core-method/src/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-core-promievent/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-core-promievent/package.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-core-promievent/src/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-core-requestmanager/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-core-requestmanager/package.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-core-requestmanager/src/batch.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-core-requestmanager/src/givenProvider.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-core-requestmanager/src/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-core-subscriptions/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-core-subscriptions/package.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-core-subscriptions/src/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-core-subscriptions/src/subscription.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-core/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-core/package.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-core/src/extend.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-core/src/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-eth-abi/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-eth-abi/package.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-eth-abi/src/coder-utils.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-eth-abi/src/coder.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-eth-abi/src/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-eth-accounts/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-eth-accounts/package.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-eth-accounts/src/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-eth-contract/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-eth-contract/package.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-eth-contract/src/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-eth-personal/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-eth-personal/package.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-eth-personal/src/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-eth/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-eth/package.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-eth/src/getNetworkType.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-eth/src/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-net/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-net/package.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-net/src/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-providers-http/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-providers-http/package.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-providers-http/src/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-providers-ipc/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-providers-ipc/package.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-providers-ipc/src/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-providers-ws/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-providers-ws/package.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-providers-ws/src/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-utils/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-utils/package.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-utils/src/aion-unit.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-utils/src/bloomFilter.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-utils/src/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-utils/src/solidityBlake2b256.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3-utils/src/utils.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3/package.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/web3/src/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/1_givenProvider-ethereumProvider.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/2_givenProvider-currentProvider.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/abi-encode-decode.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/aion-abi.encoding.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/aionlib.crypto.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/aionlib.formats.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/async.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/batch.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/bloom.testAddress.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/bloom.testCodePointToInt.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/bloom.testTopic.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/contract.encodeABI.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/contract.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/errors.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/eth.abi.decodeLog.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/eth.abi.decodeParameter.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/eth.abi.encodeEventSignature.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/eth.abi.encodeFunctionCall.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/eth.abi.encodeFunctionSignature.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/eth.accounts.create.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/eth.accounts.encrypt-decrypt.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/eth.accounts.sign.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/eth.accounts.signTransaction.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/eth.accounts.wallet.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/eth.call.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/eth.compileSolidity.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/eth.compileSolidityZip.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/eth.defaultAccount.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/eth.defaultBlock.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/eth.estimateGas.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/eth.gasPrice.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/eth.getAccounts.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/eth.getBalance.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/eth.getBlock.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/eth.getBlockNumber.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/eth.getBlockTransactionCount.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/eth.getCode.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/eth.getCoinbase.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/eth.getCompilers.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/eth.getHashRate.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/eth.getNodeVersion.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/eth.getStorageAt.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/eth.getTransaction.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/eth.getTransactionFromBlock.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/eth.getTransactionReceipt.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/eth.isMining.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/eth.net.getNetworkType.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/eth.net.getPeerCount.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/eth.net.isListening.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/eth.net_methods.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/eth.protocolVersion.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/eth.sendTransaction.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/eth.sign.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/eth.subscribe.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/eth_methods.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/event.decode.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/event.encode.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/extend.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/fixtures/abi-data.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/fixtures/accounts.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/formatters.inputAddressFormatter.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/formatters.inputDefaultBlockFormatter.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/formatters.inputPostFormatter.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/formatters.inputTransactionFormatter.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/formatters.outputBlockFormatter.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/formatters.outputLogFormatter.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/formatters.outputPostFormatter.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/formatters.outputTransactionFormatter.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/helpers/FakeHttpProvider.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/helpers/FakeIpcProvider.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/helpers/FakeIpcProvider2.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/helpers/FakeIpcRequest.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/helpers/FakeXHR2.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/helpers/contracts/Import.sol" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/helpers/contracts/Ticker.sol" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/helpers/test.method.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/helpers/test.utils.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/httpprovider.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/ipcprovider.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/jsonrpc.id.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/jsonrpc.isValidResponse.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/jsonrpc.toBatchPayload.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/jsonrpc.toPayload.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/method.buildCall.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/method.extractCallback.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/method.formatInput.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/method.formatOutput.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/method.getCall.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/method.validateArgs.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/mocha.opts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/personal.getAccounts.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/personal.lockAccount.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/personal.newAccount.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/personal.sendTransaction.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/personal.unlockAccount.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/personal_methods.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/provider.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/requestmanager.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/setProvider.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/utils.blake2b256.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/utils.fromAscii.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/utils.fromNumber.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/utils.fromWei.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/utils.isAddress.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/utils.isBN.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/utils.isChecksumAddress.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/utils.sha3.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/utils.solidityBlake2b256.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/utils.toAscii.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/utils.toBigNumber.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/utils.toHex.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/utils.toNumber.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/utils.toNumberString.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/utils.toTwosComplement.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/utils.toUtf8.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/utils.toWei.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/utils.utf8ToHex.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/utils_methods.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/web3_methods.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/console.js" beforeDir="false" afterPath="$PROJECT_DIR$/console.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/web3.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/web3.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/web3.min.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/compile.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/react-boilerplate/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/react-boilerplate/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/react-boilerplate/package-lock.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/react-boilerplate/package.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/react-boilerplate/public/favicon.ico" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/react-boilerplate/public/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/react-boilerplate/public/manifest.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/react-boilerplate/src/App.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/react-boilerplate/src/App.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/react-boilerplate/src/Body.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/react-boilerplate/src/aion.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/react-boilerplate/src/index.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/react-boilerplate/src/index.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/react-boilerplate/src/registerServiceWorker.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/react-boilerplate/yarn.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/token-on-aion/app.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/token-on-aion/commands.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/token-on-aion/compile.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/token-on-aion/config.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/token-on-aion/core.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/token-on-aion/executor.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/token-on-aion/parser.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/token-on-aion/test/test_basic.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/token-on-aion/token.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/token-on-aion/token.sol" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/unlock.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/wallet/wallet.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/wallet/wallet.sol" beforeDir="false" afterPath="$PROJECT_DIR$/test/helpers/contracts/Wallet.sol" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gulpfile.js" beforeDir="false" afterPath="$PROJECT_DIR$/gulpfile.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/integ_test/_integ_test_config.js" beforeDir="false" afterPath="$PROJECT_DIR$/integ_test/_integ_test_config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/solidity/address.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/solidity/bool.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/solidity/bytes.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/solidity/coder.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/solidity/dynamicbytes.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/solidity/formatters.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/solidity/int.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/solidity/param.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/solidity/real.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/solidity/string.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/solidity/type.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/solidity/uint.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/solidity/ureal.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/utils/bloom.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/utils/browser-bn.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/utils/browser-xhr.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/utils/config.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/utils/sha3.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/utils/utils.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/web3.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/web3/allevents.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/web3/batch.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/web3/contract.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/web3/errors.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/web3/event.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/web3/extend.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/web3/filter.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/web3/formatters.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/web3/function.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/web3/httpprovider.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/web3/ipcprovider.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/web3/jsonrpc.js" beforeDir="false" afterPath="$PROJECT_DIR$/packages/web3-core-requestmanager/src/jsonrpc.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/web3/method.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/web3/methods/db.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/web3/methods/eth.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/web3/methods/net.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/web3/methods/personal.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/web3/methods/shh.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/web3/methods/swarm.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/web3/methods/watches.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/web3/property.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/web3/requestmanager.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/web3/settings.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/web3/syncing.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/aion-lib/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/aion-lib/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/web3-core-helpers/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/web3-core-helpers/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/web3-core-promievent/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/web3-core-promievent/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/web3-core-subscriptions/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/web3-core-subscriptions/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/web3-eth-abi/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/web3-eth-abi/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/web3-eth-accounts/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/web3-eth-accounts/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/web3-providers-http/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/web3-providers-http/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/web3-providers-ipc/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/web3-providers-ipc/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/web3-providers-ws/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/web3-providers-ws/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/web3-utils/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/web3-utils/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/temp/admin.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/temp/console_accounts.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/temp/console_check_balance.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/temp/file-structure.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/temp/terminal.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/temp/transfer_and_check_balance.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/temp/tx.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/compile.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/types.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/types.sol" beforeDir="false" afterPath="$PROJECT_DIR$/integ_test/contracts/Types.sol" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/unlock.js" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -16,28 +446,19 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/packages/web3-avm-contract/src/index.js">
+        <entry file="file://$PROJECT_DIR$/integ_test/_integ_test_config.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="476">
-              <caret line="28" selection-start-line="28" selection-end-line="28" />
+            <state relative-caret-position="204">
+              <caret line="19" column="19" selection-start-line="19" selection-start-column="19" selection-end-line="19" selection-end-column="19" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/integ_test/_integ_test_config.js">
+        <entry file="file://$PROJECT_DIR$/.gitignore">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="204">
-              <caret line="18" column="19" selection-start-line="18" selection-start-column="19" selection-end-line="18" selection-end-column="85" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/packages/web3-avm-abi/package.json">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="170">
-              <caret line="10" column="31" selection-start-line="10" selection-start-column="31" selection-end-line="10" selection-end-column="31" />
+            <state relative-caret-position="187">
+              <caret line="11" column="17" selection-start-line="11" selection-start-column="17" selection-end-line="11" selection-end-column="17" />
             </state>
           </provider>
         </entry>
@@ -48,24 +469,6 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/integ_test/avm_contract.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="816">
-              <caret line="48" column="27" selection-start-line="48" selection-start-column="27" selection-end-line="48" selection-end-column="27" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/packages/web3-avm/src/index.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="119">
-              <caret line="7" column="44" selection-start-line="7" selection-start-column="44" selection-end-line="7" selection-end-column="44" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/packages/web3/src/index.js">
           <provider selected="true" editor-type-id="text-editor" />
         </entry>
@@ -73,24 +476,6 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/index.js">
           <provider selected="true" editor-type-id="text-editor" />
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/packages/web3-avm-abi/src/index.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2975">
-              <caret line="175" column="28" selection-start-line="175" selection-start-column="19" selection-end-line="175" selection-end-column="28" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/packages/web3-avm-abi/src/interface.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2346">
-              <caret line="138" column="17" selection-start-line="138" selection-start-column="8" selection-end-line="138" selection-end-column="17" />
-            </state>
-          </provider>
         </entry>
       </file>
     </leaf>
@@ -125,13 +510,13 @@
         <option value="$PROJECT_DIR$/packages/web3-core-helpers/src/errors.js" />
         <option value="$PROJECT_DIR$/packages/web3-avm-abi/src/abi-error.js" />
         <option value="$PROJECT_DIR$/packages/web3-avm-abi/src/interface.js" />
-        <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/integ_test/_integ_test_config_tmp.js" />
         <option value="$PROJECT_DIR$/packages/web3-avm-abi/package.json" />
         <option value="$PROJECT_DIR$/packages/web3-avm/src/index.js" />
         <option value="$PROJECT_DIR$/packages/web3-avm-contract/src/index.js" />
         <option value="$PROJECT_DIR$/integ_test/_integ_test_config.js" />
         <option value="$PROJECT_DIR$/integ_test/avm_contract.js" />
+        <option value="$PROJECT_DIR$/.gitignore" />
       </list>
     </option>
   </component>
@@ -146,6 +531,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="PackagesPane" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -186,13 +573,6 @@
               <item name="aion_web3" type="b2602c69:ProjectViewProjectNode" />
               <item name="aion_web3" type="462c0819:PsiDirectoryNode" />
               <item name="packages" type="462c0819:PsiDirectoryNode" />
-              <item name="web3-avm" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="aion_web3" type="b2602c69:ProjectViewProjectNode" />
-              <item name="aion_web3" type="462c0819:PsiDirectoryNode" />
-              <item name="packages" type="462c0819:PsiDirectoryNode" />
               <item name="web3-avm-contract" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -202,24 +582,15 @@
               <item name="web3-avm-contract" type="462c0819:PsiDirectoryNode" />
               <item name="node_modules" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="aion_web3" type="b2602c69:ProjectViewProjectNode" />
-              <item name="aion_web3" type="462c0819:PsiDirectoryNode" />
-              <item name="packages" type="462c0819:PsiDirectoryNode" />
-              <item name="web3-avm-contract" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-            </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1558537992607" />
-    <property name="last_opened_file_path" value="$USER_HOME$/aion-foundation" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -257,8 +628,9 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-1829" y="41" width="1551" height="839" extended-state="0" />
+    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.1609658" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.16297787" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -368,13 +740,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/.gitignore">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="12" column="21" selection-start-line="12" selection-start-column="21" selection-end-line="12" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/integ_test/_integ_test_config_tmp.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="510">
@@ -436,7 +801,14 @@
     <entry file="file://$PROJECT_DIR$/integ_test/_integ_test_config.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="204">
-          <caret line="18" column="19" selection-start-line="18" selection-start-column="19" selection-end-line="18" selection-end-column="85" />
+          <caret line="19" column="19" selection-start-line="19" selection-start-column="19" selection-end-line="19" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="11" column="17" selection-start-line="11" selection-start-column="17" selection-end-line="11" selection-end-column="17" />
         </state>
       </provider>
     </entry>

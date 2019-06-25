@@ -1,0 +1,83 @@
+let accounts = [{
+    address: '0xa0202797a7aff86fec1a5d8b7cacea276de5bcfc2e8b14878c9ba48d7d5330a0',
+    checksumAddress: '0xa0202797A7aff86FEc1a5D8B7cacEa276dE5bCfc2e8B14878C9BA48d7D5330A0',
+    privateKey: '0x6df86a106f599c78ab9b2ad593b2983038edf706a52b24bfa895b49066a7f2a03ddfb8596435b9530b5e635736c801c1403578b85e582d98dd7a322ddfb1e4c1',
+    password: 'account0',
+    message: 'account 0: aion-pub-sig --- vvv',
+    signature: '0x3ddfb8596435b9530b5e635736c801c1403578b85e582d98dd7a322ddfb1e4c1f72fe8ee91489d32d0552a10fa33b3f9f56466f3c9565e1a32abee4197da18631f5311fc47adf698aeb6e1ea8e3798d358519dda5442196b05964f6dbd97d10a',
+    transaction: {
+        type: 1,
+        timestamp: 1536305330896000,
+        nonce: 0,
+        gasPrice: "20000000000",
+        gas: 21000,
+        // account 1
+        to: '0xa09d19c066f341220d914414c42e5e796e7e4daf83a9abf4581b1670403bbd15',
+        value: "1000000000",
+        data: ""
+    },
+    rawTransaction: '0xf89f00a0a09d19c066f341220d914414c42e5e796e7e4daf83a9abf4581b1670403bbd15843b9aca008087057542f583bc808252088800000004a817c80001b8603ddfb8596435b9530b5e635736c801c1403578b85e582d98dd7a322ddfb1e4c1fc4b2ba9f860086b3d205c4e061b7bd4d47ab9849008f9fab872547fe72cb6cc2637399264f53c8be30223cc84f92e9f5f536ab45e8b5820c573c4b479f7b802',
+    txAionPubSig: ''
+}, {
+    address: '0xa0202797a7aff86fec1a5d8b7cacea276de5bcfc2e8b14878c9ba48d7d5330a0',
+    checksumAddress: '0xa0202797A7aff86FEc1a5D8B7cacEa276dE5bCfc2e8B14878C9BA48d7D5330A0',
+    privateKey: '0x6df86a106f599c78ab9b2ad593b2983038edf706a52b24bfa895b49066a7f2a03ddfb8596435b9530b5e635736c801c1403578b85e582d98dd7a322ddfb1e4c1',
+    password: 'account0',
+    message: 'account 0: aion-pub-sig --- vvv',
+    signature: '0x3ddfb8596435b9530b5e635736c801c1403578b85e582d98dd7a322ddfb1e4c1f72fe8ee91489d32d0552a10fa33b3f9f56466f3c9565e1a32abee4197da18631f5311fc47adf698aeb6e1ea8e3798d358519dda5442196b05964f6dbd97d10a',
+    transaction: {
+        type: 1,
+        timestamp: 1536305330896000,
+        nonce: 0,
+        gasPrice: 20000000000,
+        gas: 21000,
+        // account 1
+        to: '0xa09d19c066f341220d914414c42e5e796e7e4daf83a9abf4581b1670403bbd15',
+        value: 1000000000,
+        data: ""
+    },
+    rawTransaction: '0xf89f00a0a09d19c066f341220d914414c42e5e796e7e4daf83a9abf4581b1670403bbd15843b9aca008087057542f583bc808252088800000004a817c80001b8603ddfb8596435b9530b5e635736c801c1403578b85e582d98dd7a322ddfb1e4c1fc4b2ba9f860086b3d205c4e061b7bd4d47ab9849008f9fab872547fe72cb6cc2637399264f53c8be30223cc84f92e9f5f536ab45e8b5820c573c4b479f7b802',
+    txAionPubSig: ''
+}, {
+    address: '0xa09d19c066f341220d914414c42e5e796e7e4daf83a9abf4581b1670403bbd15',
+    checksumAddress: '0xa09d19C066f341220d914414C42e5e796e7e4DAf83A9ABf4581B1670403bBD15',
+    privateKey: '0x29379825937c50f0e13453673c5083bcf9853ef69ebb129f2db106db4966cf5efe6820305cf2cd29719d7c924fc495542100d5f499d4b758205bee05dd33896b',
+    password: 'account1',
+    message: 'account 1: aion-pub-sig --- vvv',
+    signature: '0xfe6820305cf2cd29719d7c924fc495542100d5f499d4b758205bee05dd33896b0a46af7234622ec633be041a3cbba1e907eca8d53e7eed0344e673cf5f81ffb947754a10a592af201abfae53356cfd7d84fc92aa8f561102867d0dc239b6e40c',
+    transaction: {
+        type: 1,
+        timestamp: 1536305330896000,
+        nonce: 0,
+        gasPrice: "0",
+        gas: 31853,
+        // account 2
+        to: '0xa06f640ced8bd31eb9e191887adde74888e9ca31fd8545dae3ae896773ccbc4f',
+        value: "0",
+        data: ""
+    },
+    rawTransaction: '0xf89300a0a06f640ced8bd31eb9e191887adde74888e9ca31fd8545dae3ae896773ccbc4f008087057542f583bc80827c6d0001b860fe6820305cf2cd29719d7c924fc495542100d5f499d4b758205bee05dd33896b38bdfe17aa5589949834dc28ba981f5140950d1a8968008c3359439bdb2737c43d02a24e5bddf518119ce0663f7cb31f783dc9e13e8551f8bf77719786586407',
+    txAionPubSig: ''
+}, {
+    address: '0xa06f640ced8bd31eb9e191887adde74888e9ca31fd8545dae3ae896773ccbc4f',
+    checksumAddress: '0xA06f640cED8bd31EB9e191887ADDe74888e9cA31FD8545dae3AE896773CcbC4f',
+    privateKey: '0xe6edbf765e724684cacc2c7cc0c8bbac98c1c672b8701108c6e2c2cf25523dec085aa353d4ebd256c4601838714cac4dfd96feee86bc03777247a085b7220ee1',
+    password: 'account2',
+    message: 'account 2: aion-pub-sig --- vvv',
+    signature: '0x085aa353d4ebd256c4601838714cac4dfd96feee86bc03777247a085b7220ee1458931dd707dfac714eabcc1590f5f1915c4f428c7f5a43a507fbc1ac58d7c6434674b0160fd389b1b30215212acba41266e611091027257111e1d7535d42b0d',
+    transaction: {
+        type: 1,
+        timestamp: 1544563525000000,
+        nonce: 0,
+        gasPrice: "2345678976",
+        gas: 100,
+        to: '0xa0fdf87efbafea189fcbd06755ad1f2ab88004dd41463612ee95a9017c055df2',
+        value: "203261307462270030000000000",
+        data: "",
+        from: "0xa06f640ced8bd31eb9e191887adde74888e9ca31fd8545dae3ae896773ccbc4f"
+    },
+    rawTransaction: '0xf8a000a0a0fdf87efbafea189fcbd06755ad1f2ab88004dd41463612ee95a9017c055df28ba822418e8014c101818c008087057cc5b83d9b4064848bd0388001b860085aa353d4ebd256c4601838714cac4dfd96feee86bc03777247a085b7220ee11e0e767a3b368abc09c4a224761e6383dc8d0bd6f16c27650245b224cc0b645623ff2f1d4050c8afd06f5f11b6cce6ae46824e84718568b5e0c709352cfab40c',
+    txAionPubSig: ''
+}]
+
+module.exports = accounts

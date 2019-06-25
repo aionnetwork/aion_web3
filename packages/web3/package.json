@@ -1,0 +1,64 @@
+{
+  "name": "aion-web3",
+  "namespace": "aion",
+  "version": "1.1.7",
+  "description": "Aion JavaScript API",
+  "repository": "https://github.com/aionnetwork/aion_web3/tree/master/packages/web3",
+  "license": "LGPL-3.0",
+  "main": "src/index.js",
+  "bugs": {
+    "url": "https://github.com/aionnetwork/aion_web3/issues"
+  },
+  "keywords": [
+    "Aion",
+    "JavaScript",
+    "API"
+  ],
+  "author": {
+    "name:": "Aion Network",
+    "url": "https://aion.network/"
+  },
+  "contributors": [
+    {
+      "name": "Kelvin Lam",
+      "email": "kelvin@aion.network"
+    },
+    {
+      "name": "Tony Crowe",
+      "email": "github@tonycrowe.com"
+    },
+    {
+      "name": "Fabian Vogelsteller",
+      "email": "fabian@ethereum.org",
+      "homepage": "http://frozeman.de"
+    },
+    {
+      "name": "Marek Kotewicz",
+      "email": "marek@parity.io",
+      "url": "https://github.com/debris"
+    },
+    {
+      "name": "Marian Oancea",
+      "url": "https://github.com/cubedro"
+    },
+    {
+      "name": "Gav Wood",
+      "email": "g@parity.io",
+      "homepage": "http://gavwood.com"
+    },
+    {
+      "name": "Jeffery Wilcke",
+      "email": "jeffrey.wilcke@ethereum.org",
+      "url": "https://github.com/obscuren"
+    }
+  ],
+  "dependencies": {
+    "aion-web3-core": "1.1.7",
+    "aion-web3-core-helpers": "1.1.7",
+    "aion-web3-eth": "1.1.7",
+    "aion-web3-eth-personal": "1.1.7",
+    "aion-web3-net": "1.1.7",
+    "aion-web3-utils": "1.1.7"
+  },
+  "gitHead": "ff767f05be375a019c4a9b52366a8b0683ea31a8"
+}

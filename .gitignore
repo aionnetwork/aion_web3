@@ -1,2 +1,12 @@
 node_modules
-release
+bower_components
+/bower
+.idea/
+.npm/
+.vscode/
+dist/
+!./dist/web3.min.js
+lerna-debug.log
+*.sublime-*
+tmp.js
+package-lock.json

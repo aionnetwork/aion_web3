@@ -1,0 +1,6 @@
+--ui bdd
+--colors
+--reporter spec
+--bail
+--full-trace
+--recursive

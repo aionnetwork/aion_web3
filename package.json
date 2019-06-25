@@ -1,48 +1,26 @@
 {
   "name": "aion-web3",
   "namespace": "aion",
-  "version": "0.0.4",
-  "description": "aion js api",
-  "main": "./index.js",
+  "version": "1.0.0",
+  "description": "Aion JavaScript API wrapper repository",
+  "license": "LGPL-3.0",
+  "main": "./packages/web3/src/index.js",
   "directories": {
-    "lib": "./lib"
-  },
-  "browser": {
-    "xmlhttprequest": "./lib/utils/browser-xhr.js"
-  },
-  "dependencies": {
-    "bignumber.js": "git+https://github.com/MikeMcl/bignumber.js.git",
-    "crypto-js": "*",
-    "envify": "^4.1.0",
-    "moment": "*",
-    "request": "*",
-    "utf8": "*",
-    "xhr2": "*",
-    "xmlhttprequest": "*"
-  },
-  "devDependencies": {
-    "browserify": "*",
-    "exorcist": "*",
-    "del": "*",
-    "gulp": "*",
-    "gulp-jshint": "*",
-    "gulp-rename": "*",
-    "gulp-streamify": "*",
-    "gulp-uglify": "*",
-    "gulp-replace": "*",
-    "jshint": "*",
-    "vinyl-source-stream": "*",
-    "colors": "*",
-    "repl": "*",
-    "chai": "*",
-    "mocha": "*",
-    "gulp-tar": "*",
-    "gulp-gzip": "*"
+    "doc": "./doc",
+    "test": "./test"
   },
   "scripts": {
-    "build": "gulp build",
-    "watch": "gulp watch",
-    "lint": "jshint *.js lib"
+    "lerna": "lerna bootstrap",
+    "postinstall": "lerna bootstrap",
+    "build": "lerna bootstrap",
+    "docs": "cd docs; make html;",
+    "lint": "jshint *.js packages",
+    "browserify": "mkdir -p ./dist && browserify index.js -o dist/web3.min.js",
+    "test": "jshint *.js packages; mocha --opts mocha.opt",
+    "integ-test": "mocha --opts mocha.opt -t 50000 integ_test/*.js --exclude _integ_test_config.js",
+    "coverage": "nyc mocha || true",
+    "test-coveralls": "istanbul cover _mocha -- -R spec && cat coverage/lcov.info | coveralls --verbose",
+    "dev-test": "nodemon -L -d 1 -w packages -w test --ext js --exec mocha --opts mocha.opts --watch test || true"
   },
   "repository": {
     "type": "git",
@@ -50,20 +28,90 @@
   },
   "homepage": "https://github.com/aionnetwork/aion_web3",
   "bugs": {
-    "url": "https://github.com/aionnetwork/aion_web3/issues"
+    "url    ": "https://github.com/aionnetwork/aion_web3/issues"
   },
   "keywords": [
-    "aion",
-    "javascript",
-    "api"
+    "Ethereum",
+    "JavaScript",
+    "API",
+    "Aion"
   ],
-  "author": "aionnetwork",
-  "authors": [
+  "author": {
+    "name:": "Aion Network",
+    "url": "https://aion.network/"
+  },
+  "contributors": [
     {
-      "name": "chris",
-      "email": "aion.6368726973@gmail.com",
-      "url": "https://github.com/aion-6368726973"
+      "name": "Rohan Morris",
+      "email": "rohan@aion.network"
+    },
+    {
+      "name": "Kelvin Lam",
+      "email": "kelvin@aion.network"
+    },
+    {
+      "name": "Tony Crowe",
+      "email": "github@tonycrowe.com"
+    },
+    {
+      "name": "Fabian Vogelsteller",
+      "email": "fabian@ethereum.org",
+      "homepage": "http://frozeman.de"
+    },
+    {
+      "name": "Marek Kotewicz",
+      "email": "marek@parity.io",
+      "url": "https://github.com/debris"
+    },
+    {
+      "name": "Marian Oancea",
+      "url": "https://github.com/cubedro"
+    },
+    {
+      "name": "Gav Wood",
+      "email": "g@parity.io",
+      "homepage": "http://gavwood.com"
+    },
+    {
+      "name": "Jeffery Wilcke",
+      "email": "jeffrey.wilcke@ethereum.org",
+      "url": "https://github.com/obscuren"
     }
   ],
-  "license": "LGPL-3.0"
+  "devDependencies": {
+    "@types/bignumber.js": "^4.0.2",
+    "@types/underscore": "^1.8.9",
+    "babel-preset-env": "^1.6.0",
+    "bignumber.js": "^4.0.0",
+    "bluebird": "3.3.1",
+    "bn.js": "^4.11.8",
+    "bower": "^1.8.8",
+    "browserify": "^16.2.3",
+    "chai": "^4.2.0",
+    "coveralls": "^3.0.3",
+    "del": ">=2.0.2",
+    "exorcist": "^0.4.0",
+    "istanbul": "^0.4.4",
+    "jshint": "^2.10.1",
+    "lerna": "^2.5.1",
+    "mocha": "^5.2.0",
+    "nodemon": "^1.18.4",
+    "nyc": "^13.0.1",
+    "sandboxed-module": "^2.0.2",
+    "vinyl-source-stream": "^2.0.0"
+  },
+  "dependencies": {
+    "async": "^2.6.2",
+    "colors": "^1.3.3",
+    "crypto-js": "^3.1.9-1",
+    "jszip": "^3.2.0",
+    "jszip-sync": "^3.1.3-sync",
+    "node-zip": "^1.1.1",
+    "repl": "^0.1.3",
+    "should": "^13.2.3",
+    "underscore": "^1.9.1",
+    "utf8": "^3.0.0",
+    "xhr2": "^0.1.4",
+    "xmlhttprequest": "^1.8.0"
+  }
 }
