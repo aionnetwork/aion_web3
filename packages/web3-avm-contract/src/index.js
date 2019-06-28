@@ -214,7 +214,7 @@ class Contract {
     }
 
 	initBinding(contractAddress=null, abi=null, key=null, instance=null) {
-	    if((contractAddress === null)||(abi === null)||(key === null)) {
+	    if((contractAddress === null)||(abi === null)) {
             throw new Error('Missing input parameter(s)');
         }
 
