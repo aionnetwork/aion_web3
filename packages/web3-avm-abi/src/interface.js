@@ -81,22 +81,40 @@ var FunctionFragment = /** @class */ (function () {
         if (value.substring(0, 7) === "static ") { value = value.substring(7); }
 
         var match = value.match(/^([a-z0-9_\]\[]+)\s+([a-z_][a-z0-9_]*)\s*\(([^)]*)\)\s*$/i);
+        var matchClinit = null;
+
         if (!match) {
-            errors.throwArgumentError("invalid abi fragment", "value", value);
+            //Try match for Clinit
+            matchClinit = value.match(/^Clinit:\s*\(([^)]*)\)\s*$/i);
+            if(!matchClinit){
+                errors.throwArgumentError("invalid abi fragment", "value", value);
+            }
         }
-        var output = match[1].trim();
-        if (output === "void") {
-            output = null;
+        if(matchClinit!=null){
+             var output = null;
+            var name = "Clinit";
+            if (matchClinit[1].trim() !== "") {
+                inputs = matchClinit[1].split(",").map(function (input) { return ParamType.fromString(input); });
+            }
+
+            return new FunctionFragment(_constructorGuard, name.trim(), inputs, output);
+        
+        }else{
+
+            var output = match[1].trim();
+            if (output === "void") {
+                output = null;
+            }
+            else {
+                output = (new ParamType(_constructorGuard, "_", match[1].trim())).type;
+            }
+            var name = match[2].trim();
+            var inputs = [];
+            if (match[3].trim() !== "") {
+                inputs = match[3].split(",").map(function (input) { return ParamType.fromString(input); });
+            }
+            return new FunctionFragment(_constructorGuard, name.trim(), inputs, output);
         }
-        else {
-            output = (new ParamType(_constructorGuard, "_", match[1].trim())).type;
-        }
-        var name = match[2].trim();
-        var inputs = [];
-        if (match[3].trim() !== "") {
-            inputs = match[3].split(",").map(function (input) { return ParamType.fromString(input); });
-        }
-        return new FunctionFragment(_constructorGuard, name.trim(), inputs, output);
     };
     return FunctionFragment;
 }());

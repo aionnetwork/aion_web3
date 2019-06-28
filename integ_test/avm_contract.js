@@ -122,7 +122,9 @@ let methodSendWithoutInputs = async(methodName) => {
 
 let abi = `
     0.0    
-    HelloAvm    
+    HelloAvm 
+    Clinit: (String, Address)
+    public static Address getAddress()   
     public static void setByte(byte)
     public static void setBoolean(boolean)
     void setChar(char)
