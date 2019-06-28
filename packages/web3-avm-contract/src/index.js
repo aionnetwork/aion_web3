@@ -54,6 +54,9 @@ class Contract {
 		this._data = null;
 		this._key = null;
 
+        this._gasPrice = 2000000;
+        this._gas = 5000000;
+
         this._provider = null;
 
         this.send = async(methodName, inputTypes, inputValues,address,contract) => {
@@ -64,8 +67,8 @@ class Contract {
                 from: address,
                 to: contract,
                 data: data,
-                gasPrice: 2000000,
-                gas: 5000000,
+                gasPrice: this._gasPrice,
+                gas: this._gas,
                 type: '0x1'
             };
             let signedTx = await this.instance.eth.accounts.signTransaction(txObject, this._key);
@@ -76,14 +79,20 @@ class Contract {
 		this.sendTransaction = async (txObject,returnType=null) => {
             
             let signedTx = await this.instance.eth.accounts.signTransaction(txObject, this._key);
-            
+            //txn:returned transaction object 
+            //output: return from the function
+            let response = {txn:null,output:null};
             try{
+
+                //send transaction
                 let res = await this.instance.eth.sendSignedTransaction(signedTx.rawTransaction);
+                response.txn = res;
                 if(returnType!==null){
                     let result = await this.instance.avm.contract.decode(returnType, res);
-                    return result;   
+                    response.output = result;
+                    return response;   
                 }else{
-                    return true;
+                    return response;
                 }
 
             }catch(err){
@@ -112,6 +121,29 @@ class Contract {
         };
 
 	}
+
+    getGas(){
+        return this._gas
+    }
+    setGas(gas=null){
+        if(gas!==null){
+            this._gas = gas;
+        }else{
+            throw new Error('Invalid gas');
+        }
+
+    }
+    getGasPrice(){
+        return this._gasPrice
+    }
+    setGasPrice(gas=null){
+        if(gas!==null){
+            this._gasPrice = gas;
+        }else{
+            throw new Error('Invalid gasPrice');
+        }
+
+    }
 
     //assign default provider
     provider(provider=null){

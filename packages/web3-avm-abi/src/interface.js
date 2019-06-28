@@ -90,7 +90,7 @@ var FunctionFragment = /** @class */ (function () {
                 errors.throwArgumentError("invalid abi fragment", "value", value);
             }
         }
-        if(matchClinit!=null){
+        if(matchClinit !== null){
              var output = null;
             var name = "Clinit";
             if (matchClinit[1].trim() !== "") {
