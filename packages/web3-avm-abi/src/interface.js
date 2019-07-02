@@ -15,7 +15,7 @@ var properties_1 = require('./coder-utils');
 
 var _constructorGuard = {};
 var validBaseTypes = [
-    "address", "boolean", "byte", "char", "double", "float", "int", "long", "short", "String"
+    "Address" ,"address", "boolean", "byte", "char", "double", "float", "int", "long", "short", "String"
 ];
 function checkIdentifier(value) {
     if (!value.match(/^[a-z_][a-z0-9_]*$/i)) {
@@ -84,22 +84,9 @@ var FunctionFragment = /** @class */ (function () {
         var matchClinit = null;
 
         if (!match) {
-            //Try match for Clinit
-            matchClinit = value.match(/^Clinit:\s*\(([^)]*)\)\s*$/i);
-            if(!matchClinit){
-                errors.throwArgumentError("invalid abi fragment", "value", value);
-            }
+            errors.throwArgumentError("invalid abi fragment", "value", value);            
         }
-        if(matchClinit !== null){
-             var output = null;
-            var name = "Clinit";
-            if (matchClinit[1].trim() !== "") {
-                inputs = matchClinit[1].split(",").map(function (input) { return ParamType.fromString(input); });
-            }
-
-            return new FunctionFragment(_constructorGuard, name.trim(), inputs, output);
         
-        }else{
 
             var output = match[1].trim();
             if (output === "void") {
@@ -114,7 +101,7 @@ var FunctionFragment = /** @class */ (function () {
                 inputs = match[3].split(",").map(function (input) { return ParamType.fromString(input); });
             }
             return new FunctionFragment(_constructorGuard, name.trim(), inputs, output);
-        }
+       
     };
     return FunctionFragment;
 }());
@@ -140,6 +127,7 @@ var Interface = /** @class */ (function () {
         }
         var version = null;
         var name = null;
+        var Clinit = null;
         var functions = [];
         abi.forEach(function (line) {
             line = line.trim();
@@ -152,6 +140,12 @@ var Interface = /** @class */ (function () {
             }
             if (line.match(/^[a-z0-9_. ]*$/i)) {
                 name = line;
+                return;
+            }
+            //matchClinit = value.match(/^Clinit:\s*\(([^)]*)\)\s*$/i);
+            
+            if (line.match(/^Clinit:\s*\(([^)]*)\)\s*$/i)) {
+                Clinit = line;
                 return;
             }
             functions.push(FunctionFragment.fromString(line));

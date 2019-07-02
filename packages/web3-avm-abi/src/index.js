@@ -71,6 +71,8 @@ class ABICoder {
                 return new codec.StringCoder(localName);
             case "address":
                 return new codec.AddressCoder(localName);
+            case "Address":
+                return new codec.AddressCoder(localName);
 
             case "byte[]": 
                 return new codec.ByteArrayCoder("byte[]", 1, 0x11, localName);

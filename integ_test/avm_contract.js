@@ -124,7 +124,7 @@ let abi = `
     0.0    
     HelloAvm 
     Clinit: (String, Address)
-    public static Address getAddress()   
+    public static Address getAc()   
     public static void setByte(byte)
     public static void setBoolean(boolean)
     void setChar(char)
@@ -133,7 +133,7 @@ let abi = `
     public static void setFloat(float)
     void setLong(long)
     void setDouble(double)
-    public static void setString(String)
+    public static String setString(String)
     public static byte getByte()
     boolean getBoolean()
     char getChar()
@@ -167,7 +167,7 @@ let abi = `
 
 //let contract = web3.avm.contract.initBinding("0xa0ddef877dba8f4e407f94d70d83757327b9c9641f9244da3240b2927d493ebc", iface, test_cfg.AVM_TEST_PK, web3);//Interface
 let iface = web3.avm.contract.Interface(abi);//aion.utils.AvmInterface.fromString(abi);
-//console.log(iface.functions);
+console.log(iface.functions);
 let contractAddress = test_cfg.AVM_TEST_CT_2_ADDR;
 
 web3.avm.contract.initBinding(contractAddress, iface, test_cfg.AVM_TEST_PK);//Interface
@@ -222,7 +222,7 @@ let abiMethodCall = async(methodName,inputs,output) => {
     }
  }
 
- let abiMethodSend = async(methodName,inputs=null) => {
+ let abiMethodSend = async(methodName,inputs=null,output) => {
     let arr = [];
     if(inputs!==null)
     {
@@ -305,7 +305,7 @@ let abiMethodCall = async(methodName,inputs,output) => {
  
 describe('avm_contract', () => {
 
-  it('deploying contract..', done => {
+  /*it('deploying contract..', done => {
     deploy().then(res => {
       
       res.status.should.eql(true);
@@ -313,9 +313,9 @@ describe('avm_contract', () => {
     }).catch(err => {
       done(err);
     });
-  });
+  });*/
 
-  tests.forEach((test) => {
+  /*tests.forEach((test) => {
     it('testing method, ' + test.name, done => {
       if(test.type === 'call') {
         if(test.inputs === 1) {
@@ -347,13 +347,24 @@ describe('avm_contract', () => {
         }
       }
     });
-  });
-
+  });*/
+/*iface.functions.forEach((method)=>{
+  if(method.name=='setString'){
+    it('Testing method send...setString', done => {
+      web3.avm.contract.transaction.setString('Testing').then(res => {
+        assert.deepEqual(res.status,true,"Call Failed!")
+        done();
+      }).catch(err => {
+        done(err);
+      });
+    });
+  }
+});*/
 
   iface.functions.forEach((method)=>{
     console.log(method);
-    if(method.output!==null){
-    it('Testing method call..'+method.name, done => {
+    if(method.name!==null){
+    it('Testing method call...'+method.name, done => {
       abiMethodCall(method.name,method.inputs,method.output).then(res => {
         assert.deepEqual(res,test_cfg[arrData(method.output,method.name)],"Call Failed!")
         done();
@@ -361,10 +372,11 @@ describe('avm_contract', () => {
         done(err);
       });
     });
-    }else{
-    it('Testing method send..'+method.name, done => {
+    
+    it('Testing method send...'+method.name, done => {
       abiMethodSend(method.name,method.inputs).then(res => {
-        assert.isTrue(res,"Send Failed!");        
+        //console.log(res);
+        assert.isTrue(res.status,"Send Failed!");        
         done();
       }).catch(err => {
         done(err);
@@ -373,7 +385,7 @@ describe('avm_contract', () => {
     }
   });
 
-  iface.functions.forEach((method)=>{
+  /*iface.functions.forEach((method)=>{
     console.log(method);
     if(method.output!==null){
     it('Testing Rust method call..'+method.name, done => {
@@ -394,7 +406,7 @@ describe('avm_contract', () => {
       });
     });
     }
-  });
+  });*/
 
 });
 

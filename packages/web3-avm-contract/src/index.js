@@ -56,6 +56,8 @@ class Contract {
 
         this._gasPrice = 2000000;
         this._gas = 5000000;
+        this._value = 0;
+        this._nonce = null;
 
         this._provider = null;
 
@@ -76,7 +78,7 @@ class Contract {
             return res;
         };
 
-		this.sendTransaction = async (txObject,returnType=null) => {
+		this.sendTransaction = async (txObject) => {
             
             let signedTx = await this.instance.eth.accounts.signTransaction(txObject, this._key);
             //txn:returned transaction object 
@@ -86,14 +88,7 @@ class Contract {
 
                 //send transaction
                 let res = await this.instance.eth.sendSignedTransaction(signedTx.rawTransaction);
-                response.txn = res;
-                if(returnType!==null){
-                    let result = await this.instance.avm.contract.decode(returnType, res);
-                    response.output = result;
-                    return response;   
-                }else{
-                    return response;
-                }
+                return res;
 
             }catch(err){
                 //throw error
@@ -143,6 +138,46 @@ class Contract {
             throw new Error('Invalid gasPrice');
         }
 
+    }
+    getValue(){
+        return this._value
+    }
+    setValue(value=null){
+        if(gas!==null){
+            this._value = value;
+        }else{
+            throw new Error('Invalid gas');
+        }
+
+    }
+    getNonce(){
+        return this._nonce
+    }
+    setNonce(nonce=null){
+        if(nonce!==null){
+            this._nonce = nonce;
+        }else{
+            throw new Error('Invalid gas');
+        }
+
+    }
+    setTransactionObject(obj){
+        if(obj!==null){
+            if(obj.gas!==null){
+                this._gas = obj.gas;
+            }
+            if(obj.gasPrice!==null){
+                this._gasPrice = obj.gasPrice;
+            }
+            if(obj.value!==null){
+                this._value = obj.value;
+            }
+            if(obj.nonce!==null){
+                this._nonce = obj.nonce;
+            }
+        }else{
+            throw new Error('Invalid transaction object');
+        }
     }
 
     //assign default provider
