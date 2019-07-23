@@ -305,7 +305,7 @@ let abiMethodCall = async(methodName,inputs,output) => {
  
 describe('avm_contract', () => {
 
-  /*it('deploying contract..', done => {
+  it('deploying contract..', done => {
     deploy().then(res => {
       
       res.status.should.eql(true);
@@ -313,9 +313,9 @@ describe('avm_contract', () => {
     }).catch(err => {
       done(err);
     });
-  });*/
+  });
 
-  /*tests.forEach((test) => {
+  tests.forEach((test) => {
     it('testing method, ' + test.name, done => {
       if(test.type === 'call') {
         if(test.inputs === 1) {
@@ -347,41 +347,32 @@ describe('avm_contract', () => {
         }
       }
     });
-  });*/
-/*iface.functions.forEach((method)=>{
-  if(method.name=='setString'){
-    it('Testing method send...setString', done => {
-      web3.avm.contract.transaction.setString('Testing').then(res => {
-        assert.deepEqual(res.status,true,"Call Failed!")
-        done();
-      }).catch(err => {
-        done(err);
-      });
-    });
-  }
-});*/
+  });
+  
 
   iface.functions.forEach((method)=>{
-    console.log(method);
-    if(method.name!==null){
-    it('Testing method call...'+method.name, done => {
-      abiMethodCall(method.name,method.inputs,method.output).then(res => {
-        assert.deepEqual(res,test_cfg[arrData(method.output,method.name)],"Call Failed!")
-        done();
-      }).catch(err => {
-        done(err);
+    //console.log(method);
+    if(method.output!==null){
+
+      it('Testing method call...'+method.name, done => {
+        abiMethodCall(method.name,method.inputs,method.output).then(res => {
+          assert.deepEqual(res,test_cfg[arrData(method.output,method.name)],"Call Failed!")
+          done();
+        }).catch(err => {
+          done(err);
+        });
       });
-    });
-    
-    it('Testing method send...'+method.name, done => {
-      abiMethodSend(method.name,method.inputs).then(res => {
-        //console.log(res);
-        assert.isTrue(res.status,"Send Failed!");        
-        done();
-      }).catch(err => {
-        done(err);
+    }else{
+      it('Testing method send...'+method.name, done => {
+        abiMethodSend(method.name,method.inputs).then(res => {
+          //console.log(res);
+          assert.isTrue(res.status,"Send Failed!");        
+          done();
+        }).catch(err => {
+          done(err);
+        });
       });
-    });
+
     }
   });
 

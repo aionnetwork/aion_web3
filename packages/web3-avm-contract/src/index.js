@@ -54,8 +54,8 @@ class Contract {
 		this._data = null;
 		this._key = null;
 
-        this._gasPrice = 2000000;
-        this._gas = 5000000;
+        this._gasPrice = 10000000000;//10000000000
+        this._gas = 2000000;
         this._value = 0;
         this._nonce = null;
 
@@ -78,6 +78,12 @@ class Contract {
             return res;
         };
 
+        /**
+            *@desc signs and send a transaction
+            *@param accepts a transaction data object
+            *@return returns the transaction data or false on error
+        **/
+
 		this.sendTransaction = async (txObject) => {
             
             let signedTx = await this.instance.eth.accounts.signTransaction(txObject, this._key);
@@ -98,6 +104,12 @@ class Contract {
                         
         };
 
+        /**
+            *@desc makes a call
+            *@param accepts a transaction data object and return type
+            *@return if return type is not null return the decoded data else return true or false if there is an error
+        **/
+
         this.call = async (txObject,returnType=null) => {
           
           try{
@@ -110,13 +122,17 @@ class Contract {
               }
           }catch(err){
             console.log("Call Failed!", err);
-            return false;
+            return false; //may need to be improved for booleans
           }  
           
         };
 
 	}
-
+    /**
+        *@desc get the current value set for gas
+        *@param none
+        *@return returns the value of _gas
+    **/
     getGas(){
         return this._gas
     }
@@ -128,6 +144,11 @@ class Contract {
         }
 
     }
+    /**
+        *@desc get the current value set for gas price
+        *@param none
+        *@return returns the value of _gasPrice
+    **/
     getGasPrice(){
         return this._gasPrice
     }
@@ -139,6 +160,11 @@ class Contract {
         }
 
     }
+    /**
+        *@desc get the current value set for a transaction value field
+        *@param none
+        *@return returns the value of _value
+    **/
     getValue(){
         return this._value
     }
@@ -150,17 +176,28 @@ class Contract {
         }
 
     }
+    //to be improved
     getNonce(){
         return this._nonce
     }
+    /**
+        *@desc get the current value set for gas
+        *@param none
+        *@return returns the value of _gas
+    **/
     setNonce(nonce=null){
         if(nonce!==null){
             this._nonce = nonce;
         }else{
-            throw new Error('Invalid gas');
+            throw new Error('Invalid nonce');
         }
 
     }
+    /**
+        *@desc set value from a provided transaction object
+        *@param accepts an object with necessary fields
+        *@return none
+    **/
     setTransactionObject(obj){
         if(obj!==null){
             if(obj.gas!==null){
@@ -202,14 +239,19 @@ class Contract {
     //Prepare transaction object
     txnObj(address,contract,data,gasPrice=10000000000,gas=2000000,type='0x1'){
         
+        let g= this._gas;
+        let gP= this._gasPrice;
+
         let txObject = {
             from: address,
             to: contract,
             data: data,
-            gasPrice: gasPrice,
-            gas: gas,
+            gasPrice: gP,//gasPrice,//
+            gas: g,//gas,
             type: type
         };
+        //console.log("HERE IS THE DATA >>>>", txObject.gasPrice,"##",txObject.gas,"##",txObject.value);
+        
         return txObject;
     }
 
@@ -217,7 +259,7 @@ class Contract {
     initFunctions(fns,obj){
         try{
                 fns.forEach(function(fn){
-
+                    //define call functions
                     Object.defineProperty(obj.readOnly, fn.name,{
                      value: function(){
                             const props = fn;                            
@@ -245,6 +287,7 @@ class Contract {
                      writable: false
                     });
 
+                    //define functions with send transaction
                     Object.defineProperty(obj.transaction, fn.name,{
                         value: function(){
                             const props = fn;
@@ -280,37 +323,50 @@ class Contract {
         }
     }
 
+    /**
+        *@desc assign values and create function based on abi definition
+        *@param takes the contract address, abi object, private key and web3 instance
+        *@return none
+    **/
 	initBinding(contractAddress=null, abi=null, key=null, instance=null) {
 	    if((contractAddress === null)||(abi === null)) {
             throw new Error('Missing input parameter(s)');
         }
 
-        this._key = key;
+        
 	    this._contract = contractAddress;
 	    this._interface = abi;
-	    
+
+	    if(key!==null){
+            this._key = key;
+        }
         if(instance!==null){
             this.instance = instance;//web3 intance to process transactions
         }
 
         //TODO:Improve the following
-	    //console.log(this._provider);
-        let ac = this.instance.eth.accounts.privateKeyToAccount(key);
+	    let ac = this.instance.eth.accounts.privateKeyToAccount(this._key);
 	    this._address = ac.address;
 
 	    var methods = abi.functions ? abi.functions : [];
 
 	    this.initFunctions(methods,this);//create methods
 	}
-	//mock method
-
-
+	
 	// Converts the Jar into a JarPath to be Encoded for Initialization
 	deploy(jar) {
 	    
         this._jarPath = fs.readFileSync(jar);
 	    return this;
 	}
+
+    // TODO: allow _jarPath creation from the browser
+    // accepts file steam instaead of using fs.readFileSync(jar);
+    clientDeploy(jar) {
+        
+        this._jarPath = jar //fs.readFileSync(jar);
+        return this;
+    }
 
 	// Defines the Arguments of a AVM Contract's Initializer
 	args(types, values) {
