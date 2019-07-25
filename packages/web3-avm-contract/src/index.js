@@ -169,7 +169,7 @@ class Contract {
         return this._value
     }
     setValue(value=null){
-        if(gas!==null){
+        if(value!==null){
             this._value = value;
         }else{
             throw new Error('Invalid gas');
@@ -237,10 +237,11 @@ class Contract {
     }
 
     //Prepare transaction object
-    txnObj(address,contract,data,gasPrice=10000000000,gas=2000000,type='0x1'){
+    txnObj(address,contract,data,gasPrice=10000000000,gas=2000000,nonce=null,type='0x1'){
         
-        let g= this._gas;
-        let gP= this._gasPrice;
+        let g = this._gas;
+        let gP = this._gasPrice;
+        let v = this._value;
 
         let txObject = {
             from: address,
@@ -248,10 +249,15 @@ class Contract {
             data: data,
             gasPrice: gP,//gasPrice,//
             gas: g,//gas,
+            value: v,//value
             type: type
         };
         //console.log("HERE IS THE DATA >>>>", txObject.gasPrice,"##",txObject.gas,"##",txObject.value);
         
+        //nonce is calculated so only set if user provide a figure
+        if(nonce!==null){
+            txObject.nonce = nonce;
+        }
         return txObject;
     }
 

@@ -1,4 +1,6 @@
 let test_cfg = require('./_integ_test_config.js');
+let test_data = require('./_integ_test_data.js');
+
 let should = require('should');
 let path = require('path');
 let BN = require('bn.js');
@@ -133,7 +135,7 @@ let abi = `
     public static void setFloat(float)
     void setLong(long)
     void setDouble(double)
-    public static String setString(String)
+    public static void setString(String)
     public static byte getByte()
     boolean getBoolean()
     char getChar()
@@ -162,7 +164,8 @@ let abi = `
     double[][] get2DDoubleArr()
     int[] getEdgeEmptyIntArr()
     int[] getEdgeNullIntArr()
-    int getEdgeSum(int, int)
+    int getEdgeSum(int, int) 
+    void dontExist()   
 `
 
 //let contract = web3.avm.contract.initBinding("0xa0ddef877dba8f4e407f94d70d83757327b9c9641f9244da3240b2927d493ebc", iface, test_cfg.AVM_TEST_PK, web3);//Interface
@@ -199,7 +202,7 @@ let abiMethodCall = async(methodName,inputs,output) => {
     if(inputs!==null)
     {
       inputs.forEach((input)=>{
-        arr.push(test_cfg[input.name.toUpperCase()]);
+        arr.push(test_data[input.name.toUpperCase()]);
       });
     }
 
@@ -222,12 +225,23 @@ let abiMethodCall = async(methodName,inputs,output) => {
     }
  }
 
+ let sendSetString = async(str) => {
+    try {      
+      let result;     
+      result = await web3.avm.contract.transaction.setString(str);
+      return result;
+    } catch (error) {
+      console.log("Send error:",error);
+      return false;
+    }
+ }
+
  let abiMethodSend = async(methodName,inputs=null,output) => {
     let arr = [];
     if(inputs!==null)
     {
       inputs.forEach((input)=>{
-        arr.push(test_cfg[input.name.toUpperCase()]);
+        arr.push(test_data[input.name.toUpperCase()]);
       });
     }
 
@@ -253,7 +267,7 @@ let abiMethodCall = async(methodName,inputs,output) => {
     if(inputs!==null)
     {
       inputs.forEach((input)=>{
-        arr.push(test_cfg[input.name.toUpperCase()]);
+        arr.push(test_data[input.name.toUpperCase()]);
       });
     }
 
@@ -281,7 +295,7 @@ let abiMethodCall = async(methodName,inputs,output) => {
     if(inputs!==null)
     {
       inputs.forEach((input)=>{
-        arr.push(test_cfg[input.name.toUpperCase()]);
+        arr.push(test_data[input.name.toUpperCase()]);
       });
     }
 
@@ -356,7 +370,7 @@ describe('avm_contract', () => {
 
       it('Testing method call...'+method.name, done => {
         abiMethodCall(method.name,method.inputs,method.output).then(res => {
-          assert.deepEqual(res,test_cfg[arrData(method.output,method.name)],"Call Failed!")
+          assert.deepEqual(res,test_data[arrData(method.output,method.name)],"Call Failed!")
           done();
         }).catch(err => {
           done(err);
@@ -366,7 +380,7 @@ describe('avm_contract', () => {
       it('Testing method send...'+method.name, done => {
         abiMethodSend(method.name,method.inputs).then(res => {
           //console.log(res);
-          assert.isTrue(res.status,"Send Failed!");        
+          assert.isTrue(res.status,"Send Failed!"+res.hash);        
           done();
         }).catch(err => {
           done(err);
@@ -376,6 +390,37 @@ describe('avm_contract', () => {
     }
   });
 
+  it('Testing none existent method send...', done => {
+        abiMethodSend('dontExistB',[]).then(res => {
+          //console.log(res);
+          assert.isTrue(!res,"Test Failed!");        
+          done();
+        }).catch(err => {
+          done(err);
+        });
+      });
+
+  it('Testing send with actual method...', done => {
+        sendSetString('this is a test!').then(res => {
+          assert.isTrue(res.status,"Test Failed!");        
+          done();
+        }).catch(err => {
+          done(err);
+        });
+        
+  });
+
+  it('Testing send with value...', done => {
+        //change value
+        web3.avm.contract.setValue(1)
+        sendSetString('setString',['']).then(res => {
+          //console.log(res);
+          assert.isTrue(res.status,"Test Failed!");        
+          done();
+        }).catch(err => {
+          done(err);
+        });
+      });
   /*iface.functions.forEach((method)=>{
     console.log(method);
     if(method.output!==null){
