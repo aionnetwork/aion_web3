@@ -95,7 +95,12 @@ class ABICoder {
                 return new codec.ArrayCoder(new codec.StringCoder("string"), localName);
             case "address[]":
                 return new codec.ArrayCoder(new codec.AddressCoder("address"), localName);
-                
+            
+            //implimentation for BigInt
+            case "biginteger":
+                return new codec.BigIntegerCoder("biginteger", 8, 0x23, localName);
+            case "biginteger[]":
+                return new codec.BigIntegerArrayCoder("biginteger[]", 8, 0x23, localName);    
         }
         throw new Error("unknown - " + param);
     }

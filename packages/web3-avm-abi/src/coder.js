@@ -506,6 +506,71 @@ class ArrayCoder extends NullableCoder {
     }
 }
 
+// Used to handle BigInteger Data Types
+class BigIntegerCoder extends Coder {
+    constructor(type, byteCount, tag, localName) {
+        super(type, tag, localName);
+        this.byteCount = byteCount;
+    }
+
+    decode(reader, array) {
+        if(array === null) {
+            let tag = reader.readByte();
+            if (tag !== this.tag) { 
+                throw new Error("invalid tag"); 
+            }
+        }
+
+        let view = new DataView(reader.readBytes(this.byteCount).buffer);
+               
+        return view.getBigInt64(0);
+    }
+
+    
+    encode(writer, value, array) {
+        if(array === null) writer.writeByte(this.tag);
+
+        let buffer = new ArrayBuffer(this.byteCount);
+        let view = new DataView(buffer);        
+        view.setBigInt64(0, value);
+        
+        writer.writeBytes(new Uint8Array(buffer, 0, this.byteCount));
+    }
+}
+class BigIntegerArrayCoder extends BigIntegerCoder {
+    constructor(type, byteCount, tag, localName) {
+        super(type, byteCount, tag, localName);
+    }
+
+    decode(reader) {
+        let tag = reader.readByte();
+        if(tag === TagNull) {
+            reader.readByte();
+            return null;
+        } else if (tag !== this.tag) {
+            throw new Error("invalid child tag"); 
+        }
+        let length = reader.readLength();
+        let result = [];
+        for (let i = 0; i < length; i++) {
+            result.push(super.decode(reader));
+        }
+        return result;
+    }
+
+    encode(writer, value) {
+        if(!Array.isArray(value)) {
+            this._throwError("has to be an array");
+        }
+
+        writer.writeByte(this.tag);
+        writer.writeLength(value.length);
+        value.forEach((value) => {
+            super.encode(writer, value, true);
+        });
+    }
+}
+
 module.exports = {
     Reader: Reader,
     Writer: Writer,
@@ -524,5 +589,9 @@ module.exports = {
     ByteArrayCoder: ByteArrayCoder,
     CharArrayCoder: CharArrayCoder,
     FloatArrayCoder: FloatArrayCoder,
-    BooleanArrayCoder: BooleanArrayCoder
+    BooleanArrayCoder: BooleanArrayCoder,
+
+    BigIntegerCoder: BigIntegerCoder,
+    BigIntegerArrayCoder: BigIntegerArrayCoder
+
 }

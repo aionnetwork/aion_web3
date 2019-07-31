@@ -52,6 +52,7 @@ let deploy = async() => {
   return res;
 }
 
+
 let methodCallWithInputs = async(methodName, inputTypes, inputValues, returnType) => {
   let data = web3.avm.contract.method(methodName).inputs(inputTypes, inputValues).encode();
 
@@ -170,7 +171,7 @@ let abi = `
 
 //let contract = web3.avm.contract.initBinding("0xa0ddef877dba8f4e407f94d70d83757327b9c9641f9244da3240b2927d493ebc", iface, test_cfg.AVM_TEST_PK, web3);//Interface
 let iface = web3.avm.contract.Interface(abi);//aion.utils.AvmInterface.fromString(abi);
-console.log(iface.functions);
+//console.log(iface.functions);
 let contractAddress = test_cfg.AVM_TEST_CT_2_ADDR;
 
 web3.avm.contract.initBinding(contractAddress, iface, test_cfg.AVM_TEST_PK);//Interface
@@ -316,9 +317,18 @@ let abiMethodCall = async(methodName,inputs,output) => {
     }
  }
 
+ let encodeBigInt = function(bigint){
+    let arr = [bigint];
+    let coded = web3.avm.contract._abi.encode(['BigInteger'],arr);
+    console.log(coded);
+    let decoded = web3.avm.contract.decode(['BigInteger'],coded)
+    return data;
+ }
+
  
 describe('avm_contract', () => {
 
+  /*
   it('deploying contract..', done => {
     deploy().then(res => {
       
@@ -420,7 +430,16 @@ describe('avm_contract', () => {
         }).catch(err => {
           done(err);
         });
-      });
+      });*/
+  it('Testing BigInteger..', done => {
+    encodeBigInt().then(res => {
+      console.log(res);
+      res.status.should.eql(true);
+      done();
+    }).catch(err => {
+      done(err);
+    });
+  });
   /*iface.functions.forEach((method)=>{
     console.log(method);
     if(method.output!==null){
