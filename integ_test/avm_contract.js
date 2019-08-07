@@ -7,12 +7,17 @@ let BN = require('bn.js');
 let Web3 = require('../');
 
 let jarPath = path.join(__dirname, 'contracts', 'Counter.jar')
+let BIjarPath = path.join(__dirname, 'contracts', 'bigint-1.0-SNAPSHOT.jar')
+
 let web3 = new Web3(new Web3.providers.HttpProvider(test_cfg.JAVA_IP));
+let web3bi = new Web3(new Web3.providers.HttpProvider(test_cfg.JAVA_IP));
 let web3R = new Web3(new Web3.providers.HttpProvider(test_cfg.RUST_IP));
 let acc = web3.eth.accounts.privateKeyToAccount(test_cfg.AVM_TEST_PK);
 
 var chai = require('chai');
+chai.use(require('chai-bn')(BN));
 var assert = chai.assert;
+
 
 let tests = [{
   name: 'incrementCounter',
@@ -36,7 +41,26 @@ let tests = [{
 // Deploy an AVM Contract 
 let deploy = async() => {
   
-  let data = web3.avm.contract.deploy(jarPath).args(['int'], [100]).init();
+  let data = web3bi.avm.contract.deploy(jarPath).args(['int'], [100]).init();
+
+  //construct a transaction
+  const txObject = {
+    from: acc.address,
+    data: data,
+    gasPrice: test_cfg.GAS_PRICE,
+    gas: test_cfg.AVM_TEST_CT_DEPLOY_GAS,
+    type: '0x2'
+  };
+
+  let signedTx = await web3.eth.accounts.signTransaction(txObject, test_cfg.AVM_TEST_PK);
+  let res = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+  return res;
+}
+
+// Deploy an AVM BigInt Contract 
+let BI_Deploy = async() => {
+  
+  let data = web3.avm.contract.deploy(jarPath).args(['String','BigInteger','BigInteger[]'], ['biginteger',123456789,[987654321,123456789]]).init();
 
   //construct a transaction
   const txObject = {
@@ -123,6 +147,18 @@ let methodSendWithoutInputs = async(methodName) => {
   return res;
 }
 
+let bi_abi = `
+    1
+    Test.HelloAvm
+    Clinit: (String, BigInteger, BigInteger[])
+    public static BigInteger getMyBI()
+    public static BigInteger[] getMyBIArray()
+    public static void setMyBI(BigInteger)
+    public static void setMyBIArray(BigInteger[])
+    public static String getMyStr()
+    public static void setMyStr(String)
+`
+
 let abi = `
     0.0    
     HelloAvm 
@@ -171,6 +207,8 @@ let abi = `
 
 //let contract = web3.avm.contract.initBinding("0xa0ddef877dba8f4e407f94d70d83757327b9c9641f9244da3240b2927d493ebc", iface, test_cfg.AVM_TEST_PK, web3);//Interface
 let iface = web3.avm.contract.Interface(abi);//aion.utils.AvmInterface.fromString(abi);
+let biface = web3.avm.contract.Interface(bi_abi);//aion.utils.AvmInterface.fromString(abi);
+
 //console.log(iface.functions);
 let contractAddress = test_cfg.AVM_TEST_CT_2_ADDR;
 
@@ -317,15 +355,24 @@ let abiMethodCall = async(methodName,inputs,output) => {
     }
  }
 
- let encodeBigInt = function(bigint){
+ let encodeBigInt = async(bigint) => {
     let arr = [bigint];
-    let coded = web3.avm.contract._abi.encode(['BigInteger'],arr);
-    console.log(coded);
-    let decoded = web3.avm.contract.decode(['BigInteger'],coded)
-    return data;
+    let type= ['BigInteger']
+    let coded = web3.avm.contract._abi.encode(type,arr);
+    let decoded = web3.avm.contract.decode('BigInteger',coded)
+    return decoded;
  }
 
- 
+  let encodeBigIntArr = async(bigint) => {
+    let arr = [bigint];
+    let type= ['BigInteger[]']
+    let coded = web3.avm.contract._abi.encode(type,arr);
+    
+    let decoded = web3.avm.contract.decode('BigInteger[]',coded)
+    
+    return decoded;
+ }
+
 describe('avm_contract', () => {
 
   /*
@@ -339,6 +386,17 @@ describe('avm_contract', () => {
     });
   });
 
+  it('deploying BigInteger contract..', done => {
+    BI_Deploy().then(res => {
+      
+      res.status.should.eql(true);
+      done();
+    }).catch(err => {
+      done(err);
+    });
+  });
+
+  
   tests.forEach((test) => {
     it('testing method, ' + test.name, done => {
       if(test.type === 'call') {
@@ -432,14 +490,32 @@ describe('avm_contract', () => {
         });
       });*/
   it('Testing BigInteger..', done => {
-    encodeBigInt().then(res => {
-      console.log(res);
-      res.status.should.eql(true);
+    encodeBigInt(test_data['BIGINT']).then(res => {
+      let bn = new BN(test_data['BIGINT'],10);
+      let val = res.eq(bn);      
+      assert.isTrue(val,"BIGINT Test Failed");
+
       done();
     }).catch(err => {
       done(err);
     });
   });
+
+  it('Testing BigInteger Array..', done => {
+    encodeBigIntArr(test_data['ONE_D_BIGINT']).then(res => {
+     
+      console.log('Bigint arr:',res[0].toString(),res[1].toString());
+      let bn = new BN(test_data['ONE_D_BIGINT'][0],10);
+      let val = res[0].eq(bn); 
+          
+      assert.isTrue(val,"BIGINT Array Test Failed");
+
+      done();
+    }).catch(err => {
+      done(err);
+    });
+  });
+
   /*iface.functions.forEach((method)=>{
     console.log(method);
     if(method.output!==null){

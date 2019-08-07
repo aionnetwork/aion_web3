@@ -1,7 +1,21 @@
+/**
+* 
+* @Module Avm
+*
+*/
+
+
 var core = require('aion-web3-core');
 var contract = require('aion-web3-avm-contract');
 //var Eth = require('aion-web3-eth');
 
+
+/**
+* 
+* @name Avm
+* @method Avm
+* @constructor
+*/
 var Avm = function Avm(web3) {
 	// sets _requestmanager
     core.packageInit(this, arguments);

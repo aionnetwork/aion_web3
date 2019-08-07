@@ -125,6 +125,10 @@ function bigNumberify(val) {
   return new BN(val);
 }
 
+function bigNumberifyhex(val) {
+  return new BN(val,16);
+}
+
 function concat(objects) {
     var arrays = [];
     var length = 0;
@@ -319,6 +323,7 @@ module.exports = {
     defineProperty: defineProperty,
     padZeros: padZeros,
     bigNumberify: bigNumberify,
+    bigNumberifyhex: bigNumberifyhex,
     getAddress: getAddress,
     concat: concat,
     toUtf8Bytes: toUtf8Bytes,

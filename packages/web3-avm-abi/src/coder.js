@@ -25,6 +25,7 @@
 
 var utils = require('./coder-utils.js');
 
+
 const TagNull = 0x32;
 
 // Used for Encoding Data Types and their Arguments for AVM Contracts
@@ -508,7 +509,7 @@ class ArrayCoder extends NullableCoder {
 
 // Used to handle BigInteger Data Types
 class BigIntegerCoder extends Coder {
-    constructor(type, byteCount, tag, localName) {
+    /*constructor(type, byteCount, tag, localName) {
         super(type, tag, localName);
         this.byteCount = byteCount;
     }
@@ -522,19 +523,50 @@ class BigIntegerCoder extends Coder {
         }
 
         let view = new DataView(reader.readBytes(this.byteCount).buffer);
-               
-        return view.getBigInt64(0);
+        
+        console.log("decode val:",view.getBigInt64(0));
+
+        return utils.bigNumberify(view.getBigInt64(0));
+        //return value;
     }
 
     
     encode(writer, value, array) {
+        console.log(value);
         if(array === null) writer.writeByte(this.tag);
 
         let buffer = new ArrayBuffer(this.byteCount);
-        let view = new DataView(buffer);        
+        let view = new DataView(buffer);    
+        console.log('this.byteCount:',this.byteCount);    
         view.setBigInt64(0, value);
-        
+        console.log('encode decoded: ',view.getBigInt64(0, value));
         writer.writeBytes(new Uint8Array(buffer, 0, this.byteCount));
+    }*/
+
+    constructor(type, byteCount, tag, localName) {
+        super(type, tag, localName);
+        this.byteCount = byteCount;
+    }
+
+    decode(reader, array) {
+        if(array === null) {
+            let tag = reader.readByte();
+            if (tag !== this.tag) { 
+                this._throwError("invalid tag"); 
+            }
+        }
+        let value = utils.bigNumberify(reader.readBytes(this.byteCount));
+        return value;
+    }
+
+    encode(writer, value, array) {
+        if (value == null) { 
+            this._throwError("cannot be null"); 
+        }
+
+        let bytes = utils.padZeros(utils.arrayify(utils.bigNumberify(value)), this.byteCount);
+        if(array === null) writer.writeByte(this.tag);
+        writer.writeBytes(bytes);
     }
 }
 class BigIntegerArrayCoder extends BigIntegerCoder {
@@ -550,6 +582,7 @@ class BigIntegerArrayCoder extends BigIntegerCoder {
         } else if (tag !== this.tag) {
             throw new Error("invalid child tag"); 
         }
+
         let length = reader.readLength();
         let result = [];
         for (let i = 0; i < length; i++) {

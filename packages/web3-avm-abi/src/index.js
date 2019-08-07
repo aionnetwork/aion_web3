@@ -20,6 +20,11 @@
  * Contributors:
  *     Aion foundation.
  */
+/**
+* 
+* @Module Avm-abi
+*
+*/
 
 "use strict"; 
 
@@ -34,7 +39,7 @@ class ABICoder {
 
     // Gets the right Coder based on the Param passed
     getCoder(param) {
-        let comps = param.trim().split(" ").map((comp) => comp.trim());
+       let comps = param.trim().split(" ").map((comp) => comp.trim());
 
         param = comps[0];
         let localName = comps[1] || null;
@@ -98,9 +103,9 @@ class ABICoder {
             
             //implimentation for BigInt
             case "biginteger":
-                return new codec.BigIntegerCoder("biginteger", 8, 0x23, localName);
+                return new codec.BigIntegerCoder("biginteger", 16, 0x23, localName);
             case "biginteger[]":
-                return new codec.BigIntegerArrayCoder("biginteger[]", 8, 0x23, localName);    
+                return new codec.BigIntegerArrayCoder("biginteger[]", 16, 0x23, localName);    
         }
         throw new Error("unknown - " + param);
     }
@@ -142,7 +147,6 @@ class ABICoder {
         }
 
         let coders = types.map((type) => this.getCoder(type));
-
         let writer = this.getWriter();
         coders.forEach((coder, index) => {
             let array = null;
@@ -151,7 +155,6 @@ class ABICoder {
             }
             coder.encode(writer, values[index], array);
         });
-
         return writer._data;
     }
 
@@ -174,7 +177,6 @@ class ABICoder {
 
         var array = null;
         if(type.substring(type.length - 2) === "[]") array = true;
-
         return coder.decode(reader, array);
     }
 

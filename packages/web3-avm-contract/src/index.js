@@ -20,6 +20,11 @@
  * Contributors:
  *     Aion foundation.
  */
+ /**
+* 
+* @Module Avm-contract
+*
+*/
 
 "use strict"; 
 

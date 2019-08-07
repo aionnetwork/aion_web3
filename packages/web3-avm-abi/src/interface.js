@@ -15,10 +15,10 @@ var properties_1 = require('./coder-utils');
 
 var _constructorGuard = {};
 var validBaseTypes = [
-    "Address" ,"address", "boolean", "byte", "char", "double", "float", "int", "long", "short", "String"
+    "Address" ,"address", "boolean", "byte", "char", "double", "float", "int", "long", "short", "String","BigInteger"
 ];
 function checkIdentifier(value) {
-    if (!value.match(/^[a-z_][a-z0-9_]*$/i)) {
+    if (!value.match(/^[a-z_][a-z0-9_]*(\[\])?$/i)) {
         errors.throwArgumentError("invalid identifier", "value", value);
     }
     return value;
@@ -46,9 +46,7 @@ var ParamType = /** @class */ (function () {
         properties_1.defineReadOnly(this, "type", checkType(type));
     }
     ParamType.fromString = function (value) {
-        //console.log("This is ParamType.fromString: "+value);
         var comps = value.trim().replace(/\[\s*\]/g, "[]").replace(/\s+/g, " ").split(" ");
-        //console.log("comps: ["+comps.length+"] "+comps[0]+" "+comps[1]);
         if (comps.length >= 2) {
             errors.throwArgumentError("invalid param type", "value", value);
         }
@@ -112,9 +110,9 @@ var Interface = /** @class */ (function () {
         if (constructorGuard !== _constructorGuard) {
             throw new Error("do not instantiate directly use fromString");
         }
-        if (version !== "0.0") {
+        /*if (version !== "0.0") {
             errors.throwArgumentError("unsupported version", "version", version);
-        }
+        }*/
         properties_1.defineReadOnly(this, "version", version);
         name = name.split(".").map(function (comp) { return checkIdentifier(comp.trim()); }).join(".");
         properties_1.defineReadOnly(this, "name", name);
