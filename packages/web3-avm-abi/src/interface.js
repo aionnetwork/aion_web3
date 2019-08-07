@@ -23,6 +23,14 @@ function checkIdentifier(value) {
     }
     return value;
 }
+function clinitTypes(str){
+    var types = [];
+    str = str.replace(/\s+/g,'');
+    str = str.substring(str.indexOf("("));
+    str = str.substring(1,str.length-1);
+    types = str.split(",");
+    return types;
+}
 function checkType(value) {
     var throwError = function () {
         throw new Error("invalid type", "value", value);
@@ -105,7 +113,7 @@ var FunctionFragment = /** @class */ (function () {
 }());
 exports.FunctionFragment = FunctionFragment;
 var Interface = /** @class */ (function () {
-    function Interface(constructorGuard, version, name, functions) {
+    function Interface(constructorGuard, version, name, functions,clinit) {
         errors.checkNew(this, Interface);
         if (constructorGuard !== _constructorGuard) {
             throw new Error("do not instantiate directly use fromString");
@@ -116,6 +124,9 @@ var Interface = /** @class */ (function () {
         properties_1.defineReadOnly(this, "version", version);
         name = name.split(".").map(function (comp) { return checkIdentifier(comp.trim()); }).join(".");
         properties_1.defineReadOnly(this, "name", name);
+
+        properties_1.defineReadOnly(this, "init", clinit);
+
         properties_1.defineReadOnly(this, "functions", functions);
         Object.freeze(this.functions);
     }
@@ -147,9 +158,11 @@ var Interface = /** @class */ (function () {
                 return;
             }
             functions.push(FunctionFragment.fromString(line));
+            
         });
-        return new Interface(_constructorGuard, version, name, functions);
-        ;
+        var ClinitArr = clinitTypes(Clinit);
+        return new Interface(_constructorGuard, version, name, functions, ClinitArr);
+        
     };
     return Interface;
 }());

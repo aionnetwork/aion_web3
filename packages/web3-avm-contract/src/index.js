@@ -42,6 +42,7 @@ class Contract {
 		this._method = null;
 		this._values = [];
 		this._types = [];
+        this._deployTypes = [];
 
 		//
 		this._call = null;
@@ -383,7 +384,13 @@ class Contract {
 	args(types, values) {
 		
         if(this._jarPath === null) { throw new Error('requires a jarFile to be set first through the deploy method'); }
-        this._argsData = this._abi.encode(types, values);
+        var paramTypes = types;
+        //check if 1 parameter is entered and if there is a value in _deployTypes
+        if(arguments.length === 1 && this._deployTypes!==[]){
+            paramTypes = this._deployTypes;
+        }
+
+        this._argsData = this._abi.encode(paramTypes, values);
         return this;
     }
 
@@ -429,7 +436,9 @@ class Contract {
 
     //
     Interface(abi) {
-        return this._abi.AvmInterface(abi);
+        var abi = this._abi.AvmInterface(abi);
+        this._deployTypes = abi.init;
+        return abi; 
     }
 }
 

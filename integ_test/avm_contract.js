@@ -6,8 +6,8 @@ let path = require('path');
 let BN = require('bn.js');
 let Web3 = require('../');
 
-let jarPath = path.join(__dirname, 'contracts', 'Counter.jar')
-let BIjarPath = path.join(__dirname, 'contracts', 'bigint-1.0-SNAPSHOT.jar')
+let jarPath = path.join(__dirname, 'contracts', 'Counter.jar');
+let BIjarPath = path.join(__dirname, 'contracts', 'bigint-1.0-SNAPSHOT.jar');
 
 let web3 = new Web3(new Web3.providers.HttpProvider(test_cfg.JAVA_IP));
 let web3bi = new Web3(new Web3.providers.HttpProvider(test_cfg.JAVA_IP));
@@ -60,7 +60,7 @@ let deploy = async() => {
 // Deploy an AVM BigInt Contract 
 let BI_Deploy = async() => {
   
-  let data = web3.avm.contract.deploy(jarPath).args(['String','BigInteger','BigInteger[]'], ['biginteger',123456789,[987654321,123456789]]).init();
+  let data = web3.avm.contract.deploy(BIjarPath).args(['String','BigInteger','BigInteger[]'], ['biginteger','123456789',['987654321','123456789']]).init();
 
   //construct a transaction
   const txObject = {
@@ -375,7 +375,7 @@ let abiMethodCall = async(methodName,inputs,output) => {
 
 describe('avm_contract', () => {
 
-  /*
+  
   it('deploying contract..', done => {
     deploy().then(res => {
       
@@ -396,7 +396,7 @@ describe('avm_contract', () => {
     });
   });
 
-  
+  /*
   tests.forEach((test) => {
     it('testing method, ' + test.name, done => {
       if(test.type === 'call') {
