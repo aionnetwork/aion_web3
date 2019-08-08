@@ -9,6 +9,7 @@ let Web3 = require('../');
 let jarPath = path.join(__dirname, 'contracts', 'Counter.jar');
 let BIjarPath = path.join(__dirname, 'contracts', 'bigint-1.0-SNAPSHOT.jar');
 
+let web3NoArgs = new Web3(new Web3.providers.HttpProvider(test_cfg.JAVA_IP));
 let web3 = new Web3(new Web3.providers.HttpProvider(test_cfg.JAVA_IP));
 let web3bi = new Web3(new Web3.providers.HttpProvider(test_cfg.JAVA_IP));
 let web3R = new Web3(new Web3.providers.HttpProvider(test_cfg.RUST_IP));
@@ -41,7 +42,7 @@ let tests = [{
 // Deploy an AVM Contract 
 let deploy = async() => {
   
-  let data = web3bi.avm.contract.deploy(jarPath).args(['int'], [100]).init();
+  let data = web3.avm.contract.deploy(jarPath).args(['int'], [100]).init();
 
   //construct a transaction
   const txObject = {
@@ -57,10 +58,29 @@ let deploy = async() => {
   return res;
 }
 
+// Deploy an AVM Contract 
+let deployNoArgs = async() => {
+  
+  let data = web3NoArgs.avm.contract.deploy(jarPath).args([100]).init();
+
+  //construct a transaction
+  const txObject = {
+    from: acc.address,
+    data: data,
+    gasPrice: test_cfg.GAS_PRICE,
+    gas: test_cfg.AVM_TEST_CT_DEPLOY_GAS,
+    type: '0x2'
+  };
+
+  let signedTx = await web3NoArgs.eth.accounts.signTransaction(txObject, test_cfg.AVM_TEST_PK);
+  let res = await web3NoArgs.eth.sendSignedTransaction(signedTx.rawTransaction);
+  return res;
+}
+
 // Deploy an AVM BigInt Contract 
 let BI_Deploy = async() => {
   
-  let data = web3.avm.contract.deploy(BIjarPath).args(['String','BigInteger','BigInteger[]'], ['biginteger','123456789',['987654321','123456789']]).init();
+  let data = web3bi.avm.contract.deploy(BIjarPath).args(['String','BigInteger','BigInteger[]'], ['biginteger','123456789',['987654321','123456789']]).init();
 
   //construct a transaction
   const txObject = {
@@ -159,6 +179,14 @@ let bi_abi = `
     public static void setMyStr(String)
 `
 
+let no_args_abi = `
+    0.0
+    Counter
+    Clinit: (int)
+    public static void incrementCounter(int)
+    int getCount()
+`
+
 let abi = `
     0.0    
     HelloAvm 
@@ -207,10 +235,13 @@ let abi = `
 
 //let contract = web3.avm.contract.initBinding("0xa0ddef877dba8f4e407f94d70d83757327b9c9641f9244da3240b2927d493ebc", iface, test_cfg.AVM_TEST_PK, web3);//Interface
 let iface = web3.avm.contract.Interface(abi);//aion.utils.AvmInterface.fromString(abi);
-let biface = web3.avm.contract.Interface(bi_abi);//aion.utils.AvmInterface.fromString(abi);
+let biface = web3bi.avm.contract.Interface(bi_abi);//aion.utils.AvmInterface.fromString(abi);
+let no_args_iface = web3NoArgs.avm.contract.Interface(no_args_abi);//aion.utils.AvmInterface.fromString(abi);
 
 //console.log(iface.functions);
 let contractAddress = test_cfg.AVM_TEST_CT_2_ADDR;
+
+web3NoArgs.avm.contract.initBinding(contractAddress, no_args_iface, test_cfg.AVM_TEST_PK);//Interface
 
 web3.avm.contract.initBinding(contractAddress, iface, test_cfg.AVM_TEST_PK);//Interface
 web3R.avm.contract.initBinding(contractAddress, iface, test_cfg.AVM_TEST_PK, web3R);//Interface
@@ -358,17 +389,17 @@ let abiMethodCall = async(methodName,inputs,output) => {
  let encodeBigInt = async(bigint) => {
     let arr = [bigint];
     let type= ['BigInteger']
-    let coded = web3.avm.contract._abi.encode(type,arr);
-    let decoded = web3.avm.contract.decode('BigInteger',coded)
+    let coded = web3bi.avm.contract._abi.encode(type,arr);
+    let decoded = web3bi.avm.contract.decode('BigInteger',coded)
     return decoded;
  }
 
   let encodeBigIntArr = async(bigint) => {
     let arr = [bigint];
     let type= ['BigInteger[]']
-    let coded = web3.avm.contract._abi.encode(type,arr);
+    let coded = web3bi.avm.contract._abi.encode(type,arr);
     
-    let decoded = web3.avm.contract.decode('BigInteger[]',coded)
+    let decoded = web3bi.avm.contract.decode('BigInteger[]',coded)
     
     return decoded;
  }
@@ -376,8 +407,18 @@ let abiMethodCall = async(methodName,inputs,output) => {
 describe('avm_contract', () => {
 
   
-  it('deploying contract..', done => {
+  /*it('deploying contract..', done => {
     deploy().then(res => {
+      
+      res.status.should.eql(true);
+      done();
+    }).catch(err => {
+      done(err);
+    });
+  });*/
+
+  it('deploying contract..', done => {
+    deployNoArgs().then(res => {
       
       res.status.should.eql(true);
       done();
@@ -386,7 +427,7 @@ describe('avm_contract', () => {
     });
   });
 
-  it('deploying BigInteger contract..', done => {
+  /*it('deploying BigInteger contract..', done => {
     BI_Deploy().then(res => {
       
       res.status.should.eql(true);
@@ -394,7 +435,7 @@ describe('avm_contract', () => {
     }).catch(err => {
       done(err);
     });
-  });
+  });*/
 
   /*
   tests.forEach((test) => {
@@ -489,6 +530,7 @@ describe('avm_contract', () => {
           done(err);
         });
       });*/
+  /*
   it('Testing BigInteger..', done => {
     encodeBigInt(test_data['BIGINT']).then(res => {
       let bn = new BN(test_data['BIGINT'],10);
@@ -514,7 +556,7 @@ describe('avm_contract', () => {
     }).catch(err => {
       done(err);
     });
-  });
+  });*/
 
   /*iface.functions.forEach((method)=>{
     console.log(method);

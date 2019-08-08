@@ -384,13 +384,15 @@ class Contract {
 	args(types, values) {
 		
         if(this._jarPath === null) { throw new Error('requires a jarFile to be set first through the deploy method'); }
-        var paramTypes = types;
+        var initTypes = types;
+        var initValues = values;
         //check if 1 parameter is entered and if there is a value in _deployTypes
-        if(arguments.length === 1 && this._deployTypes!==[]){
-            paramTypes = this._deployTypes;
+        if(arguments.length === 1 && this._deployTypes.length > 0){
+            initTypes = this._deployTypes;
+            initValues = arguments[0];
         }
-
-        this._argsData = this._abi.encode(paramTypes, values);
+        
+        this._argsData = this._abi.encode(initTypes, initValues);
         return this;
     }
 

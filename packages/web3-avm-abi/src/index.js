@@ -142,6 +142,7 @@ class ABICoder {
 
     // Encodes Data Types and their Values which are to be used in a Method
     encode(types, values) {
+        
         if (types.length !== values.length) {
             return new Error("types/values length mismatch");
         }
