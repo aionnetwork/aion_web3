@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: lib/solidity/formatters.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: lib/solidity/formatters.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/*
+    This file is part of web3.js.
+
+    web3.js is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    web3.js is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with web3.js.  If not, see &lt;http://www.gnu.org/licenses/>.
+*/
+/**
+ * @file formatters.js
+ * @author Marek Kotewicz &lt;marek@ethdev.com>
+ * @date 2015
+ */
+
+var BigNumber = require('bignumber.js');
+var utils = require('../utils/utils');
+var c = require('../utils/config');
+var SolidityParam = require('./param');
+
+
+/**
+ * Formats input value to byte representation of int
+ * If value is negative, return it's two's complement
+ * If the value is floating point, round it down
+ *
+ * @method formatInputInt
+ * @param {String|Number|BigNumber} value that needs to be formatted
+ * @returns {SolidityParam}
+ */
+var formatInputInt = function (value) {
+    if(process.env.debug) console.log('[formatters.formatInputInt]')
+
+    BigNumber.config(c.ETH_BIGNUMBER_ROUNDING_MODE);
+    // address 64 hex decimal chars 
+    // dynamic bytes
+    // uint types
+    BigNumber.config({ ERRORS: false });
+    var result = utils.padLeft(
+        utils.toTwosComplement(value).toString(16), 
+        typeof(value) === 'number' ? 32 : value.toString('hex').length > 34 ? 64 : 32
+    );
+    
+    return new SolidityParam(result);
+};
+
+/**
+ * Formats input bytes
+ *
+ * @method formatInputBytes
+ * @param {String}
+ * @returns {SolidityParam}
+ */
+var formatInputBytes = function (value) {
+    if(process.env.debug) console.log('[formatters.formatInputBytes]')
+
+    var result = utils.toHex(value).substr(2);
+    var l = Math.floor((result.length + 31) / 32);
+    result = utils.padRight(result, l * 32);
+    return new SolidityParam(result);
+};
+
+/**
+ * Formats input bytes
+ *
+ * @method formatDynamicInputBytes
+ * @param {String}
+ * @returns {SolidityParam}
+ */
+var formatInputDynamicBytes = function (value) {
+    if(process.env.debug) console.log('[formatters.formatInputDynamicBytes]')
+
+    var result = utils.toHex(value).substr(2);
+    var length = result.length / 2;
+    var l = Math.floor((result.length + 63) / 64);
+    result = utils.padRight(result, l * 64);
+    return new SolidityParam(formatInputInt(length).value + result);
+};
+
+/**
+ * Formats input value to byte representation of string
+ *
+ * @method formatInputString
+ * @param {String}
+ * @returns {SolidityParam}
+ */
+var formatInputString = function (value) {
+    if(process.env.debug) console.log('[formatters.formatInputString]')
+
+    var result = utils.fromUtf8(value).substr(2);
+    var length = result.length / 2;
+    var l = Math.floor((result.length + 31) / 32);
+    result = utils.padRight(result, l * 32);
+    return new SolidityParam(formatInputInt(length).value + result);
+};
+
+/**
+ * Formats input value to byte representation of bool
+ *
+ * @method formatInputBool
+ * @param {Boolean}
+ * @returns {SolidityParam}
+ */
+var formatInputBool = function (value) {
+    if(process.env.debug) console.log('[formatters.formatInputBool]')
+
+    var result = '0000000000000000000000000000000' + (value ?  '1' : '0');
+    return new SolidityParam(result);
+};
+
+/**
+ * Formats input value to byte representation of real
+ * Values are multiplied by 2^m and encoded as integers
+ *
+ * @method formatInputReal
+ * @param {String|Number|BigNumber}
+ * @returns {SolidityParam}
+ */
+var formatInputReal = function (value) {
+    if(process.env.debug) console.log('[formatters.formatInputReal]')
+
+    return formatInputInt(new BigNumber(value).times(new BigNumber(2).pow(128)));
+};
+
+/**
+ * Check if input value is negative
+ *
+ * @method signedIsNegative
+ * @param {String} value is hex format
+ * @returns {Boolean} true if it is negative, otherwise false
+ */
+var signedIsNegative = function (value) {
+    if(process.env.debug) console.log('[formatters.signedIsNegative]')
+
+    return (new BigNumber(value.substr(0, 1), 16).toString(2).substr(0, 1)) === '1';
+};
+
+/**
+ * Formats right-aligned output bytes to int
+ *
+ * @method formatOutputInt
+ * @param {SolidityParam} param
+ * @returns {BigNumber} right-aligned output bytes formatted to big number
+ */
+var formatOutputInt = function (param) {
+    if(process.env.debug) console.log('[formatters.formatOutputInt]')
+
+    var value = param.staticPart() || "0";
+
+    // check if it's negative number
+    // it it is, return two's complement
+    if (signedIsNegative(value)) {
+        return new BigNumber(value, 16).minus(new BigNumber('ffffffffffffffffffffffffffffffff', 16)).minus(1);
+    }
+    return new BigNumber(value, 16);
+};
+
+/**
+ * Formats right-aligned output bytes to uint
+ *
+ * @method formatOutputUInt
+ * @param {SolidityParam}
+ * @returns {BigNumeber} right-aligned output bytes formatted to uint
+ */
+var formatOutputUInt = function (param) {
+    if(process.env.debug) console.log('[formatters.formatOutputUInt]')
+
+    var value = param.staticPart() || "0";
+    return new BigNumber(value, 16);
+};
+
+/**
+ * Formats right-aligned output bytes to real
+ *
+ * @method formatOutputReal
+ * @param {SolidityParam}
+ * @returns {BigNumber} input bytes formatted to real
+ */
+var formatOutputReal = function (param) {
+    if(process.env.debug) console.log('[formatters.formatOutputReal]')
+
+    return formatOutputInt(param).dividedBy(new BigNumber(2).pow(128));
+};
+
+/**
+ * Formats right-aligned output bytes to ureal
+ *
+ * @method formatOutputUReal
+ * @param {SolidityParam}
+ * @returns {BigNumber} input bytes formatted to ureal
+ */
+var formatOutputUReal = function (param) {
+    if(process.env.debug) console.log('[formatters.formatOutputUReal]')
+
+    return formatOutputUInt(param).dividedBy(new BigNumber(2).pow(128));
+};
+
+/**
+ * Should be used to format output bool
+ *
+ * @method formatOutputBool
+ * @param {SolidityParam}
+ * @returns {Boolean} right-aligned input bytes formatted to bool
+ */
+var formatOutputBool = function (param) {
+    if(process.env.debug) console.log('[formatters.formatOutputBool]')
+
+    return param.staticPart() === '00000000000000000000000000000001' ? true : false;
+};
+
+/**
+ * Should be used to format output bytes
+ *
+ * @method formatOutputBytes
+ * @param {SolidityParam} left-aligned hex representation of string
+ * @param {String} name type name
+ * @returns {String} hex string
+ */
+var formatOutputBytes = function (param, name) {
+    if(process.env.debug) console.log('[formatters.formatOutputBytes]')
+
+    var matches = name.match(/^bytes([0-9]*)/);
+    var size = parseInt(matches[1]);
+    return '0x' + param.staticPart().slice(0, 2 * size);
+};
+
+/**
+ * Should be used to format output bytes
+ *
+ * @method formatOutputDynamicBytes
+ * @param {SolidityParam} left-aligned hex representation of string
+ * @returns {String} hex string
+ */
+var formatOutputDynamicBytes = function (param) {
+    if(process.env.debug) console.log('[formatters.formatOutputDynamicBytes]')
+
+    var length = (new BigNumber(param.dynamicPart().slice(0, 32), 16)).toNumber() * 2;
+    return '0x' + param.dynamicPart().substr(32, length);
+};
+
+/**
+ * Should be used to format output string
+ *
+ * @method formatOutputString
+ * @param {SolidityParam} left-aligned hex representation of string
+ * @returns {String} ascii string
+ */
+var formatOutputString = function (param) {
+    if(process.env.debug) console.log('[formatters.formatOutputString]')
+
+    var length = (new BigNumber(param.dynamicPart().slice(0, 32), 16)).toNumber() * 2;
+    return utils.toUtf8(param.dynamicPart().substr(32, length));
+};
+
+/**
+ * Should be used to format output address
+ *
+ * @method formatOutputAddress
+ * @param {SolidityParam} right-aligned input bytes
+ * @returns {String} address
+ */
+var formatOutputAddress = function (param) {
+    if(process.env.debug) console.log('[formatters.formatOutputAddress]')
+    
+    var value = param.staticPart();
+    return "0x" + value.slice(value.length - 64, value.length);
+};
+
+module.exports = {
+    formatInputInt: formatInputInt,
+    formatInputBytes: formatInputBytes,
+    formatInputDynamicBytes: formatInputDynamicBytes,
+    formatInputString: formatInputString,
+    formatInputBool: formatInputBool,
+    formatInputReal: formatInputReal,
+    formatOutputInt: formatOutputInt,
+    formatOutputUInt: formatOutputUInt,
+    formatOutputReal: formatOutputReal,
+    formatOutputUReal: formatOutputUReal,
+    formatOutputBool: formatOutputBool,
+    formatOutputBytes: formatOutputBytes,
+    formatOutputDynamicBytes: formatOutputDynamicBytes,
+    formatOutputString: formatOutputString,
+    formatOutputAddress: formatOutputAddress
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-abi.html">abi</a></li><li><a href="module-Avm.html">Avm</a></li><li><a href="module-Avm-abi.html">Avm-abi</a></li><li><a href="module-Avm-contract.html">Avm-contract</a></li><li><a href="module-utils.html">utils</a></li></ul><h3>Classes</h3><ul><li><a href="bloom.html">bloom</a></li><li><a href="global.html#Contract">Contract</a></li><li><a href="module-Avm-Avm.html">Avm</a></li><li><a href="module-utils-BigNumber.html">BigNumber</a></li></ul><h3>Global</h3><ul><li><a href="global.html#$u">$u</a></li><li><a href="global.html#_addResponseCallback">_addResponseCallback</a></li><li><a href="global.html#_checkListener">_checkListener</a></li><li><a href="global.html#_createTxObject">_createTxObject</a></li><li><a href="global.html#_decodeEventABI">_decodeEventABI</a></li><li><a href="global.html#_decodeMethodReturn">_decodeMethodReturn</a></li><li><a href="global.html#_encodeEventABI">_encodeEventABI</a></li><li><a href="global.html#_encodeMethodABI">_encodeMethodABI</a></li><li><a href="global.html#_executeMethod">_executeMethod</a></li><li><a href="global.html#_fireError">_fireError</a></li><li><a href="global.html#_flattenTypes">_flattenTypes</a></li><li><a href="global.html#_generateEventOptions">_generateEventOptions</a></li><li><a href="global.html#_getCallback">_getCallback</a></li><li><a href="global.html#_getOrSetDefaultOptions">_getOrSetDefaultOptions</a></li><li><a href="global.html#_jsonInterfaceMethodToString">_jsonInterfaceMethodToString</a></li><li><a href="global.html#_on">_on</a></li><li><a href="global.html#_parseResponse">_parseResponse</a></li><li><a href="global.html#_processExecuteArguments">_processExecuteArguments</a></li><li><a href="global.html#_requireType">_requireType</a></li><li><a href="global.html#_timeout">_timeout</a></li><li><a href="global.html#_txInputFormatter">_txInputFormatter</a></li><li><a href="global.html#ABICoder">ABICoder</a></li><li><a href="global.html#add">add</a></li><li><a href="global.html#addDefaultEvents">addDefaultEvents</a></li><li><a href="global.html#addEventsToContract">addEventsToContract</a></li><li><a href="global.html#addFunctionsToContract">addFunctionsToContract</a></li><li><a href="global.html#addSubscription">addSubscription</a></li><li><a href="global.html#asciiToHex">asciiToHex</a></li><li><a href="global.html#at">at</a></li><li><a href="global.html#attachToContract">attachToContract</a></li><li><a href="global.html#attachToObject">attachToObject</a></li><li><a href="global.html#blake2b256">blake2b256</a></li><li><a href="global.html#bytesToHex">bytesToHex</a></li><li><a href="global.html#call">call</a></li><li><a href="global.html#chai">chai</a></li><li><a href="global.html#checkAddressChecksum">checkAddressChecksum</a></li><li><a href="global.html#checkForContractAddress">checkForContractAddress</a></li><li><a href="global.html#clone">clone</a></li><li><a href="global.html#combine">combine</a></li><li><a href="global.html#contract">contract</a></li><li><a href="global.html#ContractFactory">ContractFactory</a></li><li><a href="global.html#decode">decode</a></li><li><a href="global.html#decodeLog">decodeLog</a></li><li><a href="global.html#decodeParam">decodeParam</a></li><li><a href="global.html#decodeParameter">decodeParameter</a></li><li><a href="global.html#deploy">deploy</a></li><li><a href="global.html#displayName">displayName</a></li><li><a href="global.html#Documentation">Documentation</a></li><li><a href="global.html#dynamicPart">dynamicPart</a></li><li><a href="global.html#dynamicPartLength">dynamicPartLength</a></li><li><a href="global.html#encode">encode</a></li><li><a href="global.html#encodeConstructorParams">encodeConstructorParams</a></li><li><a href="global.html#encodeEventSignature">encodeEventSignature</a></li><li><a href="global.html#encodeFunctionCall">encodeFunctionCall</a></li><li><a href="global.html#encodeFunctionSignature">encodeFunctionSignature</a></li><li><a href="global.html#encodeList">encodeList</a></li><li><a href="global.html#encodeParam">encodeParam</a></li><li><a href="global.html#encodeParameter">encodeParameter</a></li><li><a href="global.html#encodeParameters">encodeParameters</a></li><li><a href="global.html#encodeParams">encodeParams</a></li><li><a href="global.html#equalBuffers">equalBuffers</a></li><li><a href="global.html#estimateGas">estimateGas</a></li><li><a href="global.html#eventifiedPromise">eventifiedPromise</a></li><li><a href="global.html#execute">execute</a></li><li><a href="global.html#extractCallback">extractCallback</a></li><li><a href="global.html#formatDynamicInputBytes">formatDynamicInputBytes</a></li><li><a href="global.html#formatInput">formatInput</a></li><li><a href="global.html#formatInputBool">formatInputBool</a></li><li><a href="global.html#formatInputBytes">formatInputBytes</a></li><li><a href="global.html#formatInputInt">formatInputInt</a></li><li><a href="global.html#formatInputReal">formatInputReal</a></li><li><a href="global.html#formatInputString">formatInputString</a></li><li><a href="global.html#formatOutput">formatOutput</a></li><li><a href="global.html#formatOutputAddress">formatOutputAddress</a></li><li><a href="global.html#formatOutputBool">formatOutputBool</a></li><li><a href="global.html#formatOutputBytes">formatOutputBytes</a></li><li><a href="global.html#formatOutputDynamicBytes">formatOutputDynamicBytes</a></li><li><a href="global.html#formatOutputInt">formatOutputInt</a></li><li><a href="global.html#formatOutputReal">formatOutputReal</a></li><li><a href="global.html#formatOutputString">formatOutputString</a></li><li><a href="global.html#formatOutputUInt">formatOutputUInt</a></li><li><a href="global.html#formatOutputUReal">formatOutputUReal</a></li><li><a href="global.html#fromNAmp">fromNAmp</a></li><li><a href="global.html#getCall">getCall</a></li><li><a href="global.html#getData">getData</a></li><li><a href="global.html#getLogsAtStart">getLogsAtStart</a></li><li><a href="global.html#getPastEvents">getPastEvents</a></li><li><a href="global.html#getUnitValue">getUnitValue</a></li><li><a href="global.html#getValueOfUnit">getValueOfUnit</a></li><li><a href="global.html#hasTopic">hasTopic</a></li><li><a href="global.html#hexToAscii">hexToAscii</a></li><li><a href="global.html#hexToBuffer">hexToBuffer</a></li><li><a href="global.html#hexToBytes">hexToBytes</a></li><li><a href="global.html#hexToNumber">hexToNumber</a></li><li><a href="global.html#hexToNumberString">hexToNumberString</a></li><li><a href="global.html#hexToUtf8">hexToUtf8</a></li><li><a href="global.html#HttpProvider">HttpProvider</a></li><li><a href="global.html#inputCallFormatter">inputCallFormatter</a></li><li><a href="global.html#inputLogFormatter">inputLogFormatter</a></li><li><a href="global.html#inputPostFormatter">inputPostFormatter</a></li><li><a href="global.html#inputSignFormatter">inputSignFormatter</a></li><li><a href="global.html#inputTransactionFormatter">inputTransactionFormatter</a></li><li><a href="global.html#inputZipfileBase64EncodingFormatter">inputZipfileBase64EncodingFormatter</a></li><li><a href="global.html#isAddress">isAddress</a></li><li><a href="global.html#isBigNumber">isBigNumber</a></li><li><a href="global.html#isBloom">isBloom</a></li><li><a href="global.html#isBN">isBN</a></li><li><a href="global.html#isConnected">isConnected</a></li><li><a href="global.html#isDynamic">isDynamic</a></li><li><a href="global.html#isDynamicArray">isDynamicArray</a></li><li><a href="global.html#isDynamicType">isDynamicType</a></li><li><a href="global.html#isHex">isHex</a></li><li><a href="global.html#isHexStrict">isHexStrict</a></li><li><a href="global.html#isSimplifiedStructFormat">isSimplifiedStructFormat</a></li><li><a href="global.html#isStaticArray">isStaticArray</a></li><li><a href="global.html#isTopic">isTopic</a></li><li><a href="global.html#isType">isType</a></li><li><a href="global.html#isValidResponse">isValidResponse</a></li><li><a href="global.html#leftPad">leftPad</a></li><li><a href="global.html#mapStructNameAndType">mapStructNameAndType</a></li><li><a href="global.html#mapStructToCoderFormat">mapStructToCoderFormat</a></li><li><a href="global.html#mapTypes">mapTypes</a></li><li><a href="global.html#nestedName">nestedName</a></li><li><a href="global.html#nestedTypes">nestedTypes</a></li><li><a href="global.html#new">new</a></li><li><a href="global.html#numberToHex">numberToHex</a></li><li><a href="global.html#offsetAsBytes">offsetAsBytes</a></li><li><a href="global.html#on">on</a></li><li><a href="global.html#once">once</a></li><li><a href="global.html#outputBigNumberFormatter">outputBigNumberFormatter</a></li><li><a href="global.html#outputBlockFormatter">outputBlockFormatter</a></li><li><a href="global.html#outputLogFormatter">outputLogFormatter</a></li><li><a href="global.html#outputPostFormatter">outputPostFormatter</a></li><li><a href="global.html#outputTransactionFormatter">outputTransactionFormatter</a></li><li><a href="global.html#outputTransactionReceiptFormatter">outputTransactionReceiptFormatter</a></li><li><a href="global.html#parseType">parseType</a></li><li><a href="global.html#poll">poll</a></li><li><a href="global.html#pollFilter">pollFilter</a></li><li><a href="global.html#pollSyncing">pollSyncing</a></li><li><a href="global.html#prepareRequest">prepareRequest</a></li><li><a href="global.html#prependZeroX">prependZeroX</a></li><li><a href="global.html#randomHexBuffer">randomHexBuffer</a></li><li><a href="global.html#reconnect">reconnect</a></li><li><a href="global.html#removeAllListeners">removeAllListeners</a></li><li><a href="global.html#removeLeadingZeroX">removeLeadingZeroX</a></li><li><a href="global.html#removeListener">removeListener</a></li><li><a href="global.html#removeSubscription">removeSubscription</a></li><li><a href="global.html#request">request</a></li><li><a href="global.html#RequestManager">RequestManager</a></li><li><a href="global.html#reset">reset</a></li><li><a href="global.html#rightPad">rightPad</a></li><li><a href="global.html#Scorer">Scorer</a></li><li><a href="global.html#Search">Search</a></li><li><a href="global.html#send">send</a></li><li><a href="global.html#sendAsync">sendAsync</a></li><li><a href="global.html#sendBatch">sendBatch</a></li><li><a href="global.html#sendTransaction">sendTransaction</a></li><li><a href="global.html#setProvider">setProvider</a></li><li><a href="global.html#sha3">sha3</a></li><li><a href="global.html#signature">signature</a></li><li><a href="global.html#signedIsNegative">signedIsNegative</a></li><li><a href="global.html#solidityBlake2b256">solidityBlake2b256</a></li><li><a href="global.html#SolidityCoder">SolidityCoder</a></li><li><a href="global.html#SolidityEvent">SolidityEvent</a></li><li><a href="global.html#SolidityFunction">SolidityFunction</a></li><li><a href="global.html#SolidityParam">SolidityParam</a></li><li><a href="global.html#SolidityType">SolidityType</a></li><li><a href="global.html#SolidityTypeAddress">SolidityTypeAddress</a></li><li><a href="global.html#SolidityTypeBool">SolidityTypeBool</a></li><li><a href="global.html#SolidityTypeBytes">SolidityTypeBytes</a></li><li><a href="global.html#SolidityTypeInt">SolidityTypeInt</a></li><li><a href="global.html#SolidityTypeReal">SolidityTypeReal</a></li><li><a href="global.html#SolidityTypeUInt">SolidityTypeUInt</a></li><li><a href="global.html#SolidityTypeUReal">SolidityTypeUReal</a></li><li><a href="global.html#startPolling">startPolling</a></li><li><a href="global.html#startsWithZeroX">startsWithZeroX</a></li><li><a href="global.html#staticArrayLength">staticArrayLength</a></li><li><a href="global.html#staticPart">staticPart</a></li><li><a href="global.html#staticPartLength">staticPartLength</a></li><li><a href="global.html#Stemmer">Stemmer</a></li><li><a href="global.html#stopPolling">stopPolling</a></li><li><a href="global.html#subscribe">subscribe</a></li><li><a href="global.html#testAddress">testAddress</a></li><li><a href="global.html#toBatchPayload">toBatchPayload</a></li><li><a href="global.html#toBN">toBN</a></li><li><a href="global.html#toBuffer">toBuffer</a></li><li><a href="global.html#toChecksumAddress">toChecksumAddress</a></li><li><a href="global.html#toHex">toHex</a></li><li><a href="global.html#toNAmp">toNAmp</a></li><li><a href="global.html#toPayload">toPayload</a></li><li><a href="global.html#toTopic">toTopic</a></li><li><a href="global.html#toTwosComplement">toTwosComplement</a></li><li><a href="global.html#typeName">typeName</a></li><li><a href="global.html#types">types</a></li><li><a href="global.html#unsubscribe">unsubscribe</a></li><li><a href="global.html#utf8ToHex">utf8ToHex</a></li><li><a href="global.html#validateArgs">validateArgs</a></li><li><a href="global.html#withOffset">withOffset</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Thu Aug 08 2019 10:03:17 GMT-0400 (Atlantic Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

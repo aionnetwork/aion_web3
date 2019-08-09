@@ -1,0 +1,9 @@
+1
+Test.HelloAvm
+Clinit: (String, BigInteger, BigInteger[])
+public static BigInteger getMyBI()
+public static BigInteger[] getMyBIArray()
+public static void setMyBI(BigInteger)
+public static void setMyBIArray(BigInteger[])
+public static String getMyStr()
+public static void setMyStr(String)
