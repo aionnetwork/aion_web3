@@ -349,16 +349,20 @@ class Contract {
 	    this._contract = contractAddress;
 	    this._interface = abi;
 
-	    if(key!==null){
+	    //TODO:Improve the following
+        if(key!==null){
             this._key = key;
+            let ac = this.instance.eth.accounts.privateKeyToAccount(this._key);
+            this._address = ac.address;
         }
+
+
         if(instance!==null){
             this.instance = instance;//web3 intance to process transactions
         }
 
-        //TODO:Improve the following
-	    let ac = this.instance.eth.accounts.privateKeyToAccount(this._key);
-	    this._address = ac.address;
+        
+	   
 
 	    var methods = abi.functions ? abi.functions : [];
 

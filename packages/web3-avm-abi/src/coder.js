@@ -548,14 +548,20 @@ class BigIntegerCoder extends Coder {
         this.byteCount = byteCount;
     }
 
-    decode(reader, array) {
+    decode(reader, array=null) {
         if(array === null) {
             let tag = reader.readByte();
             if (tag !== this.tag) { 
                 this._throwError("invalid tag"); 
             }
+
         }
-        let value = utils.bigNumberify(reader.readBytes(this.byteCount));
+        let length = reader.readByte();
+        //let length = reader.readLength();
+            /*if (tag !== this.tag) { 
+                this._throwError("invalid tag"); 
+            }*/
+        let value = utils.bigNumberify(reader.readBytes(length));
         return value;
     }
 
@@ -564,8 +570,9 @@ class BigIntegerCoder extends Coder {
             this._throwError("cannot be null"); 
         }
 
-        let bytes = utils.padZeros(utils.arrayify(utils.bigNumberify(value)), this.byteCount);
-        if(array === null) writer.writeByte(this.tag);
+        let bytes = utils.arrayify(utils.bigNumberify(value));
+        writer.writeByte(this.tag);
+        writer.writeByte(bytes.length);
         writer.writeBytes(bytes);
     }
 }
@@ -575,16 +582,19 @@ class BigIntegerArrayCoder extends BigIntegerCoder {
     }
 
     decode(reader) {
-        let tag = reader.readByte();
-        if(tag === TagNull) {
-            reader.readByte();
-            return null;
-        } else if (tag !== this.tag) {
+        let arrtag = reader.readByte();
+        let result = [];
+        if(arrtag === TagNull) {
+            reader.readByte(2);
+            return result;
+        } else if (arrtag !== this.tag) {
             throw new Error("invalid child tag"); 
         }
 
+        let tag = reader.readByte();
         let length = reader.readLength();
-        let result = [];
+        //let length1 = reader.readByte();
+                
         for (let i = 0; i < length; i++) {
             result.push(super.decode(reader));
         }
@@ -596,7 +606,9 @@ class BigIntegerArrayCoder extends BigIntegerCoder {
             this._throwError("has to be an array");
         }
 
+
         writer.writeByte(this.tag);
+        writer.writeByte(0x23);
         writer.writeLength(value.length);
         value.forEach((value) => {
             super.encode(writer, value, true);

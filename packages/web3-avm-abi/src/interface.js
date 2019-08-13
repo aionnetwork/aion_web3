@@ -118,9 +118,12 @@ var Interface = /** @class */ (function () {
         if (constructorGuard !== _constructorGuard) {
             throw new Error("do not instantiate directly use fromString");
         }
-        /*if (version !== "0.0") {
+        //TODO:improve the following
+        
+        if ((version !== "0.0")&&(version !== "1")) {
             errors.throwArgumentError("unsupported version", "version", version);
-        }*/
+        }
+
         properties_1.defineReadOnly(this, "version", version);
         name = name.split(".").map(function (comp) { return checkIdentifier(comp.trim()); }).join(".");
         properties_1.defineReadOnly(this, "name", name);
@@ -131,9 +134,12 @@ var Interface = /** @class */ (function () {
         Object.freeze(this.functions);
     }
     Interface.fromString = function (abi) {
+        var flag_str = null;
         if (typeof (abi) === "string") {
+            flag_str = abi;
             abi = abi.split("\n");
         }
+
         var version = null;
         var name = null;
         var Clinit = null;
@@ -145,6 +151,10 @@ var Interface = /** @class */ (function () {
             }
             if (line.match(/^([0-9.]+)$/)) {
                 version = line;
+
+                if(version==="0.0" && flag_str.match(/(BigInteger)(\[\])?/)){
+                    throw new Error("BigIntegertype is not available for this version");
+                }
                 return;
             }
             if (line.match(/^[a-z0-9_. ]*$/i)) {

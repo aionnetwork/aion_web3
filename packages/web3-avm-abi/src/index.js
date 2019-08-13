@@ -103,9 +103,9 @@ class ABICoder {
             
             //implimentation for BigInt
             case "biginteger":
-                return new codec.BigIntegerCoder("biginteger", 16, 0x23, localName);
+                return new codec.BigIntegerCoder("biginteger", null, 0x23, localName);
             case "biginteger[]":
-                return new codec.BigIntegerArrayCoder("biginteger[]", 16, 0x23, localName);    
+                return new codec.BigIntegerArrayCoder("biginteger[]", null, 0x31, localName);    
         }
         throw new Error("unknown - " + param);
     }

@@ -80,7 +80,7 @@ let deployNoArgs = async() => {
 // Deploy an AVM BigInt Contract 
 let BI_Deploy = async() => {
   
-  let data = web3bi.avm.contract.deploy(BIjarPath).args(['String','BigInteger','BigInteger[]'], ['biginteger','123456789',['987654321','123456789']]).init();
+  let data = web3bi.avm.contract.deploy(BIjarPath).init();
 
   //construct a transaction
   const txObject = {
@@ -174,9 +174,7 @@ let bi_abi = `
     public static BigInteger getMyBI()
     public static BigInteger[] getMyBIArray()
     public static void setMyBI(BigInteger)
-    public static void setMyBIArray(BigInteger[])
-    public static String getMyStr()
-    public static void setMyStr(String)
+    public static void setMyBIArray(BigInteger[])    
 `
 
 let no_args_abi = `
@@ -240,11 +238,13 @@ let no_args_iface = web3NoArgs.avm.contract.Interface(no_args_abi);//aion.utils.
 
 //console.log(iface.functions);
 let contractAddress = test_cfg.AVM_TEST_CT_2_ADDR;
-
+let bigIntegerContractAddress = test_cfg.AVM_TEST_CT_3_ADDR;
 web3NoArgs.avm.contract.initBinding(contractAddress, no_args_iface, test_cfg.AVM_TEST_PK);//Interface
 
 web3.avm.contract.initBinding(contractAddress, iface, test_cfg.AVM_TEST_PK);//Interface
-web3R.avm.contract.initBinding(contractAddress, iface, test_cfg.AVM_TEST_PK, web3R);//Interface
+web3bi.avm.contract.initBinding(bigIntegerContractAddress, biface, test_cfg.AVM_TEST_PK);//Interface
+
+web3R.avm.contract.initBinding(contractAddress, iface, null, web3R);//Interface
 
 let arrData = function(str,str1){
   let n = str.indexOf('[]');
@@ -295,6 +295,34 @@ let abiMethodCall = async(methodName,inputs,output) => {
     }
  }
 
+ let BIabiMethodCall = async(methodName,inputs,output) => {
+    let arr = [];    
+    if(inputs!==null)
+    {
+      inputs.forEach((input)=>{
+        arr.push(test_data[input.name.toUpperCase()]);
+      });
+    }
+
+   try {      
+      //console.log("Contract: ",web3.avm.contract);
+      let result;
+      if(arr[0]){
+        if(arr[1]){
+          result = await web3bi.avm.contract.readOnly[methodName](arr[0],arr[1]);
+        }else{
+          result = await web3bi.avm.contract.readOnly[methodName](arr[0]);        
+        }
+      }else{
+        result = await web3bi.avm.contract.readOnly[methodName]();
+      }
+        return result;      
+    } catch (error) {
+      console.log("Call error:",error);
+      return false;
+    }
+ }
+
  let sendSetString = async(str) => {
     try {      
       let result;     
@@ -322,6 +350,32 @@ let abiMethodCall = async(methodName,inputs,output) => {
         result = await web3.avm.contract.transaction[methodName](arr[0]);
       }else{
         result = await web3.avm.contract.transaction[methodName]();
+      } 
+
+      return result;
+
+    } catch (error) {
+      console.log("Send error:",error);
+      return false;
+    }
+ }
+
+ let BIabiMethodSend = async(methodName,inputs=null,output) => {
+    let arr = [];
+    if(inputs!==null)
+    {
+      inputs.forEach((input)=>{
+        arr.push(test_data[input.name.toUpperCase()]);
+      });
+    }
+
+   try {      
+      //console.log("Contract: ",web3.avm.contract);
+      let result;
+      if(arr[0]){
+        result = await web3bi.avm.contract.transaction[methodName](arr[0]);
+      }else{
+        result = await web3bi.avm.contract.transaction[methodName]();
       } 
 
       return result;
@@ -417,7 +471,7 @@ describe('avm_contract', () => {
     });
   });*/
 
-  it('deploying contract..', done => {
+  /*it('deploying contract..', done => {
     deployNoArgs().then(res => {
       
       res.status.should.eql(true);
@@ -425,7 +479,7 @@ describe('avm_contract', () => {
     }).catch(err => {
       done(err);
     });
-  });
+  });*/
 
   /*it('deploying BigInteger contract..', done => {
     BI_Deploy().then(res => {
@@ -436,6 +490,44 @@ describe('avm_contract', () => {
       done(err);
     });
   });*/
+  
+  biface.functions.forEach((method)=>{
+    
+    if(method.output!==null){
+
+      it('Testing BIGINT method call...'+method.name, done => {
+        BIabiMethodCall(method.name,method.inputs,method.output).then(res => {
+          //assert.deepEqual(res,test_data[arrData(method.output,method.name)],"Call Failed!")
+          //done();
+          let bn = new BN(test_data['BIGINTEGER'],10);
+          let bn_arr = new BN(test_data['ONE_D_BIGINTEGER'][0],10);
+          let val=null;
+          if(res[0]){
+            val = res[0].eq(bn_arr); 
+          }else{
+            val = res.eq(bn); 
+          }     
+          assert.isTrue(val,"BIGINT Test Failed");
+
+          done();
+        }).catch(err => {
+          done(err);
+        });
+      });
+    }else{
+      /*it('Testing method send...'+method.name, done => {
+        BIabiMethodSend(method.name,method.inputs).then(res => {
+          assert.isTrue(res.status,"Send Failed!"+res.hash);        
+          done();
+        }).catch(err => {
+          done(err);
+        });
+      });*/
+
+    }
+  });
+
+
 
   /*
   tests.forEach((test) => {
@@ -530,7 +622,7 @@ describe('avm_contract', () => {
           done(err);
         });
       });*/
-  /*
+  
   it('Testing BigInteger..', done => {
     encodeBigInt(test_data['BIGINT']).then(res => {
       let bn = new BN(test_data['BIGINT'],10);
@@ -556,7 +648,7 @@ describe('avm_contract', () => {
     }).catch(err => {
       done(err);
     });
-  });*/
+  });
 
   /*iface.functions.forEach((method)=>{
     console.log(method);
