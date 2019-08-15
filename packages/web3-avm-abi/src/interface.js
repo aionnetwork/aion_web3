@@ -18,7 +18,13 @@ var validBaseTypes = [
     "Address" ,"address", "boolean", "byte", "char", "double", "float", "int", "long", "short", "String","BigInteger"
 ];
 function checkIdentifier(value) {
-    if (!value.match(/^[a-z_][a-z0-9_]*(\[\])?$/i)) {
+    if (!value.match(/^[a-z_][a-z0-9_]*$/i)) {
+        errors.throwArgumentError("invalid identifier", "value", value);
+    }
+    return value;
+}
+function checkParamIdentifier(value) {
+    if (!value.match(/^[a-z_][a-z0-9_]*(\[\])?(\[\])?$/i)) {
         errors.throwArgumentError("invalid identifier", "value", value);
     }
     return value;
@@ -50,7 +56,7 @@ var ParamType = /** @class */ (function () {
         if (constructorGuard !== _constructorGuard) {
             throw new Error("do not instantiate directly use fromString");
         }
-        properties_1.defineReadOnly(this, "name", checkIdentifier(name));
+        properties_1.defineReadOnly(this, "name", checkParamIdentifier(name));
         properties_1.defineReadOnly(this, "type", checkType(type));
     }
     ParamType.fromString = function (value) {

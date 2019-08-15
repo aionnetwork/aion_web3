@@ -167,6 +167,17 @@ let methodSendWithoutInputs = async(methodName) => {
   return res;
 }
 
+let arr_abi = `
+    1
+    Test.HelloAvm
+    Clinit: (String, BigInteger, BigInteger[])
+    public static BigInteger getMyBI()
+    public static BigInteger[] getMyBIArray()
+    public static void setMyBI(BigInteger)
+    public static void setMyBIArray(BigInteger[])
+    public static void setMyBIArray()    
+`
+
 let bi_abi = `
     1
     Test.HelloAvm
@@ -174,7 +185,8 @@ let bi_abi = `
     public static BigInteger getMyBI()
     public static BigInteger[] getMyBIArray()
     public static void setMyBI(BigInteger)
-    public static void setMyBIArray(BigInteger[])    
+    public static void setMyBIArray(BigInteger[])
+
 `
 
 let no_args_abi = `
@@ -300,7 +312,8 @@ let abiMethodCall = async(methodName,inputs,output) => {
     if(inputs!==null)
     {
       inputs.forEach((input)=>{
-        arr.push(test_data[input.name.toUpperCase()]);
+        arr.push(test_data[arrData(output,methodName)]);
+        //test_data[arrData(output,methodName)]
       });
     }
 
@@ -365,7 +378,12 @@ let abiMethodCall = async(methodName,inputs,output) => {
     if(inputs!==null)
     {
       inputs.forEach((input)=>{
-        arr.push(test_data[input.name.toUpperCase()]);
+        //console.log(test_data[input.name.toUpperCase()]);
+        if(typeof test_data[input.name.toUpperCase()] !== 'undefined'){
+          arr.push(test_data[input.name.toUpperCase()]);
+        }else{
+          arr.push(test_data['ONE_D_BIGINTEGER']);
+        }
       });
     }
 
@@ -461,7 +479,7 @@ let abiMethodCall = async(methodName,inputs,output) => {
 describe('avm_contract', () => {
 
   
-  /*it('deploying contract..', done => {
+  it('deploying contract..', done => {
     deploy().then(res => {
       
       res.status.should.eql(true);
@@ -469,9 +487,9 @@ describe('avm_contract', () => {
     }).catch(err => {
       done(err);
     });
-  });*/
+  });
 
-  /*it('deploying contract..', done => {
+  it('deploying contract..', done => {
     deployNoArgs().then(res => {
       
       res.status.should.eql(true);
@@ -479,7 +497,7 @@ describe('avm_contract', () => {
     }).catch(err => {
       done(err);
     });
-  });*/
+  });
 
   /*it('deploying BigInteger contract..', done => {
     BI_Deploy().then(res => {
@@ -515,21 +533,20 @@ describe('avm_contract', () => {
         });
       });
     }else{
-      /*it('Testing method send...'+method.name, done => {
+      it('Testing method send...'+method.name, done => {
         BIabiMethodSend(method.name,method.inputs).then(res => {
-          assert.isTrue(res.status,"Send Failed!"+res.hash);        
+          assert.isTrue(res.status,"Send Failed! "+res.hash);        
           done();
         }).catch(err => {
           done(err);
         });
-      });*/
-
+      });
     }
   });
 
 
 
-  /*
+  
   tests.forEach((test) => {
     it('testing method, ' + test.name, done => {
       if(test.type === 'call') {
@@ -621,7 +638,7 @@ describe('avm_contract', () => {
         }).catch(err => {
           done(err);
         });
-      });*/
+      });
   
   it('Testing BigInteger..', done => {
     encodeBigInt(test_data['BIGINT']).then(res => {
@@ -637,13 +654,10 @@ describe('avm_contract', () => {
 
   it('Testing BigInteger Array..', done => {
     encodeBigIntArr(test_data['ONE_D_BIGINT']).then(res => {
-     
-      console.log('Bigint arr:',res[0].toString(),res[1].toString());
       let bn = new BN(test_data['ONE_D_BIGINT'][0],10);
       let val = res[0].eq(bn); 
           
       assert.isTrue(val,"BIGINT Array Test Failed");
-
       done();
     }).catch(err => {
       done(err);

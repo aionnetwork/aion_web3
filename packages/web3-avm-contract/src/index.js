@@ -30,12 +30,19 @@
 
 var fs = require('fs');
 var ABI = require('aion-web3-avm-abi');
+var Method = require('aion-web3-core-method');
+var formatters = require('aion-web3-core-helpers').formatters;
+
 class Contract {
 
 	constructor() {
 		this._abi = new ABI();
         
-		this._initializer = null;
+		//
+        this._callback = null;
+        this._altTxnObj = null;//this.transactionObject = null;
+
+        this._initializer = null;
 		this._argsData = null;
 		this._jarPath = null;
 
@@ -52,7 +59,16 @@ class Contract {
 		this._contract = null
 		this._interface = null;
 
-		this.readOnly = {};
+		this.readOnly = function(txnObj=null,callback=null){
+            if(callback!==null){
+                this._callback =callback;
+            }
+
+            //set object properties
+            if(txnObj!==null){               
+                this._altTxnObj = txnObj;                
+            }
+        };
 		this.transaction = {};
 
 		this.instance = {};
@@ -120,11 +136,20 @@ class Contract {
           
           try{
               let ethRes = await this.instance.eth.call(txObject); 
-              if(returnType!==null){
-                let res = await this.instance.avm.contract.decode(returnType, ethRes);             
-                return res;   
+              if(this._callback!==null){
+                if(returnType!==null){
+                    let res = await this.instance.avm.contract.decode(returnType, ethRes);             
+                    return this._callback(res);   
+                }else{
+                    return this._callback(true);
+                }
               }else{
-                return true;
+                if(returnType!==null){
+                    let res = await this.instance.avm.contract.decode(returnType, ethRes);             
+                    return res;   
+                }else{
+                    return true;
+                }
               }
           }catch(err){
             console.log("Call Failed!", err);
