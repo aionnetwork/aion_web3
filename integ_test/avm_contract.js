@@ -511,6 +511,17 @@ describe('avm_contract', () => {
   
   biface.functions.forEach((method)=>{
     
+    it('Testing BIGINT method estimateGas...'+method.name, done => {
+        BIabiMethodEstimateGas(method.name,method.inputs,method.output).then(res => {
+               
+          assert.isAtLeast(val,1000,"BIGINT estimateGas Test Failed");
+
+          done();
+        }).catch(err => {
+          done(err);
+        });
+    });
+
     if(method.output!==null){
 
       it('Testing BIGINT method call...'+method.name, done => {

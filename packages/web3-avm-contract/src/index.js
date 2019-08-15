@@ -37,6 +37,7 @@ class Contract {
 
 	constructor() {
 		this._abi = new ABI();
+        this._requestManager = null;
         
 		//
         this._callback = null;
@@ -158,7 +159,36 @@ class Contract {
           
         };
 
+        this.estimateGas = async (txObject) => {
+          
+          try{
+              
+              let gas = await this.instance.eth.estimateGas(txObject); 
+              return gas;
+              
+          }catch(err){
+            console.log("Estimation Failed!", err);
+            return false; //may need to be improved for booleans
+          }  
+          
+        };
+
+        this.getPastEvents = async (txObject) => {
+          
+          try{
+              
+              let gas = await this.instance.eth.estimateGas(txObject); 
+              return gas;
+              
+          }catch(err){
+            console.log("Estimation Failed!", err);
+            return false; //may need to be improved for booleans
+          }  
+          
+        };
+
 	}
+       
     /**
         *@desc get the current value set for gas
         *@param none
@@ -320,6 +350,31 @@ class Contract {
                             }else{
                                 return obj.call(txn);
                             }
+                     },
+                     writable: false
+                    });
+
+                    //define call functions
+                    Object.defineProperty(obj.estimateGas, fn.name,{
+                     value: function(){
+                            const props = fn;                            
+                            let params = [];
+                            let inputs = [];
+                            if(arguments.length > 0){
+                              for (var _i = 0; _i < arguments.length; _i++) {
+                                
+                                if(props.inputs[_i]){
+                                    params[_i] = arguments[_i];
+                                    inputs[_i] = props.inputs[_i].name;
+                                }
+                              }
+                            }
+                            var data = obj.data(props.name, inputs, params);
+                            var txn = obj.txnObj(obj._address, obj._contract, data);
+                            
+                            
+                            return obj.estimateGas(txn);
+                            
                      },
                      writable: false
                     });
