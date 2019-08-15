@@ -78,7 +78,7 @@ class Contract {
 		this._key = null;
 
         this._gasPrice = 10000000000;//10000000000
-        this._gas = 2000000;
+        this._gas = 2000000;//2000000
         this._value = 0;
         this._nonce = null;
 
@@ -173,15 +173,15 @@ class Contract {
           
         };
 
-        this.getPastEvents = async (txObject) => {
+        this.getPastLogs = async (options,callback) => {
           
           try{
               
-              let gas = await this.instance.eth.estimateGas(txObject); 
+              let gas = await this.instance.eth.getPastLogs(options); 
               return gas;
               
           }catch(err){
-            console.log("Estimation Failed!", err);
+            console.log("Events Failed!", err);
             return false; //may need to be improved for booleans
           }  
           

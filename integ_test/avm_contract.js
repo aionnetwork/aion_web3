@@ -175,7 +175,6 @@ let arr_abi = `
     public static BigInteger[] getMyBIArray()
     public static void setMyBI(BigInteger)
     public static void setMyBIArray(BigInteger[])
-    public static void setMyBIArray()    
 `
 
 let bi_abi = `
@@ -185,8 +184,6 @@ let bi_abi = `
     public static BigInteger getMyBI()
     public static BigInteger[] getMyBIArray()
     public static void setMyBI(BigInteger)
-    public static void setMyBIArray(BigInteger[])
-
 `
 
 let no_args_abi = `
@@ -307,6 +304,21 @@ let abiMethodCall = async(methodName,inputs,output) => {
     }
  }
 
+ let methodGetPastEvents = async() => {
+   let obj = {
+    "fromBlock":1253767,
+    "address":"0xa0a4a16bbc30e4e680a1ae2d21479964a8488179f75ee1264dc83609833a348a",
+    }
+
+   try {      
+        result = await web3.avm.contract.getPastLogs(obj);
+        return result;      
+    } catch (error) {
+      console.log("Past event error: ",error);
+      return false;
+    }
+ }
+
  let BIabiMethodCall = async(methodName,inputs,output) => {
     let arr = [];    
     if(inputs!==null)
@@ -335,6 +347,8 @@ let abiMethodCall = async(methodName,inputs,output) => {
       return false;
     }
  }
+
+
 
  let sendSetString = async(str) => {
     try {      
@@ -394,6 +408,37 @@ let abiMethodCall = async(methodName,inputs,output) => {
         result = await web3bi.avm.contract.transaction[methodName](arr[0]);
       }else{
         result = await web3bi.avm.contract.transaction[methodName]();
+      } 
+
+      return result;
+
+    } catch (error) {
+      console.log("Send error:",error);
+      return false;
+    }
+ }
+
+ let BIabiMethodEstimateGas = async(methodName,inputs=null,output) => {
+    let arr = [];
+    if(inputs!==null)
+    {
+      inputs.forEach((input)=>{
+        //console.log(test_data[input.name.toUpperCase()]);
+        if(typeof test_data[input.name.toUpperCase()] !== 'undefined'){
+          arr.push(test_data[input.name.toUpperCase()]);
+        }else{
+          arr.push(test_data['ONE_D_BIGINTEGER']);
+        }
+      });
+    }
+
+   try {      
+      //console.log("Contract: ",web3.avm.contract);
+      let result;
+      if(arr[0]){
+        result = await web3bi.avm.contract.estimateGas[methodName](arr[0]);
+      }else{
+        result = await web3bi.avm.contract.estimateGas[methodName]();
       } 
 
       return result;
@@ -479,6 +524,7 @@ let abiMethodCall = async(methodName,inputs,output) => {
 describe('avm_contract', () => {
 
   
+  /**
   it('deploying contract..', done => {
     deploy().then(res => {
       
@@ -499,6 +545,8 @@ describe('avm_contract', () => {
     });
   });
 
+  */
+
   /*it('deploying BigInteger contract..', done => {
     BI_Deploy().then(res => {
       
@@ -508,13 +556,24 @@ describe('avm_contract', () => {
       done(err);
     });
   });*/
+
+  it('Testing GetPastEvents...', done => {
+        methodGetPastEvents().then(res => {
+          console.log("GetPastEvents::: ",res);     
+          assert.isAtLeast(res.length,1,"GetPastEvents Test Failed");
+
+          done();
+        }).catch(err => {
+          done(err);
+        });
+  });
   
   biface.functions.forEach((method)=>{
     
     it('Testing BIGINT method estimateGas...'+method.name, done => {
         BIabiMethodEstimateGas(method.name,method.inputs,method.output).then(res => {
-               
-          assert.isAtLeast(val,1000,"BIGINT estimateGas Test Failed");
+          console.log("EstimatedGas: ",res);     
+          assert.isAtLeast(res,1000,"BIGINT estimateGas Test Failed");
 
           done();
         }).catch(err => {
@@ -558,6 +617,7 @@ describe('avm_contract', () => {
 
 
   
+  /*
   tests.forEach((test) => {
     it('testing method, ' + test.name, done => {
       if(test.type === 'call') {
@@ -591,8 +651,10 @@ describe('avm_contract', () => {
       }
     });
   });
+  */
   
 
+  /*
   iface.functions.forEach((method)=>{
     //console.log(method);
     if(method.output!==null){
@@ -617,7 +679,9 @@ describe('avm_contract', () => {
       });
 
     }
-  });
+  });*/
+
+  /*
 
   it('Testing none existent method send...', done => {
         abiMethodSend('dontExistB',[]).then(res => {
@@ -673,7 +737,7 @@ describe('avm_contract', () => {
     }).catch(err => {
       done(err);
     });
-  });
+  });*/
 
   /*iface.functions.forEach((method)=>{
     console.log(method);
