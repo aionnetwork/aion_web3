@@ -33,6 +33,8 @@ var ABI = require('aion-web3-avm-abi');
 var Method = require('aion-web3-core-method');
 var formatters = require('aion-web3-core-helpers').formatters;
 
+
+
 class Contract {
 
 	constructor() {
@@ -56,21 +58,13 @@ class Contract {
 		this._call = null;
 		this._send = null;
 
-		this._address = null
-		this._contract = null
+		this._address = null;
+		this._contract = null;
 		this._interface = null;
 
-		this.readOnly = function(txnObj=null,callback=null){
-            if(callback!==null){
-                this._callback =callback;
-            }
 
-            //set object properties
-            if(txnObj!==null){               
-                this._altTxnObj = txnObj;                
-            }
-        };
-		this.transaction = {};
+        this.readOnly=methodTxnConf;
+		this.transaction = methodTxnConf;
 
 		this.instance = {};
         
@@ -117,7 +111,14 @@ class Contract {
 
                 //send transaction
                 let res = await this.instance.eth.sendSignedTransaction(signedTx.rawTransaction);
-                return res;
+                
+                if(this._callback!==null){
+                    let callback = this._callback;
+                    this._callback = null;
+                    return callback(res);
+                }else{
+                    return res;
+                }
 
             }catch(err){
                 //throw error
@@ -138,11 +139,16 @@ class Contract {
           try{
               let ethRes = await this.instance.eth.call(txObject); 
               if(this._callback!==null){
+
+                let callback = this._callback;
+                this._callback = null;
+
                 if(returnType!==null){
                     let res = await this.instance.avm.contract.decode(returnType, ethRes);             
-                    return this._callback(res);   
+                    
+                    return callback(res);  
                 }else{
-                    return this._callback(true);
+                    return callback(true);
                 }
               }else{
                 if(returnType!==null){
@@ -188,6 +194,33 @@ class Contract {
         };
 
 	}
+
+
+    methodTxnConf = function(txnObj=null,callback=null){
+            if(callback!==null){
+                this._callback = callback;
+            }
+
+            //set object properties
+            if(txnObj!==null){               
+                if(txnObj.gas!==null){
+                    this._altTxnObj._gas = txnObj.gas;
+                }else{
+                    this._altTxnObj._gas = this.gas;
+                }
+                if(txnObj.gasPrice!==null){
+                    this._altTxnObj._gasPrice = txnObj.gasPrice;
+                }else{
+                    this._altTxnObj._gasPrice = this.gasPrice;
+                }
+                if(txnObj.value!==null){
+                    this._altTxnObj._value = txnObj.value;
+                }else{
+                    this._altTxnObj._value = this.value;
+                }
+                               
+            }
+    };
        
     /**
         *@desc get the current value set for gas
@@ -304,6 +337,14 @@ class Contract {
         let gP = this._gasPrice;
         let v = this._value;
 
+        if(this._altTxnObj!==null;){
+            g = this._altTxnObj._gas;
+            gP = this._altTxnObj._gasPrice;
+            v = this._altTxnObj._value;
+
+            this._altTxnObj=null;
+        }
+
         let txObject = {
             from: address,
             to: contract,
@@ -313,8 +354,7 @@ class Contract {
             value: v,//value
             type: type
         };
-        //console.log("HERE IS THE DATA >>>>", txObject.gasPrice,"##",txObject.gas,"##",txObject.value);
-        
+
         //nonce is calculated so only set if user provide a figure
         if(nonce!==null){
             txObject.nonce = nonce;
@@ -327,6 +367,7 @@ class Contract {
         try{
                 fns.forEach(function(fn){
                     //define call functions
+                    //console.log("fn: ",fn);
                     Object.defineProperty(obj.readOnly, fn.name,{
                      value: function(){
                             const props = fn;                            
@@ -445,8 +486,7 @@ class Contract {
 	   
 
 	    var methods = abi.functions ? abi.functions : [];
-
-	    this.initFunctions(methods,this);//create methods
+        this.initFunctions(methods,this);//create methods
 	}
 	
 	// Converts the Jar into a JarPath to be Encoded for Initialization

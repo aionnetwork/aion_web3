@@ -43,11 +43,12 @@ class ABICoder {
 
         param = comps[0];
         let localName = comps[1] || null;
-
         // Checks for a 2D Array and if so, builds the inner-most coder 
         // for the arrays on the inside
+
         if(param.substring(param.length - 4) === "[][]") {
             let coder = param.substring(0, param.length - 2);
+            
             if(!coder.includes("string") && !coder.includes("address")) {
                 return new codec.ArrayCoder(this.getCoder(coder), localName);
             }

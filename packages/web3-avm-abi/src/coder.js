@@ -495,6 +495,7 @@ class ArrayCoder extends NullableCoder {
     }
 
     encodeValue(writer, value) {
+        
         writer.writeByte(this.coder.tag);
         writer.writeLength(value.length); 
         value.forEach((value) => {
@@ -509,39 +510,7 @@ class ArrayCoder extends NullableCoder {
 
 // Used to handle BigInteger Data Types
 class BigIntegerCoder extends Coder {
-    /*constructor(type, byteCount, tag, localName) {
-        super(type, tag, localName);
-        this.byteCount = byteCount;
-    }
-
-    decode(reader, array) {
-        if(array === null) {
-            let tag = reader.readByte();
-            if (tag !== this.tag) { 
-                throw new Error("invalid tag"); 
-            }
-        }
-
-        let view = new DataView(reader.readBytes(this.byteCount).buffer);
-        
-        console.log("decode val:",view.getBigInt64(0));
-
-        return utils.bigNumberify(view.getBigInt64(0));
-        //return value;
-    }
-
-    
-    encode(writer, value, array) {
-        console.log(value);
-        if(array === null) writer.writeByte(this.tag);
-
-        let buffer = new ArrayBuffer(this.byteCount);
-        let view = new DataView(buffer);    
-        console.log('this.byteCount:',this.byteCount);    
-        view.setBigInt64(0, value);
-        console.log('encode decoded: ',view.getBigInt64(0, value));
-        writer.writeBytes(new Uint8Array(buffer, 0, this.byteCount));
-    }*/
+   
 
     constructor(type, byteCount, tag, localName) {
         super(type, tag, localName);
@@ -605,7 +574,6 @@ class BigIntegerArrayCoder extends BigIntegerCoder {
         if(!Array.isArray(value)) {
             this._throwError("has to be an array");
         }
-
 
         writer.writeByte(this.tag);
         writer.writeByte(0x23);

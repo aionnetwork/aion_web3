@@ -11,6 +11,7 @@ let BIjarPath = path.join(__dirname, 'contracts', 'bigint-1.0-SNAPSHOT.jar');
 
 let web3NoArgs = new Web3(new Web3.providers.HttpProvider(test_cfg.JAVA_IP));
 let web3 = new Web3(new Web3.providers.HttpProvider(test_cfg.JAVA_IP));
+let web3Arr = new Web3(new Web3.providers.HttpProvider(test_cfg.JAVA_IP));
 let web3bi = new Web3(new Web3.providers.HttpProvider(test_cfg.JAVA_IP));
 let web3R = new Web3(new Web3.providers.HttpProvider(test_cfg.RUST_IP));
 let acc = web3.eth.accounts.privateKeyToAccount(test_cfg.AVM_TEST_PK);
@@ -170,11 +171,23 @@ let methodSendWithoutInputs = async(methodName) => {
 let arr_abi = `
     1
     Test.HelloAvm
-    Clinit: (String, BigInteger, BigInteger[])
-    public static BigInteger getMyBI()
-    public static BigInteger[] getMyBIArray()
-    public static void setMyBI(BigInteger)
-    public static void setMyBIArray(BigInteger[])
+    Clinit: ()
+    public static void set1DStringArr(String[])
+    public static void set1DIntArr(int[])
+    public static void set2DIntArr(int[][])
+    public static void set1DFloatArr(float[])
+    public static void set1DLongArr(long[])
+    public static void set1DByteArr(byte[])
+    public static void set1DCharArr(char[])
+    public static void set1DShortArr(short[])
+    public static String[] get1DStringArr()
+    public static int[] get1DIntArr()
+    public static int[][] get2DIntArr()
+    public static float[] get1DFloatArr()
+    public static long[] get1DLongArr()
+    public static byte[] get1DByteArr()
+    public static char[] get1DCharArr()
+    public static short[] get1DShortArr()
 `
 
 let bi_abi = `
@@ -185,6 +198,7 @@ let bi_abi = `
     public static BigInteger[] getMyBIArray()
     public static void setMyBI(BigInteger)
 `
+
 
 let no_args_abi = `
     0.0
@@ -242,15 +256,19 @@ let abi = `
 
 //let contract = web3.avm.contract.initBinding("0xa0ddef877dba8f4e407f94d70d83757327b9c9641f9244da3240b2927d493ebc", iface, test_cfg.AVM_TEST_PK, web3);//Interface
 let iface = web3.avm.contract.Interface(abi);//aion.utils.AvmInterface.fromString(abi);
+let arriface = web3Arr.avm.contract.Interface(arr_abi);//aion.utils.AvmInterface.fromString(abi);
+//console.log(JSON.stringify(arriface));
 let biface = web3bi.avm.contract.Interface(bi_abi);//aion.utils.AvmInterface.fromString(abi);
 let no_args_iface = web3NoArgs.avm.contract.Interface(no_args_abi);//aion.utils.AvmInterface.fromString(abi);
 
 //console.log(iface.functions);
 let contractAddress = test_cfg.AVM_TEST_CT_2_ADDR;
+let arrContractAddress = test_cfg.AVM_TEST_CT_4_ADDR;
 let bigIntegerContractAddress = test_cfg.AVM_TEST_CT_3_ADDR;
 web3NoArgs.avm.contract.initBinding(contractAddress, no_args_iface, test_cfg.AVM_TEST_PK);//Interface
 
 web3.avm.contract.initBinding(contractAddress, iface, test_cfg.AVM_TEST_PK);//Interface
+web3Arr.avm.contract.initBinding(arrContractAddress, arriface, test_cfg.AVM_TEST_PK);//Interface
 web3bi.avm.contract.initBinding(bigIntegerContractAddress, biface, test_cfg.AVM_TEST_PK);//Interface
 
 web3R.avm.contract.initBinding(contractAddress, iface, null, web3R);//Interface
@@ -259,14 +277,16 @@ let arrData = function(str,str1){
   let n = str.indexOf('[]');
   let n1 = str1.indexOf('2D');
   let n2 = str1.indexOf('Edge');
-  
+  //console.log("arrData",str,str1);
   if(n2>0){
     return "EDGE_TEST_"+str1.toUpperCase();
   }else{
     if(n>0){ 
       if(n1>0){ 
-        return "TWO_D_"+str.substring(0,str.length - 4).toUpperCase()
+        //console.log("TWO_D_"+str.substring(0,str.length - 4).toUpperCase())
+        return "TWO_D_"+str.substring(0,str.length - 4).toUpperCase();
       }else{ 
+        //console.log("ONE_D_"+str.substring(0,str.length - 2).toUpperCase())
         return "ONE_D_"+str.substring(0,str.length - 2).toUpperCase();
       }
     }else{
@@ -304,10 +324,42 @@ let abiMethodCall = async(methodName,inputs,output) => {
     }
  }
 
+ let arrabiMethodCall = async(methodName,inputs,output) => {
+    let arr = [];    
+    if(inputs!==null)
+    {
+      inputs.forEach((input)=>{
+        arr.push(test_data[input.name.toUpperCase()]);
+      });
+    }
+
+   try {      
+      //console.log("Contract: ",web3.avm.contract);
+      let result;
+      if(arr[0]){
+        if(arr[1]){
+          result = await web3Arr.avm.contract.readOnly[methodName](arr[0],arr[1]);
+        }else{
+          result = await web3Arr.avm.contract.readOnly[methodName](arr[0]);        
+        }
+      }else{
+        result = await web3Arr.avm.contract.readOnly[methodName]();
+      }
+        return result;      
+    } catch (error) {
+      console.log("Call error:",error);
+      return false;
+    }
+ }
+
  let methodGetPastEvents = async() => {
    let obj = {
     "fromBlock":1253767,
-    "address":"0xa0a4a16bbc30e4e680a1ae2d21479964a8488179f75ee1264dc83609833a348a",
+    topics:
+     [ '0x415453546f6b656e437265617465640000000000000000000000000000000000',
+       '0x0113ba1430a5432dc03400000000000000000000000000000000000000000000',
+       '0xa065824b9d0fb8a979db2436974121079fcd78334ec28da3cf12009b56588ad4' ],
+    "address":"0xa0d388c3e6b3ec78d26960533b7fb394fb3300eccd99d79d425faaaa9b9b6904",//"0xa0a4a16bbc30e4e680a1ae2d21479964a8488179f75ee1264dc83609833a348a",
     }
 
    try {      
@@ -387,6 +439,44 @@ let abiMethodCall = async(methodName,inputs,output) => {
     }
  }
 
+ let arrabiMethodSend = async(methodName,inputs=null,output) => {
+    let arr = [];
+    
+    if(inputs!==null)
+    {
+      inputs.forEach((input)=>{
+        //console.log(test_data[input.name.toUpperCase()]);
+        if(typeof test_data[input.name.toUpperCase()] !== 'undefined'){
+          arr.push(test_data[input.name.toUpperCase()]);
+        }else if(test_data[arrData(input.name.toUpperCase(),"")]!== 'undefined' && input.name.substring(input.name.length - 4) !== "[][]"){
+          console.log("1d ",input.name);
+          arr.push(test_data[arrData(input.name.toUpperCase(),"")]);
+        }else if(test_data[arrData(input.name.toUpperCase(),"Test2D")]!== 'undefined' && input.name.substring(input.name.length - 4) === "[][]"){
+          console.log("2d ",input.name);
+          arr.push(test_data[arrData(input.name.toUpperCase(),"Test2D")]);
+        }else{
+          return false;
+        }
+      });
+    }
+
+   try {      
+      //console.log("Contract: ",web3.avm.contract);
+      let result;
+      if(arr[0]){
+        result = await web3Arr.avm.contract.transaction[methodName](arr[0]);
+      }else{
+        result = await web3Arr.avm.contract.transaction[methodName]();
+      } 
+
+      return result;
+
+    } catch (error) {
+      console.log("Send error:",error);
+      return false;
+    }
+ }
+
  let BIabiMethodSend = async(methodName,inputs=null,output) => {
     let arr = [];
     if(inputs!==null)
@@ -439,6 +529,43 @@ let abiMethodCall = async(methodName,inputs,output) => {
         result = await web3bi.avm.contract.estimateGas[methodName](arr[0]);
       }else{
         result = await web3bi.avm.contract.estimateGas[methodName]();
+      } 
+
+      return result;
+
+    } catch (error) {
+      console.log("Send error:",error);
+      return false;
+    }
+ }
+
+ let arrabiMethodEstimateGas = async(methodName,inputs=null,output) => {
+    let arr = [];
+    if(inputs!==null)
+    {
+      inputs.forEach((input)=>{
+        //console.log(test_data[input.name.toUpperCase()]);
+        if(typeof test_data[input.name.toUpperCase()] !== 'undefined'){
+          arr.push(test_data[input.name.toUpperCase()]);
+        }else if(test_data[arrData(input.name.toUpperCase(),"")]!== 'undefined' && input.name.substring(input.name.length - 4) !== "[][]"){
+          console.log("1d ",input.name);
+          arr.push(test_data[arrData(input.name.toUpperCase(),"")]);
+        }else if(test_data[arrData(input.name.toUpperCase(),"Test2D")]!== 'undefined' && input.name.substring(input.name.length - 4) === "[][]"){
+          console.log("2d ",input.name);
+          arr.push(test_data[arrData(input.name.toUpperCase(),"Test2D")]);
+        }else{
+          return false;
+        }
+      });
+    }
+
+   try {      
+      //console.log("Contract: ",web3.avm.contract);
+      let result;
+      if(arr[0]){
+        result = await web3Arr.avm.contract.estimateGas[methodName](arr[0]);
+      }else{
+        result = await web3Arr.avm.contract.estimateGas[methodName]();
       } 
 
       return result;
@@ -559,7 +686,7 @@ describe('avm_contract', () => {
 
   it('Testing GetPastEvents...', done => {
         methodGetPastEvents().then(res => {
-          console.log("GetPastEvents::: ",res);     
+          //console.log("GetPastEvents::: ",res);     
           assert.isAtLeast(res.length,1,"GetPastEvents Test Failed");
 
           done();
@@ -653,6 +780,45 @@ describe('avm_contract', () => {
   });
   */
   
+  
+  arriface.functions.forEach((method)=>{
+    
+    it('Testing Array method estimateGas...'+method.name, done => {
+        arrabiMethodEstimateGas(method.name,method.inputs,method.output).then(res => {
+          console.log("EstimatedGas: ",res);     
+          assert.isAtLeast(res,1000,"BIGINT estimateGas Test Failed");
+
+          done();
+        }).catch(err => {
+          done(err);
+        });
+    });
+    
+    //console.log(method);
+    if(method.output!==null){
+
+      it('Testing method call...'+method.name, done => {
+        arrabiMethodCall(method.name,method.inputs,method.output).then(res => {
+          assert.deepEqual(res,test_data[arrData(method.output,method.name)],"Call Failed!")
+          done();
+        }).catch(err => {
+          done(err);
+        });
+      });
+    }else{
+      it('Testing method send...'+method.name, done => {
+        arrabiMethodSend(method.name,method.inputs).then(res => {
+          //console.log(res);
+          assert.isTrue(res.status,"Send Failed!"+res.hash);        
+          done();
+        }).catch(err => {
+          done(err);
+        });
+      });
+
+    }
+  });
+
 
   /*
   iface.functions.forEach((method)=>{
