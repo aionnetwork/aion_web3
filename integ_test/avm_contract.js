@@ -250,8 +250,7 @@ let abi = `
     double[][] get2DDoubleArr()
     int[] getEdgeEmptyIntArr()
     int[] getEdgeNullIntArr()
-    int getEdgeSum(int, int) 
-    void dontExist()   
+    int getEdgeSum(int, int)       
 `
 
 //let contract = web3.avm.contract.initBinding("0xa0ddef877dba8f4e407f94d70d83757327b9c9641f9244da3240b2927d493ebc", iface, test_cfg.AVM_TEST_PK, web3);//Interface
@@ -733,7 +732,7 @@ describe('avm_contract', () => {
     });
   });
 
-  it('deploying contract..', done => {
+  it('deploying NoArgs contract..', done => {
     deployNoArgs().then(res => {
       
       res.status.should.eql(true);
@@ -745,7 +744,7 @@ describe('avm_contract', () => {
 
   
 
-  it('deploying BigInteger contract..', done => {
+  /*it('deploying BigInteger contract..', done => {
     BI_Deploy().then(res => {
       
       res.status.should.eql(true);
@@ -753,7 +752,7 @@ describe('avm_contract', () => {
     }).catch(err => {
       done(err);
     });
-  });
+  });*/
 
   it('Testing GetPastEvents...', done => {
         methodGetPastEvents().then(res => {
@@ -817,7 +816,7 @@ describe('avm_contract', () => {
   
   
   tests.forEach((test) => {
-    it('testing method, ' + test.name, done => {
+    it('testing V1 method, ' + test.name, done => {
       if(test.type === 'call') {
         if(test.inputs === 1) {
           methodCallWithInputs(test.name, test.inputTypes, test.inputValues, test.returnType).then(res => {
@@ -925,7 +924,7 @@ describe('avm_contract', () => {
     //console.log(method);
     if(method.output!==null){
 
-      it('Testing method call...'+method.name, done => {
+      it('Testing default method call...'+method.name, done => {
         abiMethodCall(method.name,method.inputs,method.output).then(res => {
           assert.deepEqual(res,test_data[arrData(method.output,method.name)],"Call Failed!")
           done();
@@ -934,7 +933,7 @@ describe('avm_contract', () => {
         });
       });
     }else{
-      it('Testing method send...'+method.name, done => {
+      it('Testing default method send...'+method.name, done => {
         abiMethodSend(method.name,method.inputs).then(res => {
           //console.log(res);
           assert.isTrue(res.status,"Send Failed!"+res.hash);        
@@ -1005,6 +1004,7 @@ describe('avm_contract', () => {
     });
   });
 
+  /**
   iface.functions.forEach((method)=>{
     console.log(method);
     if(method.output!==null){
@@ -1026,7 +1026,7 @@ describe('avm_contract', () => {
       });
     });
     }
-  });
+  });*/
 
 });
 
