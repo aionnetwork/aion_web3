@@ -32,6 +32,7 @@ var fs = require('fs');
 var ABI = require('aion-web3-avm-abi');
 var Method = require('aion-web3-core-method');
 var formatters = require('aion-web3-core-helpers').formatters;
+var Subscription = require('aion-web3-core-subscriptions').subscription;
 
 
 
@@ -44,6 +45,7 @@ class Contract {
 		//
         this._callback = null;
         this._altTxnObj = null;//this.transactionObject = null;
+        this._altTxnOutput = null;
 
         this._initializer = null;
 		this._argsData = null;
@@ -63,8 +65,16 @@ class Contract {
 		this._interface = null;
 
 
-        this.readOnly=methodTxnConf;
-		this.transaction = methodTxnConf;
+        this.readOnly = {};//this.methodTxnConf;
+		this.transaction = {};//this.methodTxnConf;
+        
+        this.avmMethod = {};
+        this.avmCall = (txn,callback)=>{
+            return this.methodTxnConf(txn,callback,'call')
+        };
+        this.avmSend = (txn,callback)=>{
+            return this.methodTxnConf(txn,callback,'send')
+        };
 
 		this.instance = {};
         
@@ -196,29 +206,41 @@ class Contract {
 	}
 
 
-    methodTxnConf = function(txnObj=null,callback=null){
+    methodTxnConf(txnObj=null,callback=null,type){
             if(callback!==null){
                 this._callback = callback;
             }
 
             //set object properties
+            let txn = this._altTxnObj;
             if(txnObj!==null){               
-                if(txnObj.gas!==null){
-                    this._altTxnObj._gas = txnObj.gas;
+                if(typeof txnObj.gas!== 'undefined'){
+                    txn.gas = txnObj.gas;
                 }else{
-                    this._altTxnObj._gas = this.gas;
+                    txn.gas = this._gas;
                 }
-                if(txnObj.gasPrice!==null){
-                    this._altTxnObj._gasPrice = txnObj.gasPrice;
+                if(typeof txnObj.gasPrice!== 'undefined'){
+                    txn.gasPrice = txnObj.gasPrice;
                 }else{
-                    this._altTxnObj._gasPrice = this.gasPrice;
+                    txn.gasPrice = this._gasPrice;
                 }
-                if(txnObj.value!==null){
-                    this._altTxnObj._value = txnObj.value;
+                if(typeof txnObj.value!== 'undefined'){
+                    txn.value = txnObj.value;
                 }else{
-                    this._altTxnObj._value = this.value;
+                    txn.value = this._value;
+                }                               
+            }
+
+            if(type==="call"){
+                if(this._altTxnOutput!==null){
+                    return this.call(txn, this._altTxnOutput);
+                }else{
+                    return this.call(txn);
                 }
-                               
+            }else if(type==="send"){                
+                return this.sendTransaction(txn);                
+            }else{
+                throw new Error('Invalid method call');
             }
     };
        
@@ -337,14 +359,6 @@ class Contract {
         let gP = this._gasPrice;
         let v = this._value;
 
-        if(this._altTxnObj!==null;){
-            g = this._altTxnObj._gas;
-            gP = this._altTxnObj._gasPrice;
-            v = this._altTxnObj._value;
-
-            this._altTxnObj=null;
-        }
-
         let txObject = {
             from: address,
             to: contract,
@@ -368,6 +382,31 @@ class Contract {
                 fns.forEach(function(fn){
                     //define call functions
                     //console.log("fn: ",fn);
+                    Object.defineProperty(obj.avmMethod, fn.name,{
+                     value: function(){
+                            const props = fn;                            
+                            let params = [];
+                            let inputs = [];
+                            if(arguments.length > 0){
+                              for (var _i = 0; _i < arguments.length; _i++) {
+                                
+                                if(props.inputs[_i]){
+                                    params[_i] = arguments[_i];
+                                    inputs[_i] = props.inputs[_i].name;
+                                }
+                              }
+                            }
+                            var data = obj.data(props.name, inputs, params);
+                            obj._altTxnObj = obj.txnObj(obj._address, obj._contract, data);
+                            
+                            if(props.output){
+                                obj._altTxnOutput = props.output; 
+                            }
+                            //assign values
+                            return obj;//this;
+                     },
+                     writable: false
+                    });
                     Object.defineProperty(obj.readOnly, fn.name,{
                      value: function(){
                             const props = fn;                            
@@ -452,7 +491,7 @@ class Contract {
                 })
 
         }catch(err){
-            throw new Error('Unable to initialize functions');
+            throw new Error('Unable to initialize functions'+err);
         }
     }
 
@@ -566,6 +605,86 @@ class Contract {
         this._deployTypes = abi.init;
         return abi; 
     }
+
+    /**
+ * Adds event listeners and creates a subscription, and remove it once its fired.
+ *
+ * @method once
+ * @param {String} event
+ * @param {Object} options
+ * @param {Function} callback
+ * @return {Object} the event subscription
+ */
+ once(event, options, callback) {
+    var args = Array.prototype.slice.call(arguments);
+
+    // get the callback
+    callback = this._getCallback(args);
+
+    if (!callback) {
+        throw errors.InvalidCallback('Once', 'second');
+    }
+
+    // don't allow fromBlock
+    if (options)
+        delete options.fromBlock;
+
+    // don't return as once shouldn't provide "on"
+    this._on(event, options, function (err, res, sub) {
+        sub.unsubscribe();
+        if(_.isFunction(callback)){
+            callback(err, res, sub);
+        }
+    });
+
+    return undefined;
+ };
+
+/**
+ * Adds event listeners and creates a subscription.
+ *
+ * @method _on
+ * @param {String} event
+ * @param {Object} options
+ * @param {Function} callback
+ * @return {Object} the event subscription
+ */
+ _on(){
+    var subOptions = this._generateEventOptions.apply(this, arguments);
+
+
+    // prevent the event "newListener" and "removeListener" from being overwritten
+    this._checkListener('newListener', subOptions.event.name, subOptions.callback);
+    this._checkListener('removeListener', subOptions.event.name, subOptions.callback);
+
+    // TODO check if listener already exists? and reuse subscription if options are the same.
+
+    // create new subscription
+    var subscription = new Subscription({
+        subscription: {
+            params: 1,
+            inputFormatter: [formatters.inputLogFormatter],
+            outputFormatter: this._decodeEventABI.bind(subOptions.event),
+            // DUBLICATE, also in web3-eth
+            subscriptionHandler: function (output) {
+                if(output.removed) {
+                    this.emit('changed', output);
+                } else {
+                    this.emit('data', output);
+                }
+
+                if (_.isFunction(this.callback)) {
+                    this.callback(null, output, this);
+                }
+            }
+        },
+        type: 'eth',
+        requestManager: this._requestManager
+    });
+    subscription.subscribe('logs', subOptions.params, subOptions.callback || function () {});
+
+    return subscription;
+  };
 }
 
 module.exports = Contract;

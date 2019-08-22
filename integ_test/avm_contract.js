@@ -449,10 +449,10 @@ let abiMethodCall = async(methodName,inputs,output) => {
         if(typeof test_data[input.name.toUpperCase()] !== 'undefined'){
           arr.push(test_data[input.name.toUpperCase()]);
         }else if(test_data[arrData(input.name.toUpperCase(),"")]!== 'undefined' && input.name.substring(input.name.length - 4) !== "[][]"){
-          console.log("1d ",input.name);
+         
           arr.push(test_data[arrData(input.name.toUpperCase(),"")]);
         }else if(test_data[arrData(input.name.toUpperCase(),"Test2D")]!== 'undefined' && input.name.substring(input.name.length - 4) === "[][]"){
-          console.log("2d ",input.name);
+          
           arr.push(test_data[arrData(input.name.toUpperCase(),"Test2D")]);
         }else{
           return false;
@@ -473,6 +473,79 @@ let abiMethodCall = async(methodName,inputs,output) => {
 
     } catch (error) {
       console.log("Send error:",error);
+      return false;
+    }
+ }
+
+  let arrabiMethodSendCallback = async(methodName,inputs=null,output) => {
+    let arr = [];
+    
+    if(inputs!==null)
+    {
+      inputs.forEach((input)=>{
+        //console.log(test_data[input.name.toUpperCase()]);
+        if(typeof test_data[input.name.toUpperCase()] !== 'undefined'){
+          arr.push(test_data[input.name.toUpperCase()]);
+        }else if(test_data[arrData(input.name.toUpperCase(),"")]!== 'undefined' && input.name.substring(input.name.length - 4) !== "[][]"){
+          
+          arr.push(test_data[arrData(input.name.toUpperCase(),"")]);
+        }else if(test_data[arrData(input.name.toUpperCase(),"Test2D")]!== 'undefined' && input.name.substring(input.name.length - 4) === "[][]"){
+          
+          arr.push(test_data[arrData(input.name.toUpperCase(),"Test2D")]);
+        }else{
+          return false;
+        }
+      });
+    }
+    var func = function(){
+      return "avm callback!!"
+    }
+
+   try {      
+      //console.log("Contract: ",web3.avm.contract);
+      let result;
+      if(arr[0]){
+        result = await web3Arr.avm.contract.avmMethod[methodName](arr[0]).avmSend({"value":1},func);
+      }else{
+        result = await web3Arr.avm.contract.avmMethod[methodName]().avmSend({"value":1},func);
+      } 
+
+      return result;
+
+    } catch (error) {
+      console.log("Send error:",error);
+      return false;
+    }
+ }
+
+ let arrabiMethodCallback = async(methodName,inputs,output) => {
+    let arr = [];    
+    if(inputs!==null)
+    {
+      inputs.forEach((input)=>{
+        arr.push(test_data[input.name.toUpperCase()]);
+      });
+    }
+
+    var func = function(){
+      return "avm call callback!!"
+    }
+
+   try {      
+      //console.log("Contract: ",web3.avm.contract);
+      let result;
+      if(arr[0]){
+        if(arr[1]){
+          result = await web3Arr.avm.contract.avmMethod[methodName](arr[0],arr[1]).avmCall({},func);
+        }else{
+          result = await web3Arr.avm.contract.avmMethod[methodName](arr[0]).avmCall({},func);      
+        }
+      }else{
+        result = await web3Arr.avm.contract.avmMethod[methodName]().avmCall({},func);
+      }
+        return result;      
+    } catch (error) {
+      console.log("Call error:",error);
       return false;
     }
  }
@@ -548,10 +621,8 @@ let abiMethodCall = async(methodName,inputs,output) => {
         if(typeof test_data[input.name.toUpperCase()] !== 'undefined'){
           arr.push(test_data[input.name.toUpperCase()]);
         }else if(test_data[arrData(input.name.toUpperCase(),"")]!== 'undefined' && input.name.substring(input.name.length - 4) !== "[][]"){
-          console.log("1d ",input.name);
           arr.push(test_data[arrData(input.name.toUpperCase(),"")]);
         }else if(test_data[arrData(input.name.toUpperCase(),"Test2D")]!== 'undefined' && input.name.substring(input.name.length - 4) === "[][]"){
-          console.log("2d ",input.name);
           arr.push(test_data[arrData(input.name.toUpperCase(),"Test2D")]);
         }else{
           return false;
@@ -651,7 +722,7 @@ let abiMethodCall = async(methodName,inputs,output) => {
 describe('avm_contract', () => {
 
   
-  /**
+  
   it('deploying contract..', done => {
     deploy().then(res => {
       
@@ -672,9 +743,9 @@ describe('avm_contract', () => {
     });
   });
 
-  */
+  
 
-  /*it('deploying BigInteger contract..', done => {
+  it('deploying BigInteger contract..', done => {
     BI_Deploy().then(res => {
       
       res.status.should.eql(true);
@@ -682,7 +753,7 @@ describe('avm_contract', () => {
     }).catch(err => {
       done(err);
     });
-  });*/
+  });
 
   it('Testing GetPastEvents...', done => {
         methodGetPastEvents().then(res => {
@@ -744,7 +815,7 @@ describe('avm_contract', () => {
 
 
   
-  /*
+  
   tests.forEach((test) => {
     it('testing method, ' + test.name, done => {
       if(test.type === 'call') {
@@ -778,7 +849,7 @@ describe('avm_contract', () => {
       }
     });
   });
-  */
+  
   
   
   arriface.functions.forEach((method)=>{
@@ -793,6 +864,15 @@ describe('avm_contract', () => {
           done(err);
         });
     });
+
+    /*it('Testing method call...'+method.name, done => {
+        arrabiMethodCall(method.name,method.inputs,method.output).then(res => {
+          assert.deepEqual(res,test_data[arrData(method.output,method.name)],"Call Failed!")
+          done();
+        }).catch(err => {
+          done(err);
+        });
+    });*/
     
     //console.log(method);
     if(method.output!==null){
@@ -800,6 +880,16 @@ describe('avm_contract', () => {
       it('Testing method call...'+method.name, done => {
         arrabiMethodCall(method.name,method.inputs,method.output).then(res => {
           assert.deepEqual(res,test_data[arrData(method.output,method.name)],"Call Failed!")
+          done();
+        }).catch(err => {
+          done(err);
+        });
+      });
+
+      it('Testing method callback send...'+method.name, done => {
+        arrabiMethodCallback(method.name,method.inputs,method.output).then(res => {
+          assert.deepEqual(res,"avm call callback!!","Call Failed!")
+                  
           done();
         }).catch(err => {
           done(err);
@@ -816,11 +906,21 @@ describe('avm_contract', () => {
         });
       });
 
+      it('Testing method callback send...'+method.name, done => {
+        arrabiMethodSendCallback(method.name,method.inputs).then(res => {
+          assert.deepEqual(res,"avm callback!!","Call Failed!")
+                  
+          done();
+        }).catch(err => {
+          done(err);
+        });
+      });
+
     }
   });
 
 
-  /*
+  
   iface.functions.forEach((method)=>{
     //console.log(method);
     if(method.output!==null){
@@ -845,9 +945,9 @@ describe('avm_contract', () => {
       });
 
     }
-  });*/
+  });
 
-  /*
+  
 
   it('Testing none existent method send...', done => {
         abiMethodSend('dontExistB',[]).then(res => {
@@ -903,9 +1003,9 @@ describe('avm_contract', () => {
     }).catch(err => {
       done(err);
     });
-  });*/
+  });
 
-  /*iface.functions.forEach((method)=>{
+  iface.functions.forEach((method)=>{
     console.log(method);
     if(method.output!==null){
     it('Testing Rust method call..'+method.name, done => {
@@ -926,7 +1026,7 @@ describe('avm_contract', () => {
       });
     });
     }
-  });*/
+  });
 
 });
 
