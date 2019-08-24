@@ -58,12 +58,28 @@
 
 var fs = require('fs');
 var ABI = require('aion-web3-avm-abi');
+var Method = require('aion-web3-core-method');
+var formatters = require('aion-web3-core-helpers').formatters;
+var Subscription = require('aion-web3-core-subscriptions').subscription;
+
+var _ = require('underscore');
+var core = require('aion-web3-core');
+var utils = require('aion-web3-utils');
+var errors = require('aion-web3-core-helpers').errors;
+var promiEvent = require('aion-web3-core-promievent');
+
 class Contract {
 
 	constructor() {
 		this._abi = new ABI();
+        this._requestManager = null;
         
-		this._initializer = null;
+		//
+        this._callback = null;
+        this._altTxnObj = null;//this.transactionObject = null;
+        this._altTxnOutput = null;
+
+        this._initializer = null;
 		this._argsData = null;
 		this._jarPath = null;
 
@@ -76,12 +92,21 @@ class Contract {
 		this._call = null;
 		this._send = null;
 
-		this._address = null
-		this._contract = null
+		this._address = null;
+		this._contract = null;
 		this._interface = null;
 
-		this.readOnly = {};
-		this.transaction = {};
+
+        this.readOnly = {};//this.methodTxnConf;
+		this.transaction = {};//this.methodTxnConf;
+        
+        this.avmMethod = {};
+        this.avmCall = (txn,callback)=>{
+            return this.methodTxnConf(txn,callback,'call')
+        };
+        this.avmSend = (txn,callback)=>{
+            return this.methodTxnConf(txn,callback,'send')
+        };
 
 		this.instance = {};
         
@@ -89,7 +114,7 @@ class Contract {
 		this._key = null;
 
         this._gasPrice = 10000000000;//10000000000
-        this._gas = 2000000;
+        this._gas = 2000000;//2000000
         this._value = 0;
         this._nonce = null;
 
@@ -128,7 +153,14 @@ class Contract {
 
                 //send transaction
                 let res = await this.instance.eth.sendSignedTransaction(signedTx.rawTransaction);
-                return res;
+                
+                if(this._callback!==null){
+                    let callback = this._callback;
+                    this._callback = null;
+                    return callback(res);
+                }else{
+                    return res;
+                }
 
             }catch(err){
                 //throw error
@@ -148,11 +180,25 @@ class Contract {
           
           try{
               let ethRes = await this.instance.eth.call(txObject); 
-              if(returnType!==null){
-                let res = await this.instance.avm.contract.decode(returnType, ethRes);             
-                return res;   
+              if(this._callback!==null){
+
+                let callback = this._callback;
+                this._callback = null;
+
+                if(returnType!==null){
+                    let res = await this.instance.avm.contract.decode(returnType, ethRes);             
+                    
+                    return callback(res);  
+                }else{
+                    return callback(true);
+                }
               }else{
-                return true;
+                if(returnType!==null){
+                    let res = await this.instance.avm.contract.decode(returnType, ethRes);             
+                    return res;   
+                }else{
+                    return true;
+                }
               }
           }catch(err){
             console.log("Call Failed!", err);
@@ -161,7 +207,75 @@ class Contract {
           
         };
 
+        this.estimateGas = async (txObject) => {
+          
+          try{
+              
+              let gas = await this.instance.eth.estimateGas(txObject); 
+              return gas;
+              
+          }catch(err){
+            console.log("Estimation Failed!", err);
+            return false; //may need to be improved for booleans
+          }  
+          
+        };
+
+        this.getPastLogs = async (options,callback) => {
+          
+          try{
+              
+              let gas = await this.instance.eth.getPastLogs(options); 
+              return gas;
+              
+          }catch(err){
+            console.log("Events Failed!", err);
+            return false; //may need to be improved for booleans
+          }  
+          
+        };
+
 	}
+
+
+    methodTxnConf(txnObj=null,callback=null,type){
+            if(callback!==null){
+                this._callback = callback;
+            }
+
+            //set object properties
+            let txn = this._altTxnObj;
+            if(txnObj!==null){               
+                if(typeof txnObj.gas!== 'undefined'){
+                    txn.gas = txnObj.gas;
+                }else{
+                    txn.gas = this._gas;
+                }
+                if(typeof txnObj.gasPrice!== 'undefined'){
+                    txn.gasPrice = txnObj.gasPrice;
+                }else{
+                    txn.gasPrice = this._gasPrice;
+                }
+                if(typeof txnObj.value!== 'undefined'){
+                    txn.value = txnObj.value;
+                }else{
+                    txn.value = this._value;
+                }                               
+            }
+
+            if(type==="call"){
+                if(this._altTxnOutput!==null){
+                    return this.call(txn, this._altTxnOutput);
+                }else{
+                    return this.call(txn);
+                }
+            }else if(type==="send"){                
+                return this.sendTransaction(txn);                
+            }else{
+                throw new Error('Invalid method call');
+            }
+    };
+       
     /**
         *@desc get the current value set for gas
         *@param none
@@ -286,8 +400,7 @@ class Contract {
             value: v,//value
             type: type
         };
-        //console.log("HERE IS THE DATA >>>>", txObject.gasPrice,"##",txObject.gas,"##",txObject.value);
-        
+
         //nonce is calculated so only set if user provide a figure
         if(nonce!==null){
             txObject.nonce = nonce;
@@ -300,6 +413,32 @@ class Contract {
         try{
                 fns.forEach(function(fn){
                     //define call functions
+                    //console.log("fn: ",fn);
+                    Object.defineProperty(obj.avmMethod, fn.name,{
+                     value: function(){
+                            const props = fn;                            
+                            let params = [];
+                            let inputs = [];
+                            if(arguments.length > 0){
+                              for (var _i = 0; _i &lt; arguments.length; _i++) {
+                                
+                                if(props.inputs[_i]){
+                                    params[_i] = arguments[_i];
+                                    inputs[_i] = props.inputs[_i].name;
+                                }
+                              }
+                            }
+                            var data = obj.data(props.name, inputs, params);
+                            obj._altTxnObj = obj.txnObj(obj._address, obj._contract, data);
+                            
+                            if(props.output){
+                                obj._altTxnOutput = props.output; 
+                            }
+                            //assign values
+                            return obj;//this;
+                     },
+                     writable: false
+                    });
                     Object.defineProperty(obj.readOnly, fn.name,{
                      value: function(){
                             const props = fn;                            
@@ -323,6 +462,31 @@ class Contract {
                             }else{
                                 return obj.call(txn);
                             }
+                     },
+                     writable: false
+                    });
+
+                    //define call functions
+                    Object.defineProperty(obj.estimateGas, fn.name,{
+                     value: function(){
+                            const props = fn;                            
+                            let params = [];
+                            let inputs = [];
+                            if(arguments.length > 0){
+                              for (var _i = 0; _i &lt; arguments.length; _i++) {
+                                
+                                if(props.inputs[_i]){
+                                    params[_i] = arguments[_i];
+                                    inputs[_i] = props.inputs[_i].name;
+                                }
+                              }
+                            }
+                            var data = obj.data(props.name, inputs, params);
+                            var txn = obj.txnObj(obj._address, obj._contract, data);
+                            
+                            
+                            return obj.estimateGas(txn);
+                            
                      },
                      writable: false
                     });
@@ -359,7 +523,7 @@ class Contract {
                 })
 
         }catch(err){
-            throw new Error('Unable to initialize functions');
+            throw new Error('Unable to initialize functions'+err);
         }
     }
 
@@ -377,20 +541,23 @@ class Contract {
 	    this._contract = contractAddress;
 	    this._interface = abi;
 
-	    if(key!==null){
+	    //TODO:Improve the following
+        if(key!==null){
             this._key = key;
+            let ac = this.instance.eth.accounts.privateKeyToAccount(this._key);
+            this._address = ac.address;
         }
+
+
         if(instance!==null){
             this.instance = instance;//web3 intance to process transactions
         }
 
-        //TODO:Improve the following
-	    let ac = this.instance.eth.accounts.privateKeyToAccount(this._key);
-	    this._address = ac.address;
+        
+	   
 
 	    var methods = abi.functions ? abi.functions : [];
-
-	    this.initFunctions(methods,this);//create methods
+        this.initFunctions(methods,this);//create methods
 	}
 	
 	// Converts the Jar into a JarPath to be Encoded for Initialization
@@ -412,15 +579,15 @@ class Contract {
 	args(types, values) {
 		
         if(this._jarPath === null) { throw new Error('requires a jarFile to be set first through the deploy method'); }
-        var paramTypes = types;
+        var initTypes = types;
+        var initValues = values;
         //check if 1 parameter is entered and if there is a value in _deployTypes
-        if(arguments.length === 1 &amp;&amp; this._deployTypes!==[]){
-            paramTypes = this._deployTypes;
+        if(arguments.length === 1 &amp;&amp; this._deployTypes.length > 0){
+            initTypes = this._deployTypes;
+            initValues = arguments[0];
         }
-
-        console.log(paramTypes);
-
-        this._argsData = this._abi.encode(paramTypes, values);
+        
+        this._argsData = this._abi.encode(initTypes, initValues);
         return this;
     }
 
@@ -470,6 +637,284 @@ class Contract {
         this._deployTypes = abi.init;
         return abi; 
     }
+ /**
+ * @method AVM Events stuff
+ */
+    
+ /**
+ * Adds event listeners and creates a subscription, and remove it once its fired.
+ *
+ * @method once
+ * @param {String} event
+ * @param {Object} options
+ * @param {Function} callback
+ * @return {Object} the event subscription
+ */
+ once(event, options, callback) {
+    var args = Array.prototype.slice.call(arguments);
+
+    // get the callback
+    callback = this._getCallback(args);
+
+    if (!callback) {
+        throw errors.InvalidCallback('Once', 'second');
+    }
+
+    // don't allow fromBlock
+    if (options)
+        delete options.fromBlock;
+
+    // don't return as once shouldn't provide "on"
+    this._on(event, options, function (err, res, sub) {
+        sub.unsubscribe();
+        if(_.isFunction(callback)){
+            callback(err, res, sub);
+        }
+    });
+
+    return undefined;
+ };
+
+/**
+ * Adds event listeners and creates a subscription.
+ *
+ * @method _on
+ * @param {String} event
+ * @param {Object} options
+ * @param {Function} callback
+ * @return {Object} the event subscription
+ */
+ _on(){
+    var subOptions = this._generateEventOptions.apply(this, arguments);
+
+
+    // prevent the event "newListener" and "removeListener" from being overwritten
+    this._checkListener('newListener', subOptions.event.name, subOptions.callback);
+    this._checkListener('removeListener', subOptions.event.name, subOptions.callback);
+
+    // TODO check if listener already exists? and reuse subscription if options are the same.
+
+    // create new subscription
+    var subscription = new Subscription({
+        subscription: {
+            params: 1,
+            inputFormatter: [formatters.inputLogFormatter],
+            outputFormatter: this._decodeEventABI.bind(subOptions.event),
+            // DUBLICATE, also in web3-eth
+            subscriptionHandler: function (output) {
+                if(output.removed) {
+                    this.emit('changed', output);
+                } else {
+                    this.emit('data', output);
+                }
+
+                if (_.isFunction(this.callback)) {
+                    this.callback(null, output, this);
+                }
+            }
+        },
+        type: 'eth',
+        requestManager: this._requestManager
+    });
+    subscription.subscribe('logs', subOptions.params, subOptions.callback || function () {});
+
+    return subscription;
+  };
+  
+ getPastEvents(){
+        var subOptions = this._generateEventOptions.apply(this, arguments);
+        //console.log("subOptions.params: ",subOptions.params);
+        //console.log("subOptions.event: ",subOptions.event);
+        var getPastLogs = new Method({
+            name: 'getPastLogs',
+            call: 'eth_getLogs',
+            params: 1,
+            inputFormatter: [formatters.inputLogFormatter],
+            outputFormatter: this._decodeEventABI.bind(subOptions.event)
+        });
+        
+        getPastLogs.setRequestManager(this.instance.avm._requestManager);
+        var call = getPastLogs.buildCall();
+
+        getPastLogs = null;
+
+        return call(subOptions.params, subOptions.callback);
+ }
+ 
+ /**
+ * Gets the event signature and outputformatters
+ *
+ * @method _generateEventOptions
+ * @param {Object} event
+ * @param {Object} options
+ * @param {Function} callback
+ * @return {Object} the event options object
+ */
+ _generateEventOptions() {
+    var args = Array.prototype.slice.call(arguments);
+
+    // get the callback
+    var callback = this._getCallback(args);
+
+    // get the options
+    var options = (_.isObject(args[args.length - 1])) ? args.pop() : {};
+
+    var event = (_.isString(args[0])) ? args[0] : 'allevents';
+    
+    event = (event.toLowerCase() === 'allevents') ? {
+            name: 'ALLEVENTS'
+            //jsonInterface: this._interface
+        } : {
+            name: event
+            //jsonInterface: this._interface
+        };
+    
+    if (!event) {
+        throw error.EventDoesNotExist(event.name);
+    }
+
+    if (!utils.isAddress(this._contract)) {
+        throw errors.MissingContractAddress(true);
+    }
+
+    return {
+        params: this._encodeEventABI(event, options),
+        event: event,
+        callback: callback
+    };
+ };
+
+ /**
+ * Should be used to encode indexed params and options to one final object
+ *
+ * @method _encodeEventABI
+ * @param {Object} event
+ * @param {Object} options
+ * @return {Object} everything combined together and encoded
+ */
+_encodeEventABI(event, options) {
+    options = options || {};
+    var filter = options.filter || {},
+        result = {};
+
+    ['fromBlock', 'toBlock'].filter(function (f) {
+        return options[f] !== undefined;
+    }).forEach(function (f) {
+        result[f] = formatters.inputBlockNumberFormatter(options[f]);
+    });
+
+    // use given topics
+    if(_.isArray(options.topics)) {
+        result.topics = options.topics;
+
+    // create topics based on filter
+    } else {
+
+        result.topics = [];
+
+        /*
+        // add event signature
+        if (event &amp;&amp; event.name !== 'ALLEVENTS') {
+            result.topics.push(event.signature);
+        }
+
+        // add event topics (indexed arguments)
+        if (event.name !== 'ALLEVENTS') {
+            var indexedTopics = event.inputs.filter(function (i) {
+                return i.indexed === true;
+            }).map(function (i) {
+                var value = filter[i.name];
+                if (!value) {
+                    return null;
+                }
+
+                // TODO: https://github.com/aionnetwork/aion_web3/issues/344
+                // TODO: deal properly with components
+
+                if (_.isArray(value)) {
+                    return value.map(function (v) {
+                        return ABI.encodeParameter(i.type, v);
+                    });
+                }
+                return ABI.encodeParameter(i.type, value);
+            });
+
+            result.topics = result.topics.concat(indexedTopics);
+        }*/
+
+        if(!result.topics.length)
+            delete result.topics;
+    }
+
+    if(this._contract) {
+        result.address = this._contract.toLowerCase();
+    }
+
+    return result;
+};
+
+ /**
+ * Should be used to decode indexed params and options
+ *
+ * @method _decodeEventABI
+ * @param {Object} data
+ * @return {Object} result object with decoded indexed &amp;&amp; not indexed params
+ */
+_decodeEventABI(data) {
+    var event = this;
+    
+    data.data = data.data || '';
+    data.topics = data.topics || [];
+    var result = formatters.outputLogFormatter(data);
+    
+    // if allEvents get the right event
+    if(event.name === 'ALLEVENTS') {
+        /*event = event.jsonInterface.find(function (intf) {
+            return (intf.signature === data.topics[0]);
+        }) || {anonymous: true};*/
+        event = {anonymous: true};
+    }
+
+    // create empty inputs if none are present (e.g. anonymous events on allEvents)
+    event.inputs = event.inputs || [];
+
+
+    var argTopics = event.anonymous ? data.topics : data.topics.slice(1);
+    var _abi = new ABI();
+    //result.returnValues = return data_abi.getEvents([], data.data, argTopics);
+    //delete result.returnValues.__length__;
+        
+    // add name decode string
+    //var cntr = new Contract()
+    var name = _abi.coder_utils.toUtf8String(data.topics[0]).replace(/\0.*$/g,'')
+    result.event = (!data.topics[0]) ? null : name;
+
+    // add signature
+    result.signature = (!data.topics[0]) ? null : data.topics[0];
+
+    // move the data and topics to "raw"
+    result.raw = {
+        data: result.data,
+        topics: result.topics
+    };
+    delete result.data;
+    delete result.topics;
+
+    return result;
+};
+
+/**
+ * Get the callback and modiufy the array if necessary
+ *
+ * @method _getCallback
+ * @param {Array} args
+ * @return {Function} the callback
+ */
+_getCallback(args) {
+    if (args &amp;&amp; _.isFunction(args[args.length - 1])) {
+        return args.pop(); // modify the args array!
+    }
+};
 }
 
 module.exports = Contract;</code></pre>
@@ -488,7 +933,7 @@ module.exports = Contract;</code></pre>
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Thu Aug 08 2019 10:03:17 GMT-0400 (Atlantic Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Sat Aug 24 2019 17:25:47 GMT-0400 (Atlantic Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>
