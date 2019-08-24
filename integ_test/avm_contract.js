@@ -197,7 +197,7 @@ let arr_abi = `
 `
 
 let bi_abi = `
-    1
+    0.0
     Test.HelloAvm
     Clinit: (String, BigInteger, BigInteger[])
     public static BigInteger getMyBI()
