@@ -34,7 +34,11 @@ var Method = require('aion-web3-core-method');
 var formatters = require('aion-web3-core-helpers').formatters;
 var Subscription = require('aion-web3-core-subscriptions').subscription;
 
-
+var _ = require('underscore');
+var core = require('aion-web3-core');
+var utils = require('aion-web3-utils');
+var errors = require('aion-web3-core-helpers').errors;
+var promiEvent = require('aion-web3-core-promievent');
 
 class Contract {
 
@@ -605,8 +609,11 @@ class Contract {
         this._deployTypes = abi.init;
         return abi; 
     }
-
-    /**
+ /**
+ * @method AVM Events stuff
+ */
+    
+ /**
  * Adds event listeners and creates a subscription, and remove it once its fired.
  *
  * @method once
@@ -685,6 +692,201 @@ class Contract {
 
     return subscription;
   };
+  
+ getPastEvents(){
+        var subOptions = this._generateEventOptions.apply(this, arguments);
+        //console.log("subOptions.params: ",subOptions.params);
+        //console.log("subOptions.event: ",subOptions.event);
+        var getPastLogs = new Method({
+            name: 'getPastLogs',
+            call: 'eth_getLogs',
+            params: 1,
+            inputFormatter: [formatters.inputLogFormatter],
+            outputFormatter: this._decodeEventABI.bind(subOptions.event)
+        });
+        
+        getPastLogs.setRequestManager(this.instance.avm._requestManager);
+        var call = getPastLogs.buildCall();
+
+        getPastLogs = null;
+
+        return call(subOptions.params, subOptions.callback);
+ }
+ 
+ /**
+ * Gets the event signature and outputformatters
+ *
+ * @method _generateEventOptions
+ * @param {Object} event
+ * @param {Object} options
+ * @param {Function} callback
+ * @return {Object} the event options object
+ */
+ _generateEventOptions() {
+    var args = Array.prototype.slice.call(arguments);
+
+    // get the callback
+    var callback = this._getCallback(args);
+
+    // get the options
+    var options = (_.isObject(args[args.length - 1])) ? args.pop() : {};
+
+    var event = (_.isString(args[0])) ? args[0] : 'allevents';
+    
+    event = (event.toLowerCase() === 'allevents') ? {
+            name: 'ALLEVENTS'
+            //jsonInterface: this._interface
+        } : {
+            name: event
+            //jsonInterface: this._interface
+        };
+    
+    if (!event) {
+        throw error.EventDoesNotExist(event.name);
+    }
+
+    if (!utils.isAddress(this._contract)) {
+        throw errors.MissingContractAddress(true);
+    }
+
+    return {
+        params: this._encodeEventABI(event, options),
+        event: event,
+        callback: callback
+    };
+ };
+
+ /**
+ * Should be used to encode indexed params and options to one final object
+ *
+ * @method _encodeEventABI
+ * @param {Object} event
+ * @param {Object} options
+ * @return {Object} everything combined together and encoded
+ */
+_encodeEventABI(event, options) {
+    options = options || {};
+    var filter = options.filter || {},
+        result = {};
+
+    ['fromBlock', 'toBlock'].filter(function (f) {
+        return options[f] !== undefined;
+    }).forEach(function (f) {
+        result[f] = formatters.inputBlockNumberFormatter(options[f]);
+    });
+
+    // use given topics
+    if(_.isArray(options.topics)) {
+        result.topics = options.topics;
+
+    // create topics based on filter
+    } else {
+
+        result.topics = [];
+
+        /*
+        // add event signature
+        if (event && event.name !== 'ALLEVENTS') {
+            result.topics.push(event.signature);
+        }
+
+        // add event topics (indexed arguments)
+        if (event.name !== 'ALLEVENTS') {
+            var indexedTopics = event.inputs.filter(function (i) {
+                return i.indexed === true;
+            }).map(function (i) {
+                var value = filter[i.name];
+                if (!value) {
+                    return null;
+                }
+
+                // TODO: https://github.com/aionnetwork/aion_web3/issues/344
+                // TODO: deal properly with components
+
+                if (_.isArray(value)) {
+                    return value.map(function (v) {
+                        return ABI.encodeParameter(i.type, v);
+                    });
+                }
+                return ABI.encodeParameter(i.type, value);
+            });
+
+            result.topics = result.topics.concat(indexedTopics);
+        }*/
+
+        if(!result.topics.length)
+            delete result.topics;
+    }
+
+    if(this._contract) {
+        result.address = this._contract.toLowerCase();
+    }
+
+    return result;
+};
+
+ /**
+ * Should be used to decode indexed params and options
+ *
+ * @method _decodeEventABI
+ * @param {Object} data
+ * @return {Object} result object with decoded indexed && not indexed params
+ */
+_decodeEventABI(data) {
+    var event = this;
+    
+    data.data = data.data || '';
+    data.topics = data.topics || [];
+    var result = formatters.outputLogFormatter(data);
+    
+    // if allEvents get the right event
+    if(event.name === 'ALLEVENTS') {
+        /*event = event.jsonInterface.find(function (intf) {
+            return (intf.signature === data.topics[0]);
+        }) || {anonymous: true};*/
+        event = {anonymous: true};
+    }
+
+    // create empty inputs if none are present (e.g. anonymous events on allEvents)
+    event.inputs = event.inputs || [];
+
+
+    var argTopics = event.anonymous ? data.topics : data.topics.slice(1);
+    var _abi = new ABI();
+    //result.returnValues = return data_abi.getEvents([], data.data, argTopics);
+    //delete result.returnValues.__length__;
+        
+    // add name decode string
+    //var cntr = new Contract()
+    var name = _abi.coder_utils.toUtf8String(data.topics[0]).replace(/\0.*$/g,'')
+    result.event = (!data.topics[0]) ? null : name;
+
+    // add signature
+    result.signature = (!data.topics[0]) ? null : data.topics[0];
+
+    // move the data and topics to "raw"
+    result.raw = {
+        data: result.data,
+        topics: result.topics
+    };
+    delete result.data;
+    delete result.topics;
+
+    return result;
+};
+
+/**
+ * Get the callback and modiufy the array if necessary
+ *
+ * @method _getCallback
+ * @param {Array} args
+ * @return {Function} the callback
+ */
+_getCallback(args) {
+    if (args && _.isFunction(args[args.length - 1])) {
+        return args.pop(); // modify the args array!
+    }
+};
 }
 
 module.exports = Contract;

@@ -11,6 +11,8 @@ let BIjarPath = path.join(__dirname, 'contracts', 'bigint-1.0-SNAPSHOT.jar');
 
 let web3NoArgs = new Web3(new Web3.providers.HttpProvider(test_cfg.JAVA_IP));
 let web3 = new Web3(new Web3.providers.HttpProvider(test_cfg.JAVA_IP));
+let web3e = new Web3(new Web3.providers.HttpProvider(test_cfg.JAVA_IP));
+
 let web3Arr = new Web3(new Web3.providers.HttpProvider(test_cfg.JAVA_IP));
 let web3bi = new Web3(new Web3.providers.HttpProvider(test_cfg.JAVA_IP));
 let web3R = new Web3(new Web3.providers.HttpProvider(test_cfg.RUST_IP));
@@ -175,6 +177,10 @@ let arr_abi = `
     public static void set1DStringArr(String[])
     public static void set1DIntArr(int[])
     public static void set2DIntArr(int[][])
+    public static void set2DCharArr(char[][])
+    public static void set2DLongArr(long[][])
+    public static void set2DByteArr(byte[][])
+    public static void set2DShortArr(short[][])
     public static void set1DFloatArr(float[])
     public static void set1DLongArr(long[])
     public static void set1DByteArr(byte[])
@@ -267,6 +273,7 @@ let bigIntegerContractAddress = test_cfg.AVM_TEST_CT_3_ADDR;
 web3NoArgs.avm.contract.initBinding(contractAddress, no_args_iface, test_cfg.AVM_TEST_PK);//Interface
 
 web3.avm.contract.initBinding(contractAddress, iface, test_cfg.AVM_TEST_PK);//Interface
+web3e.avm.contract.initBinding("0xa0d388c3e6b3ec78d26960533b7fb394fb3300eccd99d79d425faaaa9b9b6904", iface, test_cfg.AVM_TEST_PK);//Interface
 web3Arr.avm.contract.initBinding(arrContractAddress, arriface, test_cfg.AVM_TEST_PK);//Interface
 web3bi.avm.contract.initBinding(bigIntegerContractAddress, biface, test_cfg.AVM_TEST_PK);//Interface
 
@@ -354,15 +361,36 @@ let abiMethodCall = async(methodName,inputs,output) => {
  let methodGetPastEvents = async() => {
    let obj = {
     "fromBlock":1253767,
-    topics:
+    "topics":
      [ '0x415453546f6b656e437265617465640000000000000000000000000000000000',
        '0x0113ba1430a5432dc03400000000000000000000000000000000000000000000',
        '0xa065824b9d0fb8a979db2436974121079fcd78334ec28da3cf12009b56588ad4' ],
-    "address":"0xa0d388c3e6b3ec78d26960533b7fb394fb3300eccd99d79d425faaaa9b9b6904",//"0xa0a4a16bbc30e4e680a1ae2d21479964a8488179f75ee1264dc83609833a348a",
-    }
+       "address":arrContractAddress//"a04d869b5ae387c3dfcab29e431bad362f1127cc74b0e225583d40142bd17c93",//"0xa0a4a16bbc30e4e680a1ae2d21479964a8488179f75ee1264dc83609833a348a",
+   }
 
    try {      
-        result = await web3.avm.contract.getPastLogs(obj);
+        result = await web3Arr.avm.contract.getPastEvents('allevents',{"fromBlock":1253767});
+        return result;      
+    } catch (error) {
+      console.log("Past event error: ",error);
+      return false;
+    }
+ }
+
+ let methodGetPastLogs = async() => {
+   let obj = {
+    "fromBlock":1253767,
+    "address":arrContractAddress,
+    "topics":
+     [ '0x73656e645472616e73616374696f6e0000000000000000000000000000000000',
+       null
+     ]
+       
+
+   }
+
+   try {      
+        result = await web3Arr.avm.contract.getPastLogs(obj);
         return result;      
     } catch (error) {
       console.log("Past event error: ",error);
@@ -719,9 +747,8 @@ let abiMethodCall = async(methodName,inputs,output) => {
  }
 
 describe('avm_contract', () => {
-
-  
-  
+ 
+  /**
   it('deploying contract..', done => {
     deploy().then(res => {
       
@@ -740,7 +767,7 @@ describe('avm_contract', () => {
     }).catch(err => {
       done(err);
     });
-  });
+  });*/
 
   
 
@@ -754,6 +781,18 @@ describe('avm_contract', () => {
     });
   });*/
 
+  it('Testing GetPastLogs...', done => {
+        methodGetPastLogs().then(res => {
+          console.log("GetPastLogs::: ",res); 
+          //console.log("GetPastLogs end::: ",res[res.length-1]);     
+          assert.isAtLeast(res.length,1,"GetPastEvents Test Failed");
+
+          done();
+        }).catch(err => {
+          done(err);
+        });
+  });
+
   it('Testing GetPastEvents...', done => {
         methodGetPastEvents().then(res => {
           //console.log("GetPastEvents::: ",res);     
@@ -765,7 +804,7 @@ describe('avm_contract', () => {
         });
   });
   
-  biface.functions.forEach((method)=>{
+  /*biface.functions.forEach((method)=>{
     
     it('Testing BIGINT method estimateGas...'+method.name, done => {
         BIabiMethodEstimateGas(method.name,method.inputs,method.output).then(res => {
@@ -810,11 +849,13 @@ describe('avm_contract', () => {
       });
     }
   });
+  */
 
 
 
   
   
+  /**
   tests.forEach((test) => {
     it('testing V1 method, ' + test.name, done => {
       if(test.type === 'call') {
@@ -848,10 +889,12 @@ describe('avm_contract', () => {
       }
     });
   });
+  */
   
   
   
-  arriface.functions.forEach((method)=>{
+  
+  /*arriface.functions.forEach((method)=>{
     
     it('Testing Array method estimateGas...'+method.name, done => {
         arrabiMethodEstimateGas(method.name,method.inputs,method.output).then(res => {
@@ -863,15 +906,6 @@ describe('avm_contract', () => {
           done(err);
         });
     });
-
-    /*it('Testing method call...'+method.name, done => {
-        arrabiMethodCall(method.name,method.inputs,method.output).then(res => {
-          assert.deepEqual(res,test_data[arrData(method.output,method.name)],"Call Failed!")
-          done();
-        }).catch(err => {
-          done(err);
-        });
-    });*/
     
     //console.log(method);
     if(method.output!==null){
@@ -916,10 +950,12 @@ describe('avm_contract', () => {
       });
 
     }
-  });
-
-
+  });*/
   
+  
+
+
+  /*
   iface.functions.forEach((method)=>{
     //console.log(method);
     if(method.output!==null){
@@ -1003,7 +1039,7 @@ describe('avm_contract', () => {
       done(err);
     });
   });
-
+  */
   /**
   iface.functions.forEach((method)=>{
     console.log(method);

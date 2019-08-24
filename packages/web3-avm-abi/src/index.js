@@ -27,7 +27,7 @@
 */
 
 "use strict"; 
-
+var _ = require('underscore');
 let utils = require('./coder-utils');
 let codec = require('./coder');
 let ABI = require('./interface');
@@ -35,6 +35,7 @@ class ABICoder {
 
     constructor() {
         if(!this) { return new Error('missing "new" keyword'); }
+        this.coder_utils = utils;
     }
 
     // Gets the right Coder based on the Param passed
@@ -186,6 +187,66 @@ class ABICoder {
     AvmInterface(abi){
         return ABI.Interface.fromString(abi);
     }
+
+    /**
+     * Decodes events non- and indexed parameters.
+     *
+     * @method getEvents
+     * @param {Object} inputs
+     * @param {String} data
+     * @param {Array} topics
+     * @return {Array} byte array
+     */
+     getEvents(inputs, data, topics) {
+        var _this = this;
+        topics = _.isArray(topics) ? topics : [topics];
+
+        data = data || '';
+
+        var notIndexedInputs = [];
+        var indexedParams = [];
+        var topicCount = 0;
+
+        // TODO check for anonymous logs?
+
+        inputs.forEach(function (input, i) {
+            if (input.indexed) {
+                indexedParams[i] = (['bool', 'int', 'uint', 'address', 'fixed', 'ufixed'].find(function (staticType) {
+                    return input.type.indexOf(staticType) !== -1;
+                })) ? _this.decodeParameter(input.type, topics[topicCount]) : topics[topicCount];
+                topicCount++;
+            } else {
+                notIndexedInputs[i] = input;
+            }
+        });
+
+
+        var nonIndexedData = data;
+        var notIndexedParams = (nonIndexedData) ? this.decodeParameters(notIndexedInputs, nonIndexedData) : [];
+
+        var returnValue = new Result();
+        returnValue.__length__ = 0;
+
+
+        inputs.forEach(function (res, i) {
+            returnValue[i] = (res.type === 'string') ? '' : null;
+
+            if (typeof notIndexedParams[i] !== 'undefined') {
+                returnValue[i] = notIndexedParams[i];
+            }
+            if (typeof indexedParams[i] !== 'undefined') {
+                returnValue[i] = indexedParams[i];
+            }
+
+            if (res.name) {
+                returnValue[res.name] = returnValue[i];
+            }
+
+            returnValue.__length__++;
+        });
+
+        return returnValue;
+    };
 }
 
 module.exports = ABICoder;
