@@ -22,8 +22,8 @@
  */
 /**
 * 
-* @Module Avm-abi
-*
+* @namespace avm-abi
+* @memberof Avm
 */
 
 "use strict"; 

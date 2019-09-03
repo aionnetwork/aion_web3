@@ -1,6 +1,5 @@
 /**
-* 
-* @Module Avm
+* @namespace AVM
 *
 */
 
@@ -11,10 +10,10 @@ var contract = require('aion-web3-avm-contract');
 
 
 /**
-* 
-* @name Avm
-* @method Avm
-* @constructor
+*
+*@method Avm
+*@constructor
+*@memberof AVM
 */
 var Avm = function Avm(web3) {
 	// sets _requestmanager

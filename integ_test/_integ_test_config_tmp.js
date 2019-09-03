@@ -5,7 +5,7 @@
 let config = {
    
   JAVA_IP: '',
-  RUST_IP: '',,
+  RUST_IP: '',
   // Sender account private key (hex with leading 0x)
   TEST_ACCT_PRIVKEY: '', 
 

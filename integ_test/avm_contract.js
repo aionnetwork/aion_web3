@@ -7,7 +7,7 @@ let BN = require('bn.js');
 let Web3 = require('../');
 
 let jarPath = path.join(__dirname, 'contracts', 'Counter.jar');
-let BIjarPath = path.join(__dirname, 'contracts', 'bigint-1.0-SNAPSHOT.jar');
+let BIjarPath = path.join(__dirname, 'contracts', 'BigInteger-1.0.jar');
 
 let web3NoArgs = new Web3(new Web3.providers.HttpProvider(test_cfg.JAVA_IP));
 let web3 = new Web3(new Web3.providers.HttpProvider(test_cfg.JAVA_IP));
@@ -15,6 +15,7 @@ let web3e = new Web3(new Web3.providers.HttpProvider(test_cfg.JAVA_IP));
 
 let web3Arr = new Web3(new Web3.providers.HttpProvider(test_cfg.JAVA_IP));
 let web3bi = new Web3(new Web3.providers.HttpProvider(test_cfg.JAVA_IP));
+let web3bi2 = new Web3(new Web3.providers.HttpProvider(test_cfg.JAVA_IP));
 let web3R = new Web3(new Web3.providers.HttpProvider(test_cfg.RUST_IP));
 let acc = web3.eth.accounts.privateKeyToAccount(test_cfg.AVM_TEST_PK);
 
@@ -80,10 +81,22 @@ let deployNoArgs = async() => {
   return res;
 }
 
+let deploySendNoArgs = async() => {
+  
+  let res = await web3NoArgs.avm.contract.deploy(jarPath).args([100]).initSend();
+  return res;
+}
+
+let deployBISendNoArgs = async() => {
+  
+  let res = await web3bi2.avm.contract.deploy(BIjarPath).args([test_data['BIGINTEGER']]).initSend();
+  return res;
+}
+
 // Deploy an AVM BigInt Contract 
 let BI_Deploy = async() => {
   
-  let data = web3bi.avm.contract.deploy(BIjarPath).init();
+  let data = web3bi.avm.contract.deploy(BIjarPath).args(['BigInteger'], [test_data['BIGINTEGER']]).init();
 
   //construct a transaction
   const txObject = {
@@ -197,15 +210,23 @@ let arr_abi = `
 `
 
 let bi_abi = `
-    0.0
+    1
     Test.HelloAvm
-    Clinit: (String, BigInteger, BigInteger[])
+    Clinit: (BigInteger)
     public static BigInteger getMyBI()
     public static BigInteger[] getMyBIArray()
     public static void setMyBI(BigInteger)
 `
 
-
+let bi_abi_2 = `
+  1
+  Test.HelloAvm
+  Clinit: (BigInteger)
+  public static void sayHello()
+  public static String greet(String)
+  public static String getString()
+  public static void setString(String)
+`
 let no_args_abi = `
     0.0
     Counter
@@ -264,6 +285,8 @@ let iface = web3.avm.contract.Interface(abi);//aion.utils.AvmInterface.fromStrin
 let arriface = web3Arr.avm.contract.Interface(arr_abi);//aion.utils.AvmInterface.fromString(abi);
 //console.log(JSON.stringify(arriface));
 let biface = web3bi.avm.contract.Interface(bi_abi);//aion.utils.AvmInterface.fromString(abi);
+let biface2 = web3bi2.avm.contract.Interface(bi_abi_2);//aion.utils.AvmInterface.fromString(abi);
+
 let no_args_iface = web3NoArgs.avm.contract.Interface(no_args_abi);//aion.utils.AvmInterface.fromString(abi);
 
 //console.log(iface.functions);
@@ -276,6 +299,7 @@ web3.avm.contract.initBinding(contractAddress, iface, test_cfg.AVM_TEST_PK);//In
 web3e.avm.contract.initBinding("0xa0d388c3e6b3ec78d26960533b7fb394fb3300eccd99d79d425faaaa9b9b6904", iface, test_cfg.AVM_TEST_PK);//Interface
 web3Arr.avm.contract.initBinding(arrContractAddress, arriface, test_cfg.AVM_TEST_PK);//Interface
 web3bi.avm.contract.initBinding(bigIntegerContractAddress, biface, test_cfg.AVM_TEST_PK);//Interface
+web3bi2.avm.contract.initBinding(null, biface2, test_cfg.AVM_TEST_PK);//Interface
 
 web3R.avm.contract.initBinding(contractAddress, iface, null, web3R);//Interface
 
@@ -380,7 +404,7 @@ let abiMethodCall = async(methodName,inputs,output) => {
  let methodGetPastLogs = async() => {
    let obj = {
     "fromBlock":1253767,
-    "address":arrContractAddress,
+    
     "topics":
      [ '0x73656e645472616e73616374696f6e0000000000000000000000000000000000',
        null
@@ -748,7 +772,7 @@ let abiMethodCall = async(methodName,inputs,output) => {
 
 describe('avm_contract', () => {
  
-  /**
+  
   it('deploying contract..', done => {
     deploy().then(res => {
       
@@ -767,11 +791,30 @@ describe('avm_contract', () => {
     }).catch(err => {
       done(err);
     });
-  });*/
+  });
 
-  
+  it('deploying NoArgs contract..', done => {
+    deploySendNoArgs().then(res => {
+      
+      res.status.should.eql(true);
+      done();
+    }).catch(err => {
+      done(err);
+    });
+  });
 
-  /*it('deploying BigInteger contract..', done => {
+  //deployBISendNoArgs
+  it('deploying BigInteger contract NoArgs..', done => {
+    deployBISendNoArgs().then(res => {
+      
+      res.status.should.eql(true);
+      done();
+    }).catch(err => {
+      done(err);
+    });
+  });
+
+  it('deploying BigInteger contract..', done => {
     BI_Deploy().then(res => {
       
       res.status.should.eql(true);
@@ -779,11 +822,11 @@ describe('avm_contract', () => {
     }).catch(err => {
       done(err);
     });
-  });*/
+  });
 
   it('Testing GetPastLogs...', done => {
         methodGetPastLogs().then(res => {
-          console.log("GetPastLogs::: ",res); 
+          //console.log("GetPastLogs::: ",res); 
           //console.log("GetPastLogs end::: ",res[res.length-1]);     
           assert.isAtLeast(res.length,1,"GetPastEvents Test Failed");
 
@@ -804,7 +847,7 @@ describe('avm_contract', () => {
         });
   });
   
-  /*biface.functions.forEach((method)=>{
+  biface.functions.forEach((method)=>{
     
     it('Testing BIGINT method estimateGas...'+method.name, done => {
         BIabiMethodEstimateGas(method.name,method.inputs,method.output).then(res => {
@@ -849,13 +892,9 @@ describe('avm_contract', () => {
       });
     }
   });
-  */
-
-
-
+    
   
   
-  /**
   tests.forEach((test) => {
     it('testing V1 method, ' + test.name, done => {
       if(test.type === 'call') {
@@ -889,12 +928,12 @@ describe('avm_contract', () => {
       }
     });
   });
-  */
   
   
   
   
-  /*arriface.functions.forEach((method)=>{
+  
+  arriface.functions.forEach((method)=>{
     
     it('Testing Array method estimateGas...'+method.name, done => {
         arrabiMethodEstimateGas(method.name,method.inputs,method.output).then(res => {
@@ -950,12 +989,12 @@ describe('avm_contract', () => {
       });
 
     }
-  });*/
+  });
   
   
 
 
-  /*
+  
   iface.functions.forEach((method)=>{
     //console.log(method);
     if(method.output!==null){
@@ -1039,7 +1078,7 @@ describe('avm_contract', () => {
       done(err);
     });
   });
-  */
+  
   /**
   iface.functions.forEach((method)=>{
     console.log(method);

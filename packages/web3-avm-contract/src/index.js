@@ -22,9 +22,9 @@
  */
  /**
 * 
-* @Module Avm-contract
-*
+* @namespace AVM-Contract
 */
+
 
 "use strict"; 
 
@@ -40,13 +40,18 @@ var utils = require('aion-web3-utils');
 var errors = require('aion-web3-core-helpers').errors;
 var promiEvent = require('aion-web3-core-promievent');
 
+
+/**
+*@class
+*this is the main avm contract class
+*/
 class Contract {
 
 	constructor() {
 		this._abi = new ABI();
         this._requestManager = null;
         
-		//
+		
         this._callback = null;
         this._altTxnObj = null;//this.transactionObject = null;
         this._altTxnOutput = null;
@@ -65,7 +70,8 @@ class Contract {
 		this._send = null;
 
 		this._address = null;
-		this._contract = null;
+		/**This stores the address of the deployed contract*/
+        this._contract = null;
 		this._interface = null;
 
 
@@ -179,6 +185,13 @@ class Contract {
           
         };
 
+        /**
+        *@method estimateGas
+        *@memberof AVM-Contract
+        *@param  {object} txObject - similar to what would be passed to send/call
+        *@return {int} value
+        */
+
         this.estimateGas = async (txObject) => {
           
           try{
@@ -193,12 +206,35 @@ class Contract {
           
         };
 
+        /**
+        *@method getPastLogs
+        *@memberof AVM-Contract
+        *@param  {options} options - similar to what would be passed to send/call
+        *@param  {function} callback - user provided callback function
+        *@return {object} value -Returns object or result of callback
+        */
+
         this.getPastLogs = async (options,callback) => {
           
+          var args = Array.prototype.slice.call(arguments);
+
+          // get the callback
+          callback = this._getCallback(args);
+
+          if(typeof options.address==='undefined'){
+            options.address = this._contract;
+          }
+
+
           try{
               
-              let gas = await this.instance.eth.getPastLogs(options); 
-              return gas;
+              let logs = await this.instance.eth.getPastLogs(options); 
+              
+              if(typeof options.address!=='undefined'){
+                return logs;
+              }else{
+                return callback(logs);
+              }
               
           }catch(err){
             console.log("Events Failed!", err);
@@ -301,7 +337,7 @@ class Contract {
         return this._nonce
     }
     /**
-        *@desc get the current value set for gas
+        *@memberof *@desc get the current value set for gas
         *@param none
         *@return returns the value of _gas
     **/
@@ -381,6 +417,7 @@ class Contract {
     }
 
     //create functions and make them available.
+    
     initFunctions(fns,obj){
         try{
                 fns.forEach(function(fn){
@@ -500,12 +537,19 @@ class Contract {
     }
 
     /**
-        *@desc assign values and create function based on abi definition
-        *@param takes the contract address, abi object, private key and web3 instance
-        *@return none
+    *@method initBinding
+    *@memberof AVM-Contract
+    *@desc assign values and create function based on abi definition
+    *@param contract_address, 
+    *@param abi_object, 
+    *@param private_key 
+    *@param web3_instance
+    *@param takes the contract address, abi object, private key and web3 instance
+    *@param takes the contract address, abi object, private key and web3 instance
+    *@return none
     **/
 	initBinding(contractAddress=null, abi=null, key=null, instance=null) {
-	    if((contractAddress === null)||(abi === null)) {
+	    if((contractAddress === null)&&(abi === null)) {
             throw new Error('Missing input parameter(s)');
         }
 
@@ -532,8 +576,14 @@ class Contract {
         this.initFunctions(methods,this);//create methods
 	}
 	
-	// Converts the Jar into a JarPath to be Encoded for Initialization
-	deploy(jar) {
+    /**
+    *@desc Converts the Jar into a JarPath to be Encoded for Initialization
+        *@method deploy
+        *@memberof AVM-Contract
+        *@param  {object} jar - path to jar file
+        *@return {object} value -returns file stream
+        */
+    deploy(jar) {
 	    
         this._jarPath = fs.readFileSync(jar);
 	    return this;
@@ -558,7 +608,6 @@ class Contract {
             initTypes = this._deployTypes;
             initValues = arguments[0];
         }
-        
         this._argsData = this._abi.encode(initTypes, initValues);
         return this;
     }
@@ -568,8 +617,30 @@ class Contract {
     	if(this._jarPath === null) { throw new Error('requires a jarFile to be set first through the deploy method'); }
     	if(this._argsData === null) { this._argsData = this._abi.encode([], []); }
         this._initializer = this._abi.readyDeploy(this._jarPath, this._argsData);
+        console.log("Configuring AVM Contract Deployment...");
+		
+        return this._initializer;
+    }
+
+    // Initialize & Send 
+    async initSend() {
+        if(this._jarPath === null) { throw new Error('requires a jarFile to be set first through the deploy method'); }
+        if(this._argsData === null) { this._argsData = this._abi.encode([], []); }
+        this._initializer = this._abi.readyDeploy(this._jarPath, this._argsData);
+        
+        let acc = this.instance.eth.accounts.privateKeyToAccount(this._key);
+                
+        const txObject = {
+            from: acc.address,
+            data: this._initializer,
+            gasPrice: 10000000000,
+            gas: 5000000,
+            type: '0x2'
+            };
+
         console.log("Deploying AVM Contract...");
-		return this._initializer;
+        return await this.sendTransaction(txObject);
+        //return this._initializer;
     }
 
 	// Sets the Method you wish to Call
@@ -783,36 +854,6 @@ _encodeEventABI(event, options) {
     } else {
 
         result.topics = [];
-
-        /*
-        // add event signature
-        if (event && event.name !== 'ALLEVENTS') {
-            result.topics.push(event.signature);
-        }
-
-        // add event topics (indexed arguments)
-        if (event.name !== 'ALLEVENTS') {
-            var indexedTopics = event.inputs.filter(function (i) {
-                return i.indexed === true;
-            }).map(function (i) {
-                var value = filter[i.name];
-                if (!value) {
-                    return null;
-                }
-
-                // TODO: https://github.com/aionnetwork/aion_web3/issues/344
-                // TODO: deal properly with components
-
-                if (_.isArray(value)) {
-                    return value.map(function (v) {
-                        return ABI.encodeParameter(i.type, v);
-                    });
-                }
-                return ABI.encodeParameter(i.type, value);
-            });
-
-            result.topics = result.topics.concat(indexedTopics);
-        }*/
 
         if(!result.topics.length)
             delete result.topics;

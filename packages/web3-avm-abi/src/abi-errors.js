@@ -1,4 +1,8 @@
 "use strict";
+/**
+*@module abi-errors
+*@memberof avm-abi
+*/
 Object.defineProperty(exports, "__esModule", { value: true });
 //import { version } from "./_version";
 var version = "@TODO";
