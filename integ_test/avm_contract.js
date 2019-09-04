@@ -165,6 +165,24 @@ let methodSendWithInputs = async(methodName, inputTypes, inputValues) => {
   return res;
 }
 
+let methodSendSigned = async(methodName, inputTypes, inputValues) => {
+  let data = web3.avm.contract.method(methodName).inputs(inputTypes, inputValues).encode();
+  
+  const txObject = {
+    from: acc.address,
+    to: test_cfg.AVM_TEST_CT_ADDR,
+    data: data,
+    gasPrice: test_cfg.GAS_PRICE,
+    gas: test_cfg.AVM_TEST_CT_TXN_GAS,
+    type: '0x1'
+  };
+  let txnObj = web3.avm.contract.txnObj(acc.address,test_cfg.AVM_TEST_CT_ADDR,data);
+  let signedTx = await web3.eth.accounts.signTransaction(txnObj, test_cfg.AVM_TEST_PK);
+  let result = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+
+  return [result.transactionHash,signedTx.messageHash];
+}
+
 let methodSendWithoutInputs = async(methodName) => {
   let data = web3.avm.contract.method(methodName).encode();
 
@@ -783,6 +801,7 @@ describe('avm_contract', () => {
     });
   });
 
+  /*
   it('deploying NoArgs contract..', done => {
     deployNoArgs().then(res => {
       
@@ -891,11 +910,18 @@ describe('avm_contract', () => {
         });
       });
     }
-  });
+  });*/
     
+  it('test send signed transaction',done =>{
+    methodSendSigned('incrementCounter', ['int'], [242]).then(res => {
+      assert.deepEqual(res[0],res[1],"Signed object failed!")
+      done();
+    }).catch(err => {
+      done(err);
+    });
+  });
   
-  
-  tests.forEach((test) => {
+  /*tests.forEach((test) => {
     it('testing V1 method, ' + test.name, done => {
       if(test.type === 'call') {
         if(test.inputs === 1) {
@@ -914,7 +940,7 @@ describe('avm_contract', () => {
       } else if(test.type === 'send') {
         if(test.inputs === 1) {
           methodSendWithInputs(test.name, test.inputTypes, test.inputValues).then(res => {
-            done();
+           done();
           }).catch(err => {
             done(err);
           });
@@ -927,13 +953,13 @@ describe('avm_contract', () => {
         }
       }
     });
-  });
+  });*/
   
   
   
   
   
-  arriface.functions.forEach((method)=>{
+  /*arriface.functions.forEach((method)=>{
     
     it('Testing Array method estimateGas...'+method.name, done => {
         arrabiMethodEstimateGas(method.name,method.inputs,method.output).then(res => {
@@ -1077,7 +1103,7 @@ describe('avm_contract', () => {
     }).catch(err => {
       done(err);
     });
-  });
+  });*/
   
   /**
   iface.functions.forEach((method)=>{

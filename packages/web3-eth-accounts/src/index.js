@@ -244,7 +244,7 @@ Accounts.prototype.signTransaction = function signTransaction(tx, privateKey, ca
             var rawTransaction = rlp.encode(rawTx);
 
             result = {
-                messageHash: bufferToZeroXHex(hash),
+                messageHash: bufferToZeroXHex(blake2b256(rawTransaction)),
                 signature: bufferToZeroXHex(aionPubSig),
                 rawTransaction: bufferToZeroXHex(rawTransaction)
             };
