@@ -8,7 +8,7 @@ let client = new Web3(new Web3.providers.HttpProvider(test_cfg.JAVA_IP))
 
 describe('send raw transaction of 1.337 aions and no data', () => {
   let opts = { 
-      from: test_cfg.TEST_ACCT_ADDR,
+      from: "0xa0377903916a82984377554f247d49071fcfe13345f7c22da64e0c0edf18092d",//test_cfg.TEST_ACCT_ADDR,
       gas: test_cfg.GAS,
       gasPrice: test_cfg.GAS_PRICE,
   };
@@ -29,8 +29,8 @@ describe('send raw transaction of 1.337 aions and no data', () => {
 
   it('sendRawTransaction', done => { 
     let tx = {
-        to: test_cfg.TEST_ACCT_ADDR,
-        value: 1337000000000000,  // 0.001337 Aions
+        to: '0xa08dce6e051410810782981a00ccb6bb8695304b07eb8210db2beb4745656a48',
+        value: 13370000000000,  // 0.001337 Aions
         gas: 54321
     }
 

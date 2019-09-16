@@ -422,7 +422,6 @@ class Contract {
         try{
                 fns.forEach(function(fn){
                     //define call functions
-                    //console.log("fn: ",fn);
                     Object.defineProperty(obj.avmMethod, fn.name,{
                      value: function(){
                             const props = fn;                            
@@ -623,7 +622,7 @@ class Contract {
     }
 
     // Initialize & Send 
-    async initSend() {
+    async  initSend() {
         if(this._jarPath === null) { throw new Error('requires a jarFile to be set first through the deploy method'); }
         if(this._argsData === null) { this._argsData = this._abi.encode([], []); }
         this._initializer = this._abi.readyDeploy(this._jarPath, this._argsData);
@@ -638,7 +637,6 @@ class Contract {
             type: '0x2'
             };
 
-        console.log("Deploying AVM Contract...");
         return await this.sendTransaction(txObject);
         //return this._initializer;
     }
@@ -766,8 +764,6 @@ class Contract {
   
  getPastEvents(){
         var subOptions = this._generateEventOptions.apply(this, arguments);
-        //console.log("subOptions.params: ",subOptions.params);
-        //console.log("subOptions.event: ",subOptions.event);
         var getPastLogs = new Method({
             name: 'getPastLogs',
             call: 'eth_getLogs',

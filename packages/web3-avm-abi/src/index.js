@@ -54,7 +54,6 @@ class ABICoder {
                 return new codec.ArrayCoder(this.getCoder(coder), localName);
             }
         } 
-
         // Switch statement to find all the different types of coders
         switch (param.toLowerCase()) {
             case "byte":

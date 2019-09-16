@@ -540,7 +540,11 @@ class BigIntegerCoder extends Coder {
         }
 
         let bytes = utils.arrayify(utils.bigNumberify(value));
-        writer.writeByte(this.tag);
+        if(array){
+            writer.writeByte(0x23);
+        }else{
+            writer.writeByte(this.tag);
+        }
         writer.writeByte(bytes.length);
         writer.writeBytes(bytes);
     }

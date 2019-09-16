@@ -7,7 +7,7 @@ let path = require('path')
 let async = require('async')
 let Web3 = require('../')
 let should = require('should')
-let client = new Web3(new Web3.providers.HttpProvider(test_cfg.JAVA_IP))
+let client = new Web3(new Web3.providers.HttpProvider(test_cfg.JAVA_IP_2))
 let rustClient = new Web3(new Web3.providers.HttpProvider(test_cfg.RUST_IP))
 const crypto = require('crypto');
 
@@ -16,7 +16,7 @@ var assert = chai.assert;
 
 let typesBinPath = path.join(__dirname, 'contracts', 'HelloWorld.bin')
 let typesAbiPath = path.join(__dirname, 'contracts', 'HelloWorld.abi')
-let typesSrcPath = path.join(__dirname, 'contracts', 'HelloWorld.sol')
+let typesSrcPath = path.join(__dirname, 'contracts', 'ATS.sol')
 
 function random(from, to){
     return Math.floor(Math.random() * (to - from + 1)) + from
@@ -88,13 +88,13 @@ describe('fvm_contracts', () => {
       })],
 
       typesBin: ['compiled', async.apply(function(res, cb){
-          let bin = res.compiled['HelloWorld'].code;
+          let bin = res.compiled['ATS'].code;
 
           cb(null, bin);
       })], 
 
       typesAbi: ['compiled', async.apply(function(res, cb){
-          let abi = res.compiled['HelloWorld'].info.abiDefinition;
+          let abi = res.compiled['ATS'].info.abiDefinition;
 
           cb(null, abi);
       })],
@@ -147,6 +147,18 @@ describe('fvm_contracts', () => {
 
   });
   
+  it('fvm_contract method call with event', done => {
+      ct.methods.transferFrom(test_cfg.TEST_ACCT_2_ADDR,'0xa0377903916a82984377554f247d49071fcfe13345f7c22da64e0c0edf18092d',100)
+          .send({from: test_cfg.TEST_ACCT_2_ADDR})
+          .then(res => {
+              //res.events['Hello'].returnValues['_owner'].toLowerCase().should.eql(test_cfg.TEST_ACCT_2_ADDR.toLowerCase());
+              res.events['Hello'].returnValues['_number'].should.eql(testNumber.toString());
+              done();
+          })
+          .catch( err => {
+              done(err);
+          });
+  });
 
   it('fvm_contract method call with event', done => {
       ct.methods.sayHello()

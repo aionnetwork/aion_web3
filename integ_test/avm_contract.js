@@ -8,6 +8,7 @@ let Web3 = require('../');
 
 let jarPath = path.join(__dirname, 'contracts', 'Counter.jar');
 let BIjarPath = path.join(__dirname, 'contracts', 'BigInteger-1.0.jar');
+let BIAjarPath = path.join(__dirname, 'contracts', 'BigInteger-1.1.jar');
 
 let web3NoArgs = new Web3(new Web3.providers.HttpProvider(test_cfg.JAVA_IP));
 let web3 = new Web3(new Web3.providers.HttpProvider(test_cfg.JAVA_IP));
@@ -87,9 +88,15 @@ let deploySendNoArgs = async() => {
   return res;
 }
 
-let deployBISendNoArgs = async() => {
+let  deployBISendNoArgs = async() => {
   
-  let res = await web3bi2.avm.contract.deploy(BIjarPath).args([test_data['BIGINTEGER']]).initSend();
+  let res = await web3bi2.avm.contract.deploy(BIAjarPath).args([test_data['BIGINTEGER'],test_data['ONE_D_BIGINTEGER']]).initSend();
+  return res;
+}
+
+let deployBIASendNoArgs = async() => {
+  
+  let res = await web3bi2.avm.contract.deploy(BIAjarPath).args([test_data['BIGINTEGER']]).initSend();
   return res;
 }
 
@@ -237,14 +244,15 @@ let bi_abi = `
 `
 
 let bi_abi_2 = `
-  1
-  Test.HelloAvm
-  Clinit: (BigInteger)
-  public static void sayHello()
-  public static String greet(String)
-  public static String getString()
-  public static void setString(String)
+    1
+    Test.HelloAvm
+    Clinit: (BigInteger, BigInteger[])
+    public static void sayHello()
+    public static String greet(String)
+    public static String getString()
+    public static void setString(String)
 `
+
 let no_args_abi = `
     0.0
     Counter
@@ -304,7 +312,7 @@ let arriface = web3Arr.avm.contract.Interface(arr_abi);//aion.utils.AvmInterface
 //console.log(JSON.stringify(arriface));
 let biface = web3bi.avm.contract.Interface(bi_abi);//aion.utils.AvmInterface.fromString(abi);
 let biface2 = web3bi2.avm.contract.Interface(bi_abi_2);//aion.utils.AvmInterface.fromString(abi);
-
+console.log(biface2);
 let no_args_iface = web3NoArgs.avm.contract.Interface(no_args_abi);//aion.utils.AvmInterface.fromString(abi);
 
 //console.log(iface.functions);
@@ -774,6 +782,7 @@ let abiMethodCall = async(methodName,inputs,output) => {
     let arr = [bigint];
     let type= ['BigInteger']
     let coded = web3bi.avm.contract._abi.encode(type,arr);
+    console.log(coded);
     let decoded = web3bi.avm.contract.decode('BigInteger',coded)
     return decoded;
  }
@@ -782,7 +791,8 @@ let abiMethodCall = async(methodName,inputs,output) => {
     let arr = [bigint];
     let type= ['BigInteger[]']
     let coded = web3bi.avm.contract._abi.encode(type,arr);
-    
+    console.log(coded.toString('hex'));
+
     let decoded = web3bi.avm.contract.decode('BigInteger[]',coded)
     
     return decoded;
@@ -801,6 +811,7 @@ describe('avm_contract', () => {
     });
   });
 
+  
   /*
   it('deploying NoArgs contract..', done => {
     deployNoArgs().then(res => {
@@ -820,7 +831,7 @@ describe('avm_contract', () => {
     }).catch(err => {
       done(err);
     });
-  });
+  });*/
 
   //deployBISendNoArgs
   it('deploying BigInteger contract NoArgs..', done => {
@@ -854,7 +865,7 @@ describe('avm_contract', () => {
           done(err);
         });
   });
-
+  /*
   it('Testing GetPastEvents...', done => {
         methodGetPastEvents().then(res => {
           //console.log("GetPastEvents::: ",res);     
@@ -864,11 +875,12 @@ describe('avm_contract', () => {
         }).catch(err => {
           done(err);
         });
-  });
+  });*/
   
   biface.functions.forEach((method)=>{
     
     it('Testing BIGINT method estimateGas...'+method.name, done => {
+        console.log(method.name,method.inputs,method.output);
         BIabiMethodEstimateGas(method.name,method.inputs,method.output).then(res => {
           console.log("EstimatedGas: ",res);     
           assert.isAtLeast(res,1000,"BIGINT estimateGas Test Failed");
@@ -910,7 +922,10 @@ describe('avm_contract', () => {
         });
       });
     }
-  });*/
+  });
+
+
+  /*
     
   it('test send signed transaction',done =>{
     methodSendSigned('incrementCounter', ['int'], [242]).then(res => {
@@ -921,7 +936,7 @@ describe('avm_contract', () => {
     });
   });
   
-  /*tests.forEach((test) => {
+  tests.forEach((test) => {
     it('testing V1 method, ' + test.name, done => {
       if(test.type === 'call') {
         if(test.inputs === 1) {
@@ -953,13 +968,12 @@ describe('avm_contract', () => {
         }
       }
     });
-  });*/
+  });
+  */
   
   
-  
-  
-  
-  /*arriface.functions.forEach((method)=>{
+  /**
+  arriface.functions.forEach((method)=>{
     
     it('Testing Array method estimateGas...'+method.name, done => {
         arrabiMethodEstimateGas(method.name,method.inputs,method.output).then(res => {
@@ -1016,11 +1030,10 @@ describe('avm_contract', () => {
 
     }
   });
-  
-  
+  */ 
 
 
-  
+  /*
   iface.functions.forEach((method)=>{
     //console.log(method);
     if(method.output!==null){
@@ -1045,10 +1058,10 @@ describe('avm_contract', () => {
       });
 
     }
-  });
+  });*/
 
   
-
+  /*
   it('Testing none existent method send...', done => {
         abiMethodSend('dontExistB',[]).then(res => {
           //console.log(res);
@@ -1091,7 +1104,7 @@ describe('avm_contract', () => {
     }).catch(err => {
       done(err);
     });
-  });
+  });*/
 
   it('Testing BigInteger Array..', done => {
     encodeBigIntArr(test_data['ONE_D_BIGINT']).then(res => {
@@ -1103,7 +1116,7 @@ describe('avm_contract', () => {
     }).catch(err => {
       done(err);
     });
-  });*/
+  });
   
   /**
   iface.functions.forEach((method)=>{

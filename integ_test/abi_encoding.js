@@ -7,7 +7,7 @@ let path = require('path')
 let async = require('async')
 let Web3 = require('../')
 let should = require('should')
-let client = new Web3(new Web3.providers.HttpProvider(test_cfg.JAVA_IP))
+let client = new Web3(new Web3.providers.HttpProvider(test_cfg.JAVA_IP_2))
 const crypto = require('crypto')
 
 let typesBinPath = path.join(__dirname, 'contracts', 'Types.bin')
@@ -45,7 +45,7 @@ describe('abi_encoding', () => {
   let ctInstAddress;
 
   before(done => {
-    if( test_cfg.TEST_ACCT_ADDR.length == 0 ) { 
+    if( test_cfg.TEST_ACCT_2_ADDR.length == 0 ) { 
         done(Error("Error during setup. No test account address was configured."));
     }
 
