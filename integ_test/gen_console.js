@@ -58,7 +58,7 @@ describe('General Tests', () => {
   });
 
   it('Rust unlock account', done => {
-      rustClient.eth.personal.unlockAccount(test_cfg.TEST_ACCT_3_ADDR,test_cfg.TEST_ACCT_3_PW,6000).then(res => {
+      rustClient.eth.personal.unlockAccount(test_cfg.TEST_ACCT_2_ADDR,test_cfg.TEST_ACCT_2_PW,6000).then(res => {
         assert.isTrue(res,"Rust Unlock Failed!");        
         done();
       }).catch(err => {

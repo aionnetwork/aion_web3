@@ -151,6 +151,7 @@ let methodCallWithoutInputs = async(methodName, returnType) => {
 
   let ethRes = await web3.eth.call(txObject);
   let avmRes = await web3.avm.contract.decode(returnType, ethRes);
+  console.log(txObject,returnType, ethRes);
   return avmRes;
 }
 
@@ -238,9 +239,9 @@ let bi_abi = `
     1
     Test.HelloAvm
     Clinit: (BigInteger)
+    public static void setMyBI(BigInteger)
     public static BigInteger getMyBI()
     public static BigInteger[] getMyBIArray()
-    public static void setMyBI(BigInteger)
 `
 
 let bi_abi_2 = `
@@ -410,7 +411,7 @@ let abiMethodCall = async(methodName,inputs,output) => {
 
  let methodGetPastEvents = async() => {
    let obj = {
-    "fromBlock":1253767,
+    "fromBlock":125,
     "topics":
      [ '0x415453546f6b656e437265617465640000000000000000000000000000000000',
        '0x0113ba1430a5432dc03400000000000000000000000000000000000000000000',
@@ -419,7 +420,7 @@ let abiMethodCall = async(methodName,inputs,output) => {
    }
 
    try {      
-        result = await web3Arr.avm.contract.getPastEvents('allevents',{"fromBlock":1253767});
+        result = await web3Arr.avm.contract.getPastEvents('allevents',{"fromBlock":125});
         return result;      
     } catch (error) {
       console.log("Past event error: ",error);
@@ -429,7 +430,7 @@ let abiMethodCall = async(methodName,inputs,output) => {
 
  let methodGetPastLogs = async() => {
    let obj = {
-    "fromBlock":1253767,
+    "fromBlock":125,
     
     "topics":
      [ '0x73656e645472616e73616374696f6e0000000000000000000000000000000000',
@@ -642,7 +643,7 @@ let abiMethodCall = async(methodName,inputs,output) => {
     }
 
    try {      
-      //console.log("Contract: ",web3.avm.contract);
+      console.log("Contract: ",arr[0]);
       let result;
       if(arr[0]){
         result = await web3bi.avm.contract.transaction[methodName](arr[0]);
@@ -812,7 +813,7 @@ describe('avm_contract', () => {
   });
 
   
-  /*
+  
   it('deploying NoArgs contract..', done => {
     deployNoArgs().then(res => {
       
@@ -831,7 +832,7 @@ describe('avm_contract', () => {
     }).catch(err => {
       done(err);
     });
-  });*/
+  });
 
   //deployBISendNoArgs
   it('deploying BigInteger contract NoArgs..', done => {
@@ -865,7 +866,7 @@ describe('avm_contract', () => {
           done(err);
         });
   });
-  /*
+  
   it('Testing GetPastEvents...', done => {
         methodGetPastEvents().then(res => {
           //console.log("GetPastEvents::: ",res);     
@@ -875,7 +876,7 @@ describe('avm_contract', () => {
         }).catch(err => {
           done(err);
         });
-  });*/
+  });
   
   biface.functions.forEach((method)=>{
     
@@ -924,9 +925,6 @@ describe('avm_contract', () => {
     }
   });
 
-
-  /*
-    
   it('test send signed transaction',done =>{
     methodSendSigned('incrementCounter', ['int'], [242]).then(res => {
       assert.deepEqual(res[0],res[1],"Signed object failed!")
@@ -969,10 +967,7 @@ describe('avm_contract', () => {
       }
     });
   });
-  */
   
-  
-  /**
   arriface.functions.forEach((method)=>{
     
     it('Testing Array method estimateGas...'+method.name, done => {
@@ -1030,10 +1025,7 @@ describe('avm_contract', () => {
 
     }
   });
-  */ 
-
-
-  /*
+  
   iface.functions.forEach((method)=>{
     //console.log(method);
     if(method.output!==null){
@@ -1058,10 +1050,10 @@ describe('avm_contract', () => {
       });
 
     }
-  });*/
+  });
 
   
-  /*
+  
   it('Testing none existent method send...', done => {
         abiMethodSend('dontExistB',[]).then(res => {
           //console.log(res);
@@ -1104,7 +1096,7 @@ describe('avm_contract', () => {
     }).catch(err => {
       done(err);
     });
-  });*/
+  });
 
   it('Testing BigInteger Array..', done => {
     encodeBigIntArr(test_data['ONE_D_BIGINT']).then(res => {

@@ -39,13 +39,13 @@ function deployCt(ct, ctData, args) {
 
 describe('fvm_rust_contracts', () => {
   let opts = { 
-      from: test_cfg.TEST_ACCT_3_ADDR,
+      from: test_cfg.TEST_ACCT_2_ADDR,
       gas: test_cfg.GAS,
       gasPrice: test_cfg.GAS_PRICE,
   };
 
   let rustOpts = { 
-      from: test_cfg.TEST_ACCT_3_ADDR,
+      from: test_cfg.TEST_ACCT_2_ADDR,
       gas: test_cfg.GAS,
       gasPrice: test_cfg.GAS_PRICE,
   };
@@ -73,7 +73,7 @@ describe('fvm_rust_contracts', () => {
   let testNumber = 31337;
 
   before(done => {
-    if( test_cfg.TEST_ACCT_3_ADDR.length == 0 ) { 
+    if( test_cfg.TEST_ACCT_2_ADDR.length == 0 ) { 
         done(Error("Error during setup.  No test account address was configured."));
     }
 
@@ -83,7 +83,7 @@ describe('fvm_rust_contracts', () => {
       typesBin = compiled['HelloWorld'].code;
       typesAbi = compiled['HelloWorld'].info.abiDefinition;
 
-      client.eth.personal.unlockAccount(test_cfg.TEST_ACCT_3_ADDR,test_cfg.TEST_ACCT_3_PW,600);
+      client.eth.personal.unlockAccount(test_cfg.TEST_ACCT_2_ADDR,test_cfg.TEST_ACCT_2_PW,600);
       ct = new client.eth.Contract(typesAbi, opts);
 
       let smartContract = deployCt(ct, typesBin.toString('utf8'), [testNumber])
@@ -107,9 +107,9 @@ describe('fvm_rust_contracts', () => {
       //console.log("#CONTRACT#",ct);
 
       ct.methods.sayHello()
-          .send({from: test_cfg.TEST_ACCT_3_ADDR})
+          .send({from: test_cfg.TEST_ACCT_2_ADDR})
           .then(res => {
-              res.events['Hello'].returnValues['_owner'].toLowerCase().should.eql(test_cfg.TEST_ACCT_3_ADDR.toLowerCase());
+              res.events['Hello'].returnValues['_owner'].toLowerCase().should.eql(test_cfg.TEST_ACCT_2_ADDR.toLowerCase());
               res.events['Hello'].returnValues['_number'].should.eql(testNumber.toString());
               done();
           })
@@ -120,7 +120,7 @@ describe('fvm_rust_contracts', () => {
 
   it('fvm_contract incrementCounter method call ', done => {
       ct.methods.incrementCounter(250)
-          .send({from: test_cfg.TEST_ACCT_3_ADDR})
+          .send({from: test_cfg.TEST_ACCT_2_ADDR})
           .then(res => {
               assert.isTrue(res.status,"Send Failed!");
               done();
@@ -132,7 +132,7 @@ describe('fvm_rust_contracts', () => {
 
    it('fvm_contract decrementCounter method call ', done => {
       ct.methods.decrementCounter(250)
-          .send({from: test_cfg.TEST_ACCT_3_ADDR})
+          .send({from: test_cfg.TEST_ACCT_2_ADDR})
           .then(res => {
               assert.isTrue(res.status,"Send Failed!");
               done();
@@ -144,7 +144,7 @@ describe('fvm_rust_contracts', () => {
 
   it('fvm_contract getCount method call ', done => {
       ct.methods.getCount()
-          .call({from: test_cfg.TEST_ACCT_3_ADDR})
+          .call({from: test_cfg.TEST_ACCT_2_ADDR})
           .then(res => {
               assert.equal(res,200,"Call Failed!");
               done();

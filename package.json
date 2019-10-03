@@ -17,7 +17,7 @@
     "lint": "jshint *.js packages",
     "browserify": "mkdir -p ./dist && browserify index.js -o dist/web3.min.js",
     "test": "jshint *.js packages; mocha --opts mocha.opt",
-    "integ-test": "mocha --opts mocha.opt -t 500000 integ_test/avm_contract.js --exclude _integ_test_config.js _integ_test_config_tmp.js",
+    "integ-test": "mocha --opts mocha.opt -t 500000 integ_test/ --exclude _integ_test_config.js _integ_test_config_tmp.js",
     "coverage": "nyc mocha || true",
     "test-coveralls": "istanbul cover _mocha -- -R spec && cat coverage/lcov.info | coveralls --verbose",
     "dev-test": "nodemon -L -d 1 -w packages -w test/ --ext js --exec mocha --opts mocha.opts --watch test || true"
