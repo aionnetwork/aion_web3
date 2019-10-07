@@ -19,7 +19,7 @@ describe('send raw transaction of 1.337 aions and no data', () => {
   let ctInstAddress;
 
   before(done => {
-    if( test_cfg.TEST_ACCT_ADDR.length == 0 ) { 
+    if( test_cfg.AVM_TEST_CT_2_ADDR.length == 0 ) { 
         done(Error("Error during setup.  No test account address was configured."));
     }
     done();
@@ -29,8 +29,8 @@ describe('send raw transaction of 1.337 aions and no data', () => {
 
   it('sendRawTransaction', done => { 
     let tx = {
-        to: '0xa08dce6e051410810782981a00ccb6bb8695304b07eb8210db2beb4745656a48',
-        value: 13370000000000,  // 0.001337 Aions
+        to: test_cfg.AVM_TEST_CT_2_ADDR,
+        value: 1337000000000000000,  // 0.001337 Aions
         gas: 54321
     }
 
