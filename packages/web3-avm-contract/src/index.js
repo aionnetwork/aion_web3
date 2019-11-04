@@ -20,10 +20,12 @@
  * Contributors:
  *     Aion foundation.
  */
+
  /**
-* 
-* @namespace AVM-Contract
-*/
+ * 
+ * @namespace web3-avm-contract
+ *
+ */
 
 
 "use strict"; 
@@ -98,6 +100,14 @@ class Contract {
 
         this._provider = null;
 
+        /**
+        *@method sendTransaction
+        *@memberof AVM-Contract
+        *@desc signs and send a transaction
+        *@param  {object} txObject - similar to what would be passed to send/call
+        *
+        *@return {int} value
+        */
         this.send = async(methodName, inputTypes, inputValues,address,contract) => {
             let contr = new Contract();
             let data = contr.method(methodName).inputs(inputTypes, inputValues).encode();
@@ -115,11 +125,15 @@ class Contract {
             return res;
         };
 
+        
         /**
-            *@desc signs and send a transaction
-            *@param accepts a transaction data object
-            *@return returns the transaction data or false on error
-        **/
+        *@method sendTransaction
+        *@memberof AVM-Contract
+        *@desc signs and send a transaction
+        *@param  {object} txObject - similar to what would be passed to send/call
+        *
+        *@return {int} value
+        */
 
 		this.sendTransaction = async (txObject) => {
             
@@ -149,10 +163,13 @@ class Contract {
         };
 
         /**
-            *@desc makes a call
-            *@param accepts a transaction data object and return type
-            *@return if return type is not null return the decoded data else return true or false if there is an error
-        **/
+        *@method call
+        *@memberof AVM-Contract
+        *@desc makes a call
+        *@param  {object} txObject - similar to what would be passed to send/call
+        *@param  {object} txObject - similar to what would be passed to send/call
+        *@return {int} value
+        */
 
         this.call = async (txObject,returnType=null) => {
           
@@ -597,6 +614,13 @@ class Contract {
     }
 
 	// Defines the Arguments of a AVM Contract's Initializer
+    /**
+    *@desc Converts the Jar into a JarPath to be Encoded for Initialization
+        *@method args
+        *@memberof AVM-Contract
+        *@param  {object} jar - path to jar file
+        *@return {object} value -returns file stream
+        */
 	args(types, values) {
 		
         if(this._jarPath === null) { throw new Error('requires a jarFile to be set first through the deploy method'); }
@@ -612,6 +636,13 @@ class Contract {
     }
 
     // Initialize 
+    /**
+    *@desc Converts the Jar into a JarPath to be Encoded for Initialization
+        *@method init
+        *@memberof AVM-Contract
+        *@param  {object} jar - path to jar file
+        *@return {object} value -returns file stream
+        */
     init() {
     	if(this._jarPath === null) { throw new Error('requires a jarFile to be set first through the deploy method'); }
     	if(this._argsData === null) { this._argsData = this._abi.encode([], []); }
@@ -622,6 +653,13 @@ class Contract {
     }
 
     // Initialize & Send 
+    /**
+    *@desc Converts the Jar into a JarPath to be Encoded for Initialization
+        *@method initSend
+        *@memberof AVM-Contract
+        *@param  {object} jar - path to jar file
+        *@return {object} value -returns file stream
+        */
     async  initSend() {
         if(this._jarPath === null) { throw new Error('requires a jarFile to be set first through the deploy method'); }
         if(this._argsData === null) { this._argsData = this._abi.encode([], []); }
@@ -642,12 +680,27 @@ class Contract {
     }
 
 	// Sets the Method you wish to Call
+    /**
+    *@desc Converts the Jar into a JarPath to be Encoded for Initialization
+        *@method method
+        *@memberof AVM-Contract
+        *@param  {object} jar - path to jar file
+        *@return {object} value -returns file stream
+        */
     method(method) {
         this._method = method;
         return this;
     }
 
     // Sets the Params of the Method you wish to Call
+
+    /**
+    *@desc Converts the Jar into a JarPath to be Encoded for Initialization
+        *@method inputs
+        *@memberof AVM-Contract
+        *@param  {object} jar - path to jar file
+        *@return {object} value -returns file stream
+        */
     inputs(types, values) {
         if(this._method === null) {
             throw new Error('a method must be set first');
@@ -660,6 +713,14 @@ class Contract {
 
 
     // Encodes the Method Call
+
+    /**
+    *@desc Converts the Jar into a JarPath to be Encoded for Initialization
+        *@method encode
+        *@memberof AVM-Contract
+        *@param  {object} jar - path to jar file
+        *@return {object} value -returns file stream
+        */
     encode() {
         if(this._method === null) {
             throw new Error('a method must be set first');
@@ -668,11 +729,25 @@ class Contract {
     }
 
     // Decodes some data returned for a Method
+    /**
+    *@desc Converts the Jar into a JarPath to be Encoded for Initialization
+        *@method decode
+        *@memberof AVM-Contract
+        *@param  {object} jar - path to jar file
+        *@return {object} value -returns file stream
+        */
     decode(type, data) {
         return this._abi.decode(type, data);
     }
 
     //
+    /**
+    *@desc Converts the Jar into a JarPath to be Encoded for Initialization
+        *@method Interface
+        *@memberof AVM-Contract
+        *@param  {object} jar - path to jar file
+        *@return {object} value -returns file stream
+        */
     Interface(abi) {
         var abi = this._abi.AvmInterface(abi);
         this._deployTypes = abi.init;

@@ -24,6 +24,12 @@
  *     Fabian Vogelsteller <fabian@frozeman.de>
  */
 
+ /**
+ * 
+ * @namespace web3-providers-http
+ *
+ */
+
 var errors = require('aion-web3-core-helpers').errors;
 var XHR2 = require('xhr2-cookies').XMLHttpRequest // jshint ignore: line
 var http = require('http');

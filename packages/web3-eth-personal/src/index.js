@@ -22,12 +22,22 @@
  *     Fabian Vogelsteller <fabian@frozeman.de>
  */
 
+ /**
+ * 
+ * @namespace web3-eth-personal
+ *
+ */
+
  "use strict";
 
 var core = require('aion-web3-core');
 var Method = require('aion-web3-core-method');
 var utils = require('aion-web3-utils');
 var Net = require('aion-web3-net');
+
+
+//var nacl = aionLib.crypto.nacl;
+//var toBuffer = aionLib.formats.toBuffer;
 
 var formatters = require('aion-web3-core-helpers').formatters;
 
@@ -142,6 +152,12 @@ var Personal = function Personal() {
         method.defaultAccount = _this.defaultAccount;
     });
 };
+
+/*Personal.prototype.ecRecover = function ecRecover(message, signature) {
+    var sig = signature || message ;
+    var publicKey = toBuffer(sig).slice(0, nacl.sign.publicKeyLength);
+    return aionLib.accounts.createA0Address(publicKey);
+};*/
 
 core.addProviders(Personal);
 

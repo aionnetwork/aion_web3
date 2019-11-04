@@ -22,6 +22,12 @@
  *     Fabian Vogelsteller <fabian@frozeman.de>
  */
 
+ /**
+ * 
+ * @namespace web3-providers-ws
+ *
+ */
+
  "use strict";
 
 var _ = require('underscore');

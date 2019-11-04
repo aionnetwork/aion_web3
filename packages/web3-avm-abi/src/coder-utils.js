@@ -1,10 +1,17 @@
 /**
-*@module coder-utils
+*@module AVM coder-utils
 */
 var BN = require('bn.js');
 var aionLib = require('aion-lib');
 var HexCharacters = '0123456789abcdef';
 
+ /**
+ *
+ *@function getAddress
+ *@desc Gets the right Coder based on the Param passed
+ *@param {string} val - string value.
+ * 
+ */ 
 function getAddress(val) {
   return aionLib.accounts.createChecksumAddress(val);
 }

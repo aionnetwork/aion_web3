@@ -1,3 +1,7 @@
+/**
+*@module AVM-Interface
+*
+*/
 "use strict";
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;

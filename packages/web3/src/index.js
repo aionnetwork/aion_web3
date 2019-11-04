@@ -26,6 +26,14 @@
  *   Marian Oancea <marian@ethereum.org>
  */
 
+ /**
+* 
+*@namespace aion-web3
+*@desc This is the main module for Aion web3js.
+* 
+*/
+
+
 "use strict";
 
 

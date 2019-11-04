@@ -22,6 +22,12 @@
  *     Marek Kotewicz <marek@parity.io>
  *     Fabian Vogelsteller <fabian@frozeman.de>
  */
+
+ /**
+ * 
+ * @namespace web3-core-method
+ *
+ */
  
 "use strict";
 

@@ -22,6 +22,11 @@
  *     Marek Kotewicz <marek@parity.io>
  *     Fabian Vogelsteller <fabian@frozeman.de>
  */
+ /**
+ * 
+ * @namespace web3-eth-abi
+ *
+ */ 
  
 var _ = require('underscore');
 var utils = require('aion-web3-utils');

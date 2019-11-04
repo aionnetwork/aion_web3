@@ -21,6 +21,11 @@
  *     Aion foundation.
  *     Fabian Vogelsteller <fabian@frozeman.de>
  */
+ /**
+ * 
+ * @namespace web3-providers-ipc
+ *
+ */
 
  "use strict";
 

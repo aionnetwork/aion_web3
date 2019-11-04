@@ -20,6 +20,10 @@
 * Contributors:
 *     Aion foundation.
 */
+/**
+*@module AVM-coder
+*
+*/
 
 "use strict"
 
