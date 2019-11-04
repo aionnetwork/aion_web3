@@ -1,11 +1,11 @@
 let test_cfg = require('./_integ_test_config.js');
 let formatters = require('../packages/web3-core-helpers/src/formatters.js');
 
-console.log("Using cfg = ", test_cfg);
+//console.log("Using cfg = ", test_cfg);
 
 let should = require('should')
 let Web3 = require('../')
-let client = new Web3(new Web3.providers.HttpProvider('http://127.0.0.1:8545'))
+let client = new Web3(new Web3.providers.HttpProvider(test_cfg.JAVA_IP))
 
 describe('compile solidity files', () => {
   before(done => {

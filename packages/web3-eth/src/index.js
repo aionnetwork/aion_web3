@@ -339,8 +339,23 @@ var Eth = function Eth() {
             call: 'eth_compileSolidityZip',
             params: 2,
             inputFormatter: [formatter.inputZipfileBase64EncodingFormatter, null]
+        }),
+        new Method({
+            name: 'submitSeed',
+            call: 'submitseed',
+            params: 3,
+        }),
+        new Method({
+            name: 'getSeed',
+            call: 'getseed',
+            params: 0,    
+        }),
+        new Method({
+            name: 'submitSignature',
+            call: 'submitsignature',
+            params: 2,           
         })
-    ];
+    ]; 
 
     methods.forEach(function(method) {
         method.attachToObject(_this);

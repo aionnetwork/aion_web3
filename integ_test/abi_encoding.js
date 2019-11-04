@@ -1,13 +1,13 @@
 let test_cfg = require('./_integ_test_config.js');
 
-console.log("Using cfg = ", test_cfg);
+//console.log("Using cfg = ", test_cfg);
 
 let fs = require('fs')
 let path = require('path')
 let async = require('async')
 let Web3 = require('../')
 let should = require('should')
-let client = new Web3(new Web3.providers.HttpProvider('http://127.0.0.1:8545'))
+let client = new Web3(new Web3.providers.HttpProvider(test_cfg.JAVA_IP_2))
 const crypto = require('crypto')
 
 let typesBinPath = path.join(__dirname, 'contracts', 'Types.bin')
@@ -19,9 +19,9 @@ function random(from, to){
 
 function deployCt(ct, ctData, args, cb) { 
     console.log("SETUP: Deploying test contract...");
-    return ct.deploy( {data: ctData, arguments: args} )
+    return ct.deploy( {data: '0x'+ctData, arguments: args} )
         .send()
-        .on('error', err => { cb(err,null) })
+        .on('error', err => { console.log("ERROR: ",err); cb(err,null); })
         .on('transactionHash', transactionHash => { console.log('transactionHash', transactionHash) })
         .on('receipt', receipt => { 
             console.log('SETUP: Received transaction receipt for contract deployment.  txHash =',
@@ -32,9 +32,9 @@ function deployCt(ct, ctData, args, cb) {
 }
 
 
-describe('fvm_contracts', () => {
+describe('abi_encoding', () => {
   let opts = { 
-      from: test_cfg.TEST_ACCT_ADDR,
+      from: test_cfg.TEST_ACCT_2_ADDR,
       gas: test_cfg.GAS,
       gasPrice: test_cfg.GAS_PRICE,
   };
@@ -45,26 +45,29 @@ describe('fvm_contracts', () => {
   let ctInstAddress;
 
   before(done => {
-    if( test_cfg.TEST_ACCT_ADDR.length == 0 ) { 
-        done(Error("Error during setup.  No test account address was configured."));
+    if( test_cfg.TEST_ACCT_2_ADDR.length == 0 ) { 
+        done(Error("Error during setup. No test account address was configured."));
     }
 
+    //let ac = client.eth.personal.unlockAccount(test_cfg.TEST_ACCT_2_ADDR,test_cfg.TEST_ACCT_2_PW,6000).then(res =>{console.log("Account status: ",res)}); 
+        
     let steps = {
       typesBin: async.apply(fs.readFile, typesBinPath),
       typesAbi: async.apply(fs.readFile, typesAbiPath),
       unlock: async.apply(client.eth.personal.unlockAccount, 
-                          test_cfg.TEST_ACCT_ADDR , 
-                          test_cfg.TEST_ACCT_PW),
+                          test_cfg.TEST_ACCT_2_ADDR , 
+                          test_cfg.TEST_ACCT_2_PW ,600),
       contract: ['typesAbi',async.apply(function (results,cb) {
           let ct = new client.eth.Contract(JSON.parse(results.typesAbi), opts);
           cb(null, ct);
       })],
       deploy: ['unlock', 'typesBin', async.apply(function (res,cb) {
-          let deployedTo;
+          let deployedTo; 
+          //console.log("####:",res.typesBin.toString('utf8'));         
           deployCt(res.contract, res.typesBin.toString('utf8'), [], cb)
               .catch(err => {
-                  console.error("error", err);
-                  return done(err);
+                  console.error("Deploy error", err);
+                  return done();
               });
       })]
     }
@@ -74,16 +77,17 @@ describe('fvm_contracts', () => {
         return done(err)
       }
 
+
       if(! res.unlock ) { 
         return done(new Error("can't unlock"));
       }
 
-      typesBin = res.typesBin.toString('utf8')
-      typesAbi = JSON.parse(res.typesAbi)
+      //typesBin = res.typesBin.toString('utf8')
+      //typesAbi = JSON.parse(res.typesAbi)
       ct = res.ct;
-      ctInstAddress = res.deploy.contractAddress;
+      //ctInstAddress = res.deploy.contractAddress;
 
-      //ctInstAddress = '0xA0Ce602629f0c53249D169460455a88Fc511E3ddfB361b821a859019a374ad6c';
+      ctInstAddress = '0x75aede1d422daa24b9e0a7c401eba41d1b209ae2fe91dcde67e3fa3a75337f33';
       ct = new client.eth.Contract(typesAbi, ctInstAddress);
 
       done()

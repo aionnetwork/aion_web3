@@ -1,3 +1,6 @@
+/**
+*@module coder-utils
+*/
 var BN = require('bn.js');
 var aionLib = require('aion-lib');
 var HexCharacters = '0123456789abcdef';
@@ -123,6 +126,10 @@ function padZeros(value, length) {
 
 function bigNumberify(val) {
   return new BN(val);
+}
+
+function bigNumberifyhex(val) {
+  return new BN(val,16);
 }
 
 function concat(objects) {
@@ -306,15 +313,25 @@ function hexlify(value) {
     throw new Error('invalid hexlify value');
 }
 
+function defineReadOnly(object, name, value) {
+    Object.defineProperty(object, name, {
+        enumerable: true,
+        value: value,
+        writable: false,
+    });
+}
+
 module.exports = {
     arrayify: arrayify,
     defineProperty: defineProperty,
     padZeros: padZeros,
     bigNumberify: bigNumberify,
+    bigNumberifyhex: bigNumberifyhex,
     getAddress: getAddress,
     concat: concat,
     toUtf8Bytes: toUtf8Bytes,
     toUtf8String: toUtf8String,
     hexlify: hexlify,
-    endianEncoding: endianEncoding
+    endianEncoding: endianEncoding,
+    defineReadOnly: defineReadOnly
 }

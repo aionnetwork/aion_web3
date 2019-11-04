@@ -82,10 +82,12 @@ HttpProvider.prototype.send = function (payload, callback) {
         if (request.readyState === 4 && request.timeout !== 1) {
             var result = request.responseText;
             var error = null;
-
+            //console.log("onreadystatechange");
+            //console.log(request);
             try {
                 result = JSON.parse(result);
             } catch(e) {
+                //console.log(e);
                 error = errors.InvalidResponse(request.responseText);
             }
 

@@ -60,6 +60,8 @@ var Web3 = function Web3() {
 
         return true;
     };
+    //let network be directly accessible by avm
+    //this.avm.contract.provider(this);
 };
 
 Web3.version = version;

@@ -25,6 +25,7 @@
 
 var utils = require('./coder-utils.js');
 
+
 const TagNull = 0x32;
 
 // Used for Encoding Data Types and their Arguments for AVM Contracts
@@ -216,8 +217,9 @@ class FloatCoder extends Coder {
 
         let view = new DataView(reader.readBytes(this.byteCount).buffer);
         if (this.byteCount === 4) {
-            return view.getFloat32(0);
+            return view.getFloat32(0);            
         }
+       
         return view.getFloat64(0);
     }
 
@@ -493,6 +495,7 @@ class ArrayCoder extends NullableCoder {
     }
 
     encodeValue(writer, value) {
+        
         writer.writeByte(this.coder.tag);
         writer.writeLength(value.length); 
         value.forEach((value) => {
@@ -501,6 +504,86 @@ class ArrayCoder extends NullableCoder {
             } else {
                 this.coder.encode(writer, value);
             }
+        });
+    }
+}
+
+// Used to handle BigInteger Data Types
+class BigIntegerCoder extends Coder {
+   
+
+    constructor(type, byteCount, tag, localName) {
+        super(type, tag, localName);
+        this.byteCount = byteCount;
+    }
+
+    decode(reader, array=null) {
+        if(array === null) {
+            let tag = reader.readByte();
+            if (tag !== this.tag) { 
+                this._throwError("invalid tag"); 
+            }
+
+        }
+        let length = reader.readByte();
+        //let length = reader.readLength();
+            /*if (tag !== this.tag) { 
+                this._throwError("invalid tag"); 
+            }*/
+        let value = utils.bigNumberify(reader.readBytes(length));
+        return value;
+    }
+
+    encode(writer, value, array) {
+        if (value == null) { 
+            this._throwError("cannot be null"); 
+        }
+
+        let bytes = utils.arrayify(utils.bigNumberify(value));
+        if(array){
+            writer.writeByte(0x23);
+        }else{
+            writer.writeByte(this.tag);
+        }
+        writer.writeByte(bytes.length);
+        writer.writeBytes(bytes);
+    }
+}
+class BigIntegerArrayCoder extends BigIntegerCoder {
+    constructor(type, byteCount, tag, localName) {
+        super(type, byteCount, tag, localName);
+    }
+
+    decode(reader) {
+        let arrtag = reader.readByte();
+        let result = [];
+        if(arrtag === TagNull) {
+            reader.readByte(2);
+            return result;
+        } else if (arrtag !== this.tag) {
+            throw new Error("invalid child tag"); 
+        }
+
+        let tag = reader.readByte();
+        let length = reader.readLength();
+        //let length1 = reader.readByte();
+                
+        for (let i = 0; i < length; i++) {
+            result.push(super.decode(reader));
+        }
+        return result;
+    }
+
+    encode(writer, value) {
+        if(!Array.isArray(value)) {
+            this._throwError("has to be an array");
+        }
+
+        writer.writeByte(this.tag);
+        writer.writeByte(0x23);
+        writer.writeLength(value.length);
+        value.forEach((value) => {
+            super.encode(writer, value, true);
         });
     }
 }
@@ -523,5 +606,9 @@ module.exports = {
     ByteArrayCoder: ByteArrayCoder,
     CharArrayCoder: CharArrayCoder,
     FloatArrayCoder: FloatArrayCoder,
-    BooleanArrayCoder: BooleanArrayCoder
+    BooleanArrayCoder: BooleanArrayCoder,
+
+    BigIntegerCoder: BigIntegerCoder,
+    BigIntegerArrayCoder: BigIntegerArrayCoder
+
 }

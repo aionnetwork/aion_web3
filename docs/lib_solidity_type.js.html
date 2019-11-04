@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: lib/solidity/type.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: lib/solidity/type.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>var f = require('./formatters');
+var SolidityParam = require('./param');
+
+/**
+ * SolidityType prototype is used to encode/decode solidity params of certain type
+ */
+var SolidityType = function (config) {
+    this._inputFormatter = config.inputFormatter;
+    this._outputFormatter = config.outputFormatter;
+};
+
+/**
+ * Should be used to determine if this SolidityType do match given name
+ *
+ * @method isType
+ * @param {String} name
+ * @return {Bool} true if type match this SolidityType, otherwise false
+ */
+SolidityType.prototype.isType = function (name) {
+    throw "this method should be overrwritten for type " + name;
+};
+
+/**
+ * Should be used to determine what is the length of static part in given type
+ *
+ * @method staticPartLength
+ * @param {String} name
+ * @return {Number} length of static part in bytes
+ */
+SolidityType.prototype.staticPartLength = function (name) {
+    // If name isn't an array then treat it like a single element array.
+    return (this.nestedTypes(name) || ['[1]'])
+        .map(function (type) {
+            // the length of the nested array
+            switch(name){
+                case 'address':
+                case 'bytes17':
+                case 'bytes18':
+                case 'bytes19':
+                case 'bytes20':
+                case 'bytes21':
+                case 'bytes22':
+                case 'bytes23':
+                case 'bytes24':
+                case 'bytes25':
+                case 'bytes26':
+                case 'bytes27':
+                case 'bytes28':
+                case 'bytes29':
+                case 'bytes30':
+                case 'bytes31':
+                case 'bytes32':
+                    return 2;
+                default:  
+                    return parseInt(type.slice(1, -1), 10) || 1;
+            }
+        })
+        .reduce(function (previous, current) {
+            return previous * current;
+        // all basic types are 32 bytes long
+        }, 16);
+};
+
+/**
+ * Should be used to determine if type is dynamic array
+ * eg:
+ * "type[]" => true
+ * "type[4]" => false
+ *
+ * @method isDynamicArray
+ * @param {String} name
+ * @return {Bool} true if the type is dynamic array
+ */
+SolidityType.prototype.isDynamicArray = function (name) {
+    var nestedTypes = this.nestedTypes(name);
+    return !!nestedTypes &amp;&amp; !nestedTypes[nestedTypes.length - 1].match(/[0-9]{1,}/g);
+};
+
+/**
+ * Should be used to determine if type is static array
+ * eg:
+ * "type[]" => false
+ * "type[4]" => true
+ *
+ * @method isStaticArray
+ * @param {String} name
+ * @return {Bool} true if the type is static array
+ */
+SolidityType.prototype.isStaticArray = function (name) {
+    var nestedTypes = this.nestedTypes(name);
+    return !!nestedTypes &amp;&amp; !!nestedTypes[nestedTypes.length - 1].match(/[0-9]{1,}/g);
+};
+
+/**
+ * Should return length of static array
+ * eg.
+ * "int[32]" => 32
+ * "int256[14]" => 14
+ * "int[2][3]" => 3
+ * "int" => 1
+ * "int[1]" => 1
+ * "int[]" => 1
+ *
+ * @method staticArrayLength
+ * @param {String} name
+ * @return {Number} static array length
+ */
+SolidityType.prototype.staticArrayLength = function (name) {
+    var nestedTypes = this.nestedTypes(name);
+    if (nestedTypes) {
+       return parseInt(nestedTypes[nestedTypes.length - 1].match(/[0-9]{1,}/g) || 1);
+    }
+    return 1;
+};
+
+/**
+ * Should return nested type
+ * eg.
+ * "int[32]" => "int"
+ * "int256[14]" => "int256"
+ * "int[2][3]" => "int[2]"
+ * "int" => "int"
+ * "int[]" => "int"
+ *
+ * @method nestedName
+ * @param {String} name
+ * @return {String} nested name
+ */
+SolidityType.prototype.nestedName = function (name) {
+    // remove last [] in name
+    var nestedTypes = this.nestedTypes(name);
+    if (!nestedTypes) {
+        return name;
+    }
+
+    return name.substr(0, name.length - nestedTypes[nestedTypes.length - 1].length);
+};
+
+/**
+ * Should return true if type has dynamic size by default
+ * such types are "string", "bytes"
+ *
+ * @method isDynamicType
+ * @param {String} name
+ * @return {Bool} true if is dynamic, otherwise false
+ */
+SolidityType.prototype.isDynamicType = function () {
+    return false;
+};
+
+/**
+ * Should return array of nested types
+ * eg.
+ * "int[2][3][]" => ["[2]", "[3]", "[]"]
+ * "int[] => ["[]"]
+ * "int" => null
+ *
+ * @method nestedTypes
+ * @param {String} name
+ * @return {Array} array of nested types
+ */
+SolidityType.prototype.nestedTypes = function (name) {
+    // return list of strings eg. "[]", "[3]", "[]", "[2]"
+    return name.match(/(\[[0-9]*\])/g);
+};
+
+/**
+ * Should be used to encode the value
+ *
+ * @method encode
+ * @param {Object} value
+ * @param {String} name
+ * @return {String} encoded value
+ */
+SolidityType.prototype.encode = function (value, name) {
+    var self = this;
+    if (this.isDynamicArray(name)) {
+        if(process.env.debug) console.log('[SolidityType.encode.isDynamicArray]')
+
+        return (function () {
+            var length = value.length;                          // in int
+            var nestedName = self.nestedName(name);
+
+            var result = [];
+            result.push(f.formatInputInt(length).encode());
+
+            value.forEach(function (v) {
+                result.push(self.encode(v, nestedName));
+            });
+            return result;
+        })();
+
+    } else if (this.isStaticArray(name)) {
+        if(process.env.debug) console.log('[SolidityType.encode.isStaticArray]')
+
+        return (function () {
+            var length = self.staticArrayLength(name);          // in int
+            var nestedName = self.nestedName(name);
+
+            var result = [];
+            for (var i = 0; i &lt; length; i++) {
+                result.push(self.encode(value[i], nestedName));
+            }
+
+            return result;
+        })();
+
+    }
+    
+    return this._inputFormatter(value, name).encode();
+};
+
+/**
+ * Should be used to decode value from bytes
+ *
+ * @method decode
+ * @param {String} bytes
+ * @param {Number} offset in bytes
+ * @param {String} name type name
+ * @returns {Object} decoded value
+ */
+SolidityType.prototype.decode = function (bytes, offset, name) {
+    var self = this;
+
+    if (this.isDynamicArray(name)) {
+        if(process.env.debug) console.log('[SolidityType.decode] isDynamicArray')
+
+        return (function () {
+            var arrayOffset = parseInt('0x' + bytes.substr(offset * 2, 32)); // in bytes
+            var length = parseInt('0x' + bytes.substr(arrayOffset * 2, 32)); // in int
+            var arrayStart = arrayOffset + 16; // array starts after length; // in bytes
+
+            var nestedName = self.nestedName(name);
+            var nestedStaticPartLength = self.staticPartLength(nestedName);  // in bytes
+            var roundedNestedStaticPartLength = Math.floor((nestedStaticPartLength + 31) / 32) * 32;
+            switch(nestedName){
+                case 'address':
+                case 'bytes17':
+                case 'bytes18':
+                case 'bytes19':
+                case 'bytes20':
+                case 'bytes21':
+                case 'bytes22':
+                case 'bytes23':
+                case 'bytes24':
+                case 'bytes25':
+                case 'bytes26':
+                case 'bytes27':
+                case 'bytes28':
+                case 'bytes29':
+                case 'bytes30':
+                case 'bytes31':
+                case 'bytes32':
+                    roundedNestedStaticPartLength = 32;
+                    break;
+                default:
+                    roundedNestedStaticPartLength = 16;
+                    break;
+            }
+
+            var result = [];
+
+            for (var i = 0; i &lt; length * roundedNestedStaticPartLength; i += roundedNestedStaticPartLength) {
+                result.push(self.decode(bytes, arrayStart + i, nestedName));
+            }
+
+            return result;
+        })();
+
+    } else if (this.isStaticArray(name)) {
+        if(process.env.debug) console.log('[SolidityType.decode] isStaticArray')
+
+        return (function () {
+            var length = self.staticArrayLength(name);                      // in int
+            var arrayStart = offset;                                        // in bytes
+
+            var nestedName = self.nestedName(name);
+            var nestedStaticPartLength = self.staticPartLength(nestedName); // in bytes
+            var roundedNestedStaticPartLength = Math.floor((nestedStaticPartLength + 15) / 16) * 16;
+            var result = [];
+
+            for (var i = 0; i &lt; length * roundedNestedStaticPartLength; i += roundedNestedStaticPartLength) {
+                result.push(self.decode(bytes, arrayStart + i, nestedName));
+            }
+
+            return result;
+        })();
+    } else if (this.isDynamicType(name)) {
+        if(process.env.debug) console.log('[SolidityType.decode] isDynamicType')
+        
+        return (function () {
+            var dynamicOffset = parseInt('0x' + bytes.substr(offset * 2, 32));      // in bytes
+            var length = parseInt('0x' + bytes.substr(dynamicOffset * 2, 32));      // in bytes
+            var roundedLength = Math.floor((length + 31) / 32);                     // in int
+            var param = new SolidityParam(bytes.substr(dynamicOffset * 2, ( 1 + roundedLength) * 64), 0);
+            return self._outputFormatter(param, name);
+        })();
+    }
+
+    var length = this.staticPartLength(name);
+    var param = new SolidityParam(bytes.substr(offset * 2, length * 2));
+
+    return this._outputFormatter(param, name);
+};
+
+module.exports = SolidityType;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-abi.html">abi</a></li><li><a href="module-Avm.html">Avm</a></li><li><a href="module-Avm-abi.html">Avm-abi</a></li><li><a href="module-Avm-contract.html">Avm-contract</a></li><li><a href="module-utils.html">utils</a></li></ul><h3>Classes</h3><ul><li><a href="bloom.html">bloom</a></li><li><a href="global.html#Contract">Contract</a></li><li><a href="module-Avm-Avm.html">Avm</a></li><li><a href="module-utils-BigNumber.html">BigNumber</a></li></ul><h3>Global</h3><ul><li><a href="global.html#$u">$u</a></li><li><a href="global.html#_addResponseCallback">_addResponseCallback</a></li><li><a href="global.html#_checkListener">_checkListener</a></li><li><a href="global.html#_createTxObject">_createTxObject</a></li><li><a href="global.html#_decodeEventABI">_decodeEventABI</a></li><li><a href="global.html#_decodeMethodReturn">_decodeMethodReturn</a></li><li><a href="global.html#_encodeEventABI">_encodeEventABI</a></li><li><a href="global.html#_encodeMethodABI">_encodeMethodABI</a></li><li><a href="global.html#_executeMethod">_executeMethod</a></li><li><a href="global.html#_fireError">_fireError</a></li><li><a href="global.html#_flattenTypes">_flattenTypes</a></li><li><a href="global.html#_generateEventOptions">_generateEventOptions</a></li><li><a href="global.html#_getCallback">_getCallback</a></li><li><a href="global.html#_getOrSetDefaultOptions">_getOrSetDefaultOptions</a></li><li><a href="global.html#_jsonInterfaceMethodToString">_jsonInterfaceMethodToString</a></li><li><a href="global.html#_on">_on</a></li><li><a href="global.html#_parseResponse">_parseResponse</a></li><li><a href="global.html#_processExecuteArguments">_processExecuteArguments</a></li><li><a href="global.html#_requireType">_requireType</a></li><li><a href="global.html#_timeout">_timeout</a></li><li><a href="global.html#_txInputFormatter">_txInputFormatter</a></li><li><a href="global.html#ABICoder">ABICoder</a></li><li><a href="global.html#add">add</a></li><li><a href="global.html#addDefaultEvents">addDefaultEvents</a></li><li><a href="global.html#addEventsToContract">addEventsToContract</a></li><li><a href="global.html#addFunctionsToContract">addFunctionsToContract</a></li><li><a href="global.html#addSubscription">addSubscription</a></li><li><a href="global.html#asciiToHex">asciiToHex</a></li><li><a href="global.html#at">at</a></li><li><a href="global.html#attachToContract">attachToContract</a></li><li><a href="global.html#attachToObject">attachToObject</a></li><li><a href="global.html#blake2b256">blake2b256</a></li><li><a href="global.html#bytesToHex">bytesToHex</a></li><li><a href="global.html#call">call</a></li><li><a href="global.html#chai">chai</a></li><li><a href="global.html#checkAddressChecksum">checkAddressChecksum</a></li><li><a href="global.html#checkForContractAddress">checkForContractAddress</a></li><li><a href="global.html#clone">clone</a></li><li><a href="global.html#combine">combine</a></li><li><a href="global.html#contract">contract</a></li><li><a href="global.html#ContractFactory">ContractFactory</a></li><li><a href="global.html#decode">decode</a></li><li><a href="global.html#decodeLog">decodeLog</a></li><li><a href="global.html#decodeParam">decodeParam</a></li><li><a href="global.html#decodeParameter">decodeParameter</a></li><li><a href="global.html#deploy">deploy</a></li><li><a href="global.html#displayName">displayName</a></li><li><a href="global.html#Documentation">Documentation</a></li><li><a href="global.html#dynamicPart">dynamicPart</a></li><li><a href="global.html#dynamicPartLength">dynamicPartLength</a></li><li><a href="global.html#encode">encode</a></li><li><a href="global.html#encodeConstructorParams">encodeConstructorParams</a></li><li><a href="global.html#encodeEventSignature">encodeEventSignature</a></li><li><a href="global.html#encodeFunctionCall">encodeFunctionCall</a></li><li><a href="global.html#encodeFunctionSignature">encodeFunctionSignature</a></li><li><a href="global.html#encodeList">encodeList</a></li><li><a href="global.html#encodeParam">encodeParam</a></li><li><a href="global.html#encodeParameter">encodeParameter</a></li><li><a href="global.html#encodeParameters">encodeParameters</a></li><li><a href="global.html#encodeParams">encodeParams</a></li><li><a href="global.html#equalBuffers">equalBuffers</a></li><li><a href="global.html#estimateGas">estimateGas</a></li><li><a href="global.html#eventifiedPromise">eventifiedPromise</a></li><li><a href="global.html#execute">execute</a></li><li><a href="global.html#extractCallback">extractCallback</a></li><li><a href="global.html#formatDynamicInputBytes">formatDynamicInputBytes</a></li><li><a href="global.html#formatInput">formatInput</a></li><li><a href="global.html#formatInputBool">formatInputBool</a></li><li><a href="global.html#formatInputBytes">formatInputBytes</a></li><li><a href="global.html#formatInputInt">formatInputInt</a></li><li><a href="global.html#formatInputReal">formatInputReal</a></li><li><a href="global.html#formatInputString">formatInputString</a></li><li><a href="global.html#formatOutput">formatOutput</a></li><li><a href="global.html#formatOutputAddress">formatOutputAddress</a></li><li><a href="global.html#formatOutputBool">formatOutputBool</a></li><li><a href="global.html#formatOutputBytes">formatOutputBytes</a></li><li><a href="global.html#formatOutputDynamicBytes">formatOutputDynamicBytes</a></li><li><a href="global.html#formatOutputInt">formatOutputInt</a></li><li><a href="global.html#formatOutputReal">formatOutputReal</a></li><li><a href="global.html#formatOutputString">formatOutputString</a></li><li><a href="global.html#formatOutputUInt">formatOutputUInt</a></li><li><a href="global.html#formatOutputUReal">formatOutputUReal</a></li><li><a href="global.html#fromNAmp">fromNAmp</a></li><li><a href="global.html#getCall">getCall</a></li><li><a href="global.html#getData">getData</a></li><li><a href="global.html#getLogsAtStart">getLogsAtStart</a></li><li><a href="global.html#getPastEvents">getPastEvents</a></li><li><a href="global.html#getUnitValue">getUnitValue</a></li><li><a href="global.html#getValueOfUnit">getValueOfUnit</a></li><li><a href="global.html#hasTopic">hasTopic</a></li><li><a href="global.html#hexToAscii">hexToAscii</a></li><li><a href="global.html#hexToBuffer">hexToBuffer</a></li><li><a href="global.html#hexToBytes">hexToBytes</a></li><li><a href="global.html#hexToNumber">hexToNumber</a></li><li><a href="global.html#hexToNumberString">hexToNumberString</a></li><li><a href="global.html#hexToUtf8">hexToUtf8</a></li><li><a href="global.html#HttpProvider">HttpProvider</a></li><li><a href="global.html#inputCallFormatter">inputCallFormatter</a></li><li><a href="global.html#inputLogFormatter">inputLogFormatter</a></li><li><a href="global.html#inputPostFormatter">inputPostFormatter</a></li><li><a href="global.html#inputSignFormatter">inputSignFormatter</a></li><li><a href="global.html#inputTransactionFormatter">inputTransactionFormatter</a></li><li><a href="global.html#inputZipfileBase64EncodingFormatter">inputZipfileBase64EncodingFormatter</a></li><li><a href="global.html#isAddress">isAddress</a></li><li><a href="global.html#isBigNumber">isBigNumber</a></li><li><a href="global.html#isBloom">isBloom</a></li><li><a href="global.html#isBN">isBN</a></li><li><a href="global.html#isConnected">isConnected</a></li><li><a href="global.html#isDynamic">isDynamic</a></li><li><a href="global.html#isDynamicArray">isDynamicArray</a></li><li><a href="global.html#isDynamicType">isDynamicType</a></li><li><a href="global.html#isHex">isHex</a></li><li><a href="global.html#isHexStrict">isHexStrict</a></li><li><a href="global.html#isSimplifiedStructFormat">isSimplifiedStructFormat</a></li><li><a href="global.html#isStaticArray">isStaticArray</a></li><li><a href="global.html#isTopic">isTopic</a></li><li><a href="global.html#isType">isType</a></li><li><a href="global.html#isValidResponse">isValidResponse</a></li><li><a href="global.html#leftPad">leftPad</a></li><li><a href="global.html#mapStructNameAndType">mapStructNameAndType</a></li><li><a href="global.html#mapStructToCoderFormat">mapStructToCoderFormat</a></li><li><a href="global.html#mapTypes">mapTypes</a></li><li><a href="global.html#nestedName">nestedName</a></li><li><a href="global.html#nestedTypes">nestedTypes</a></li><li><a href="global.html#new">new</a></li><li><a href="global.html#numberToHex">numberToHex</a></li><li><a href="global.html#offsetAsBytes">offsetAsBytes</a></li><li><a href="global.html#on">on</a></li><li><a href="global.html#once">once</a></li><li><a href="global.html#outputBigNumberFormatter">outputBigNumberFormatter</a></li><li><a href="global.html#outputBlockFormatter">outputBlockFormatter</a></li><li><a href="global.html#outputLogFormatter">outputLogFormatter</a></li><li><a href="global.html#outputPostFormatter">outputPostFormatter</a></li><li><a href="global.html#outputTransactionFormatter">outputTransactionFormatter</a></li><li><a href="global.html#outputTransactionReceiptFormatter">outputTransactionReceiptFormatter</a></li><li><a href="global.html#parseType">parseType</a></li><li><a href="global.html#poll">poll</a></li><li><a href="global.html#pollFilter">pollFilter</a></li><li><a href="global.html#pollSyncing">pollSyncing</a></li><li><a href="global.html#prepareRequest">prepareRequest</a></li><li><a href="global.html#prependZeroX">prependZeroX</a></li><li><a href="global.html#randomHexBuffer">randomHexBuffer</a></li><li><a href="global.html#reconnect">reconnect</a></li><li><a href="global.html#removeAllListeners">removeAllListeners</a></li><li><a href="global.html#removeLeadingZeroX">removeLeadingZeroX</a></li><li><a href="global.html#removeListener">removeListener</a></li><li><a href="global.html#removeSubscription">removeSubscription</a></li><li><a href="global.html#request">request</a></li><li><a href="global.html#RequestManager">RequestManager</a></li><li><a href="global.html#reset">reset</a></li><li><a href="global.html#rightPad">rightPad</a></li><li><a href="global.html#Scorer">Scorer</a></li><li><a href="global.html#Search">Search</a></li><li><a href="global.html#send">send</a></li><li><a href="global.html#sendAsync">sendAsync</a></li><li><a href="global.html#sendBatch">sendBatch</a></li><li><a href="global.html#sendTransaction">sendTransaction</a></li><li><a href="global.html#setProvider">setProvider</a></li><li><a href="global.html#sha3">sha3</a></li><li><a href="global.html#signature">signature</a></li><li><a href="global.html#signedIsNegative">signedIsNegative</a></li><li><a href="global.html#solidityBlake2b256">solidityBlake2b256</a></li><li><a href="global.html#SolidityCoder">SolidityCoder</a></li><li><a href="global.html#SolidityEvent">SolidityEvent</a></li><li><a href="global.html#SolidityFunction">SolidityFunction</a></li><li><a href="global.html#SolidityParam">SolidityParam</a></li><li><a href="global.html#SolidityType">SolidityType</a></li><li><a href="global.html#SolidityTypeAddress">SolidityTypeAddress</a></li><li><a href="global.html#SolidityTypeBool">SolidityTypeBool</a></li><li><a href="global.html#SolidityTypeBytes">SolidityTypeBytes</a></li><li><a href="global.html#SolidityTypeInt">SolidityTypeInt</a></li><li><a href="global.html#SolidityTypeReal">SolidityTypeReal</a></li><li><a href="global.html#SolidityTypeUInt">SolidityTypeUInt</a></li><li><a href="global.html#SolidityTypeUReal">SolidityTypeUReal</a></li><li><a href="global.html#startPolling">startPolling</a></li><li><a href="global.html#startsWithZeroX">startsWithZeroX</a></li><li><a href="global.html#staticArrayLength">staticArrayLength</a></li><li><a href="global.html#staticPart">staticPart</a></li><li><a href="global.html#staticPartLength">staticPartLength</a></li><li><a href="global.html#Stemmer">Stemmer</a></li><li><a href="global.html#stopPolling">stopPolling</a></li><li><a href="global.html#subscribe">subscribe</a></li><li><a href="global.html#testAddress">testAddress</a></li><li><a href="global.html#toBatchPayload">toBatchPayload</a></li><li><a href="global.html#toBN">toBN</a></li><li><a href="global.html#toBuffer">toBuffer</a></li><li><a href="global.html#toChecksumAddress">toChecksumAddress</a></li><li><a href="global.html#toHex">toHex</a></li><li><a href="global.html#toNAmp">toNAmp</a></li><li><a href="global.html#toPayload">toPayload</a></li><li><a href="global.html#toTopic">toTopic</a></li><li><a href="global.html#toTwosComplement">toTwosComplement</a></li><li><a href="global.html#typeName">typeName</a></li><li><a href="global.html#types">types</a></li><li><a href="global.html#unsubscribe">unsubscribe</a></li><li><a href="global.html#utf8ToHex">utf8ToHex</a></li><li><a href="global.html#validateArgs">validateArgs</a></li><li><a href="global.html#withOffset">withOffset</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Sun Aug 25 2019 13:12:30 GMT-0400 (Atlantic Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

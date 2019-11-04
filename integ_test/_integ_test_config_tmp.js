@@ -1,0 +1,74 @@
+/*
+ * Configuration file for running integ tests; not an actual test.
+ */
+
+let config = {
+   
+  JAVA_IP: '',
+  RUST_IP: '',
+  // Sender account private key (hex with leading 0x)
+  TEST_ACCT_PRIVKEY: '', 
+
+  // Account with which to receive Txs (No aion will be consumed for tests)
+  OTHER_TEST_ACCT_ADDR: '',
+
+  AVM_TEST_PK: '',
+
+  AVM_TEST_CT_ADDR:"0xa0ddef877dba8f4e407f94d70d83757327b9c9641f9244da3240b2927d493ebc",
+  AVM_TEST_CT_2_ADDR:"0xa0c9f5ba65599a76c517e12083a7b4773988eb76a3e33933beb58f239f564ff3",
+
+  TEST_ACCT_2_ADDR:'', //'0xA0B159D505BD2CA50A6c4146F1078dF69DeDAfE072E8a185cdE4276f3C6aAFc0',//'0xa09227215c67EaF0DC470cB5b8b305090137944302bA275F0D68Bd91E6E608A3',
+  TEST_ACCT_2_PW:'', 
+
+  TEST_ACCT_3_ADDR:'',
+  TEST_ACCT_3_PW:'', 
+
+  TEST_ACCT_ADDR: '',
+  // Populate with max gas for transactions (recommended: 4000000)
+  GAS: 4000000,                   
+  // Populate with gas price (recommended: 10000000000)
+  GAS_PRICE: 10000000000, 
+  AVM_TEST_CT_TXN_GAS: 2000000,
+  AVM_TEST_CT_DEPLOY_GAS: 5000000,
+
+  //AVM DATA TYPES
+  BYTE: -127,
+  BOOLEAN: true,
+  CHAR: 'A',
+  SHORT: 32767,
+  INT: 215,
+  FLOAT: 3.1429998874664307,
+  LONG: 9000000000,
+  DOUBLE: 4.29847529875,
+  ADDRESS:'0xa09227215c67EaF0DC470cB5b8b305090137944302bA275F0D68Bd91E6E608A3',
+  STRING: 'this is a test!',
+
+  ONE_D_BYTE: [ 15, 43, 56 ],
+  ONE_D_BOOLEAN: [ true, false, true ],
+  ONE_D_CHAR: [ 'a', 'b', 'c' ],
+  ONE_D_SHORT: [ 32, 232, 5667 ],
+  ONE_D_INT: [ 2, 3, 5 ],
+  ONE_D_FLOAT: [ 2.888000011444092, 1.222000002861023, 3.555000066757202 ],
+  ONE_D_LONG: [ 500000000, 10000000, 60000000 ],
+  ONE_D_DOUBLE: [ 1.5555, 2.55555, 3.00005 ],
+
+  ONE_D_STRING: [ 'This', 'is a', 'string' ],
+  ONE_D_ADDRESS: ['0xa09227215c67EaF0DC470cB5b8b305090137944302bA275F0D68Bd91E6E608A3','0xa09227215c67EaF0DC470cB5b8b305090137944302bA275F0D68Bd91E6E608A3'],
+
+  TWO_D_BYTE: [[-120,120],[-120,120]],
+  TWO_D_BOOLEAN: [[true,false],[true,false]],
+  TWO_D_CHAR: [['A','B'],['A','B']],
+  TWO_D_SHORT: [[32000,32000],[32000,32000]],
+  TWO_D_INT: [[123,321],[123,321]],
+  TWO_D_FLOAT:  [[31.139999389648438,3.140000104904175],[31.139999389648438,3.140000104904175]],
+  TWO_D_LONG: [[53535353,35354534],[53535353,35354534]],
+  TWO_D_DOUBLE: [[123.344441,54645.25234],[123.344441,54645.25234]],
+  
+  EDGE_TEST_GETEDGEEMPTYINTARR: [],
+  EDGE_TEST_GETEDGENULLINTARR: null,
+  EDGE_TEST_GETEDGESUM:430
+  
+}
+module.exports = function() { 
+    return config;
+}();
