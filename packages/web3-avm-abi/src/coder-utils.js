@@ -2,6 +2,8 @@
 *@module AVM coder-utils
 */
 var BN = require('bn.js');
+//var BigNumber = require('big-number');
+var BigNumber = require('bignumber.js');
 var aionLib = require('aion-lib');
 var HexCharacters = '0123456789abcdef';
 
@@ -133,6 +135,111 @@ function padZeros(value, length) {
 
 function bigNumberify(val) {
   return new BN(val);
+}
+
+/*function bigNumber(val) {
+    //console.log('####start#####');
+    //console.log(bigNumberify(val));
+    //console.log(BigNumber(val).toString(256));
+    //console.log('####end#####');
+  //return '0x'+BigNumber(val).toString(16);
+  //return bigNumberify(val);
+  var bigint64 = new BigInt64Array();
+  return bigint64.of(val);
+}*/
+function hexToBn(hex) {
+  hex = hex.substring(2,hex.length);//remove 0x
+  if (hex.length % 2) {
+    hex = '0' + hex;
+  }
+
+  var highbyte = parseInt(hex.slice(0, 2), 16)
+  var bn = BigInt('0x'+hex);
+
+  if (0x80 & highbyte) {
+    // bn = ~bn; WRONG in JS (would work in other languages)
+
+    // manually perform two's compliment (flip bits, add one)
+    // (because JS binary operators are incorrect for negatives)
+    bn = BigInt('0b' + bn.toString(2).split('').map(function (i) {
+      return '0' === i ? 1 : 0
+    }).join('')) + BigInt(1);
+    // add the sign character to output string (bytes are unaffected)
+    bn = -bn;
+  }
+
+  return bn;
+}
+
+function bnToHex(bn) {
+  var pos = true;
+  bn = BigInt(bn);
+
+  // I've noticed that for some operations BigInts can
+  // only be compared to other BigInts (even small ones).
+  // However, <, >, and == allow mix and match
+  if (bn < 0) {
+    pos = false;
+    bn = bitnot(bn);
+  }
+
+  var base = 16;
+  var hex = bn.toString(base);
+  if (hex.length % 2) {
+    hex = '0' + hex;
+  }
+
+  // Check the high byte _after_ proper hex padding
+  var highbyte = parseInt(hex.slice(0, 2), 16);
+  var highbit = (0x80 & highbyte);
+
+  if (pos && highbit) {
+    // A 32-byte positive integer _may_ be
+    // represented in memory as 33 bytes if needed
+    hex = '00' + hex;
+  }
+
+  return hex;
+}
+
+function bitnot(bn) {
+  // JavaScript's bitwise not doesn't work on negative BigInts (bn = ~bn; // WRONG!)
+  // so we manually implement our own two's compliment (flip bits, add one)
+  bn = -bn;
+  var bin = (bn).toString(2)
+  var prefix = '';
+  while (bin.length % 8) {
+    bin = '0' + bin;
+  }
+  if ('1' === bin[0] && -1 !== bin.slice(1).indexOf('1')) {
+    prefix = '11111111';
+  }
+  bin = bin.split('').map(function (i) {
+    return '0' === i ? '1' : '0';
+  }).join('');
+  return BigInt('0b' + prefix + bin) + BigInt(1);
+}
+
+
+function bigNumber(bn,direction=null) { 
+  if(direction !== null){
+    return hexToBn(bn);    
+  }else{
+    return "0x"+bnToHex(bn);
+  }
+}
+
+function bufToBn(buf) {
+  var hex = [];
+  u8 = Int8Array.from(buf);
+
+  u8.forEach(function (i) {
+    var h = i.toString(16);
+    if (h.length % 2) { h = '0' + h; }
+    hex.push(h);
+  });
+
+  return BigInt('0x' + hex.join('')).toString(10);
 }
 
 function bigNumberifyhex(val) {
@@ -333,6 +440,7 @@ module.exports = {
     defineProperty: defineProperty,
     padZeros: padZeros,
     bigNumberify: bigNumberify,
+    bigNumber: bigNumber,
     bigNumberifyhex: bigNumberifyhex,
     getAddress: getAddress,
     concat: concat,
@@ -340,5 +448,6 @@ module.exports = {
     toUtf8String: toUtf8String,
     hexlify: hexlify,
     endianEncoding: endianEncoding,
+    bufToBn: bufToBn,
     defineReadOnly: defineReadOnly
 }
