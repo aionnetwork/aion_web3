@@ -18,6 +18,7 @@ let encodeBI = async(bigint) => {
     let arr = [bigint];
     let type= ['BigInteger']
     let coded = client.avm.contract._abi.encode(type,arr);    
+    console.log(coded);
     let decoded = client.avm.contract.decode('BigInteger',coded);
     return decoded;
 }
@@ -26,8 +27,23 @@ let encodeInt = async(int) => {
     let arr = [int];
     let type= ['int']
     let coded = client.avm.contract._abi.encode(type,arr);
+
+    //let coded2 = client.avm.contract._abi.encode(['string'],["Hello World"]);
+    //console.log("coded::0x414950303431546f6b656e437265617465640000000000000000000000000000:::",coded2);
     let decoded = client.avm.contract.decode('int',coded);
+    //let test = client.avm.contract.decode("String","0x21000b48656c6c6f20576f726c64");
+    //console.log("string:::::",test);
+    return decoded;
+}
+let buf = [1254548120000000n, 32,0x1,20,null]
+
+let encodeByte = async(byte) => {
     
+    //let arr = [byte];
+    let type= ['byte[]']
+    let coded = client.avm.contract._abi.encode(type,byte);    
+    console.log(coded);
+    let decoded = client.avm.contract.decode('BigInteger',coded);
     return decoded;
 }
 
@@ -151,9 +167,26 @@ describe('General Tests', () => {
       });
   });
 
-  it('Encode - BigNumber', done => {
-      encodeBI("-10456787634565768768761787000").then(res => {
-        assert.equal(res,"-10456787634565768768761787000","Encode - BigNumber Failed!");        
+  it('Encode 10^19 BigNumber', done => {
+      encodeBI("10000000000000000000").then(res => {
+        assert.equal(res,'10000000000000000000',"Encode - BigNumber Failed!");        
+        done();
+      }).catch(err => {
+        done(err);
+      });
+  });
+  it('Encode 9.3 BigNumber', done => {
+      encodeBI("1254548120000000").then(res => {
+        assert.equal(res,'1254548120000000',"Encode BigNumber Failed!");        
+        done();
+      }).catch(err => {
+        done(err);
+      });
+  });
+
+  it('Encode Byte', done => {
+      encodeByte(buf).then(res => {
+        assert.equal(res,buf,"Encode  byte Failed!");        
         done();
       }).catch(err => {
         done(err);

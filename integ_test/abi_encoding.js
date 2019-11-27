@@ -7,7 +7,7 @@ let path = require('path')
 let async = require('async')
 let Web3 = require('../')
 let should = require('should')
-let client = new Web3(new Web3.providers.HttpProvider(test_cfg.JAVA_IP_2))
+let client = new Web3(new Web3.providers.HttpProvider(test_cfg.JAVA_IP))
 const crypto = require('crypto')
 
 let typesBinPath = path.join(__dirname, 'contracts', 'Types.bin')

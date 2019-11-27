@@ -30,27 +30,22 @@ describe('send raw transaction of 1.337 aions and no data', () => {
   
 
   it('sendRawTransaction', done => { 
+    
+    let account = client.eth.accounts.privateKeyToAccount(test_cfg.TEST_ACCT_PRIVKEY);
     let tx = {
-        to: test_cfg.TEST_ACCT_2_ADDR,
-        value: 1337000000000000000,  // 0.001337 Aions
+        to: account.address,
+        value: 133700000000000000,  
         gas: 54321
     }
 
-    let tx2 ={
-      value:1,
-      data: data,
-      gas:test_cfg.GAS_PRICE,
-      gasPrice:test_cfg.AVM_TEST_CT_DEPLOY_GAS
-    }
-
-    client.eth.getBalance(opts.from).then((bal) => {
+    client.eth.getBalance(account.address).then((bal) => {
         if(bal < tx.value) { 
             done(Error("Account balance too low.  Want to send "+ tx.value +" but only have "+bal));
         }
     });
 
     //let account = client.eth.accounts.privateKeyToAccount('0x935c250733f2f100d92b7247c50ea4dda8170d311ec61034b433cc5bf946b45eeeaf880df6e5d9fad143940a079b6cc1bb3877b84eb10bdd1fa222ee266941fc');
-    let account = client.eth.accounts.privateKeyToAccount(test_cfg.AVM_TEST_PK);
+    //let account = client.eth.accounts.privateKeyToAccount(test_cfg.TEST_ACCT_PRIVKEY);
     account.signTransaction(tx, (err, res) => {
       if (err !== null && err !== undefined) {
         done(err);
