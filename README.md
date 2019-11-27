@@ -85,16 +85,16 @@ instance- (optional) an instance of web3 initialized with a provider. This wil
 Function call 
 All functions are available as both call and send. 
 
-####Call 
+#### Call 
 A call is a request that usually retrieve data without a change of state on the blockchain. web3.avm.contract.readOnly.methodName(param1, param2) 
 
-####Transaction 
+#### Transaction 
 These are sent transactions intended state change. web3.avm.contract.transaction.methodName(param1, param2) 
 
-####Impact 
+#### Impact 
 All existing functionality of aion-web3 remains the same. For this feature only AVM related modules were changed. This was done in an effort to limit the impact of the change. 
 
-####Limitations 
+#### Limitations 
 This implementation does not include automatic binding.  
 Java/JavaScript float conversion results in a change in precision. 
 There are no distinction between call and send transactions (readOnly/transaction) methods.  
