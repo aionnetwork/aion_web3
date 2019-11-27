@@ -23,6 +23,12 @@
  *     Fabian Vogelsteller <fabian@frozeman.de>
  */
 
+   /**
+ * 
+ * @namespace web3-utils
+ *
+ */
+
 var _ = require('underscore');
 var aionjsUnit = require('./aion-unit.js');
 var utils = require('./utils.js');

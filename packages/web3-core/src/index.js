@@ -22,6 +22,12 @@
  *     Fabian Vogelsteller <fabian@frozeman.de>
  */
 
+  /**
+ * 
+ * @namespace web3-core
+ *
+ */
+
  "use strict";
 
 

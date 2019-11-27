@@ -20,6 +20,10 @@
 * Contributors:
 *     Aion foundation.
 */
+/**
+*@module AVM-coder
+*
+*/
 
 "use strict"
 
@@ -526,12 +530,9 @@ class BigIntegerCoder extends Coder {
 
         }
         let length = reader.readByte();
-        //let length = reader.readLength();
-            /*if (tag !== this.tag) { 
-                this._throwError("invalid tag"); 
-            }*/
-        let value = utils.bigNumberify(reader.readBytes(length));
-        return value;
+        
+        let value = utils.bigNumber(utils.hexlify(reader.readBytes(length)),1);
+        return value;//.toString(16);
     }
 
     encode(writer, value, array) {
@@ -539,7 +540,8 @@ class BigIntegerCoder extends Coder {
             this._throwError("cannot be null"); 
         }
 
-        let bytes = utils.arrayify(utils.bigNumberify(value));
+        let bytes = utils.arrayify(utils.bigNumber(value));
+        
         if(array){
             writer.writeByte(0x23);
         }else{

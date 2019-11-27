@@ -7,7 +7,7 @@ let path = require('path')
 let async = require('async')
 let Web3 = require('../')
 let should = require('should')
-let client = new Web3(new Web3.providers.HttpProvider(test_cfg.JAVA_IP_2))
+let client = new Web3(new Web3.providers.HttpProvider(test_cfg.JAVA_IP))
 const crypto = require('crypto')
 
 let typesBinPath = path.join(__dirname, 'contracts', 'Types.bin')
@@ -35,7 +35,7 @@ function deployCt(ct, ctData, args, cb) {
 describe('abi_encoding', () => {
   let opts = { 
       from: test_cfg.TEST_ACCT_2_ADDR,
-      gas: test_cfg.GAS,
+      gas: test_cfg.AVM_TEST_CT_TXN_GAS,
       gasPrice: test_cfg.GAS_PRICE,
   };
 
@@ -66,8 +66,8 @@ describe('abi_encoding', () => {
           //console.log("####:",res.typesBin.toString('utf8'));         
           deployCt(res.contract, res.typesBin.toString('utf8'), [], cb)
               .catch(err => {
-                  console.error("Deploy error", err);
-                  return done();
+                  console.error("Deploy error!!!", err);
+                  return done(err);
               });
       })]
     }
@@ -82,12 +82,12 @@ describe('abi_encoding', () => {
         return done(new Error("can't unlock"));
       }
 
-      //typesBin = res.typesBin.toString('utf8')
-      //typesAbi = JSON.parse(res.typesAbi)
+      typesBin = res.typesBin.toString('utf8')
+      typesAbi = JSON.parse(res.typesAbi)
       ct = res.ct;
-      //ctInstAddress = res.deploy.contractAddress;
+      ctInstAddress = res.deploy.contractAddress;
 
-      ctInstAddress = '0x75aede1d422daa24b9e0a7c401eba41d1b209ae2fe91dcde67e3fa3a75337f33';
+      //ctInstAddress = '0x75aede1d422daa24b9e0a7c401eba41d1b209ae2fe91dcde67e3fa3a75337f33';
       ct = new client.eth.Contract(typesAbi, ctInstAddress);
 
       done()

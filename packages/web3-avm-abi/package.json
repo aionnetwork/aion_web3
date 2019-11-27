@@ -10,6 +10,7 @@
     "aion-lib": "1.1.4",
     "aion-web3-utils": "1.1.4",
     "bn.js": "^4.11.8",
+    "bignumber.js":"9.0.0",
     "safe-buffer": "^5.1.2",
     "underscore": "1.8.3"
   },

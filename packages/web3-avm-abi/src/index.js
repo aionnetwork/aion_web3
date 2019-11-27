@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (c) 2017-2018 Aion foundation.
  *
  *     This file is part of the aion network project.
@@ -20,10 +20,11 @@
  * Contributors:
  *     Aion foundation.
  */
+
 /**
 * 
-* @namespace avm-abi
-* @memberof Avm
+*@namespace web3-avm-abi
+* 
 */
 
 "use strict"; 
@@ -31,6 +32,11 @@ var _ = require('underscore');
 let utils = require('./coder-utils');
 let codec = require('./coder');
 let ABI = require('./interface');
+
+/**
+*@class 
+*this is the main ABICoder class
+*/
 class ABICoder {
 
     constructor() {
@@ -38,7 +44,15 @@ class ABICoder {
         this.coder_utils = utils;
     }
 
-    // Gets the right Coder based on the Param passed
+ 
+ /**
+ *
+ *@method getCoder
+ *@desc Gets the right Coder based on the Param passed
+ *@memberof AVM-abi
+ *@param {string} param - string value of code type.
+ * 
+ */   
     getCoder(param) {
        let comps = param.trim().split(" ").map((comp) => comp.trim());
 
@@ -111,16 +125,38 @@ class ABICoder {
         throw new Error("unknown - " + param);
     }
 
-    // Creates a new Instance of a Reader
+    /**
+     *@desc Creates a new Instance of a Reader
+     *@method getReader
+     *@memberof AVM-abi
+     *@param {string} param - string value of code type.
+     * 
+    */ 
+       
     getReader(data) {
         return new codec.Reader(data);
     }
 
     // Creates a new Instance of a Writer
+    /**
+     *@desc Creates a new Instance of a Writer
+     *@method getWriter
+     *@memberof AVM-abi
+     * 
+     * 
+    */     
     getWriter() {
         return new codec.Writer();
     }
 
+    /**
+     *@desc Creates the deploy data for a contract
+     *@method readyDeploy
+     *@memberof AVM-abi
+     *@param {string} jarPath - path to jar file.
+     *@param {string} encodedArgs - encoded deploy arguments.
+     * 
+    */ 
     readyDeploy(jarPath, encodedArgs) {
         // Converts the jarfile into Bytes
         let jarArrayBuffer = new Uint8Array(jarPath);
@@ -142,6 +178,14 @@ class ABICoder {
     }
 
     // Encodes Data Types and their Values which are to be used in a Method
+    /**
+     *@desc Encodes data based on type
+     *@method encode
+     *@memberof AVM-abi
+     *@param {array} types - types of data to be encoded.
+     *@param {array} values - values to be encoded.
+     * 
+    */     
     encode(types, values) {
         
         if (types.length !== values.length) {
@@ -161,6 +205,15 @@ class ABICoder {
     }
 
     // Encodes Specifically for a Method Call
+    /**
+     *@desc Encodes Specifically for a Method Call
+     *@function encodeMethod
+     *@memberof AVM-abi
+     *@param {string} method- method to be encoded.
+     *@param {array} types - types of data to be encoded.
+     *@param {array} values - values to be encoded.
+     * 
+    */ 
     encodeMethod(method, types, values) {
         let sigWriter = this.getWriter();
         let methodCoder = this.getCoder("string");
@@ -173,6 +226,14 @@ class ABICoder {
     }
 
     // Decodes the AVM Contract Data based on the Data itself and the Type of Data expected
+    /**
+     *@desc Decodes the AVM Contract Data based on the Data itself and the Type of Data expected
+     *@function decode
+     *@memberof AVM-abi
+     *@param {string} type - type of data to be decoded.
+     *@param {string} data - data to be decoded.
+     * 
+    */       
     decode(type, data) {
         let reader = this.getReader(utils.arrayify(data));
         let coder = this.getCoder(type);
@@ -182,7 +243,14 @@ class ABICoder {
         return coder.decode(reader, array);
     }
 
-    //
+    /**
+     *@desc Creates an ABI interface object
+     *@method AvmInterface
+     *@memberof AVM-abi
+     *@param {string} abi - abi definition of a contract in string.
+     * 
+     * 
+    */ 
     AvmInterface(abi){
         return ABI.Interface.fromString(abi);
     }
@@ -190,11 +258,12 @@ class ABICoder {
     /**
      * Decodes events non- and indexed parameters.
      *
-     * @method getEvents
-     * @param {Object} inputs
-     * @param {String} data
-     * @param {Array} topics
-     * @return {Array} byte array
+     *@method getEvents
+     *@memberof AVM-abi
+     *@param {Object} inputs
+     *@param {String} data
+     *@param {Array} topics
+     *@return {Array} byte array
      */
      getEvents(inputs, data, topics) {
         var _this = this;

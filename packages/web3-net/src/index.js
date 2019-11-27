@@ -22,6 +22,12 @@
  *     Fabian Vogelsteller <fabian@frozeman.de>
  */
 
+ /**
+ * 
+ * @namespace web3-net
+ *
+ */
+
  "use strict";
 
 var core = require('aion-web3-core');

@@ -324,7 +324,7 @@ web3NoArgs.avm.contract.initBinding(contractAddress, no_args_iface, test_cfg.AVM
 
 web3.avm.contract.initBinding(contractAddress, iface, test_cfg.AVM_TEST_PK);//Interface
 web3e.avm.contract.initBinding("0xa0d388c3e6b3ec78d26960533b7fb394fb3300eccd99d79d425faaaa9b9b6904", iface, test_cfg.AVM_TEST_PK);//Interface
-web3Arr.avm.contract.initBinding(arrContractAddress, arriface, test_cfg.AVM_TEST_PK);//Interface
+web3Arr.avm.contract.initBinding(contractAddress, arriface, test_cfg.AVM_TEST_PK);//Interface
 web3bi.avm.contract.initBinding(bigIntegerContractAddress, biface, test_cfg.AVM_TEST_PK);//Interface
 web3bi2.avm.contract.initBinding(null, biface2, test_cfg.AVM_TEST_PK);//Interface
 
@@ -804,7 +804,7 @@ describe('avm_contract', () => {
   
   it('deploying contract..', done => {
     deploy().then(res => {
-      
+      console.log(res);
       res.status.should.eql(true);
       done();
     }).catch(err => {
@@ -847,7 +847,7 @@ describe('avm_contract', () => {
 
   it('deploying BigInteger contract..', done => {
     BI_Deploy().then(res => {
-      
+      console.log(res);
       res.status.should.eql(true);
       done();
     }).catch(err => {

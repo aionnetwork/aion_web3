@@ -21,7 +21,14 @@
  *     Aion foundation.
  *     Marek Kotewicz <marek@parity.io>
  *     Fabian Vogelsteller <fabian@frozeman.de>
- */"use strict";
+ */
+ 
+ /**
+ * 
+ * @namespace web3-core-requestmanager
+ *
+ */
+ "use strict";
 
 
 var _ = require('underscore');

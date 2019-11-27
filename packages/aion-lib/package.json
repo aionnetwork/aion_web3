@@ -6,6 +6,7 @@
   "dependencies": {
     "blake2b": "^2.1.2",
     "bn.js": "^4.11.8",
+    "big-number": "2.0.0",
     "crypto-browserify": "^3.12.0",
     "js-sha3": "^0.7.0",
     "lodash.padend": "^4.6.1",
