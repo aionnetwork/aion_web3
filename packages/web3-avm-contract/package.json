@@ -1,14 +1,14 @@
 {
   "name": "aion-web3-avm-contract",
   "namespace": "aion",
-  "version": "1.2.5-beta.0",
+  "version": "1.2.6-beta.6",
   "description": "Web3 module for using the abi to use AVM Contracts",
   "repository": "https://github.com/aionnetwork/aion_web3/tree/avm-support-update/packages/web3-avm-contract",
   "license": "LGPL-3.0",
   "main": "src/index.js",
   "dependencies": {
     "aion-lib": "1.1.4",
-    "aion-web3-avm-abi": "1.2.5-beta.0",
+    "aion-web3-avm-abi": "1.2.6-beta.6",
     "aion-web3-utils": "1.1.4",
     "bn.js": "^4.11.8",
     "safe-buffer": "^5.1.2",

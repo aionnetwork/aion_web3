@@ -1,16 +1,16 @@
 {
     "name": "aion-web3-core-method",
     "namespace": "aion",
-    "version": "1.2.5-beta.0",
+    "version": "1.2.6-beta.6",
     "description": "Creates the methods on the web3 modules. This is an internal package.",
     "repository": "https://github.com/aionnetwork/aion_web3/tree/master/packages/web3-core-method",
     "license": "LGPL-3.0",
     "main": "src/index.js",
     "dependencies": {
-        "aion-web3-core-helpers": "1.2.5-beta.0",
-        "aion-web3-core-promievent": "1.2.5-beta.0",
-        "aion-web3-core-subscriptions": "1.2.5-beta.0",
-        "aion-web3-utils": "1.2.5-beta.0",
+        "aion-web3-core-helpers": "1.2.6-beta.6",
+        "aion-web3-core-promievent": "1.2.6-beta.6",
+        "aion-web3-core-subscriptions": "1.2.6-beta.6",
+        "aion-web3-utils": "1.2.6-beta.6",
         "underscore": "1.8.3"
     },
     "gitHead": "dd7ee9cfaba7316ff520c0e9ee1952c3538077d6"
