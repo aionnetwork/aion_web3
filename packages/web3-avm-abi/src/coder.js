@@ -63,7 +63,7 @@ class Writer {
     // a total length of 64kb
     writeLength(length) {
         if (length > 0xffff) { throw new Error("length out of bounds"); }
-        return this.writeBytes([ (length >> 16), (length & 0xff) ]);
+        return this.writeBytes([ (length >> 8), (length & 0xff) ]);
     }
 }
 
