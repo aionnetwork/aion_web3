@@ -21,6 +21,7 @@ This project contains tools for using the Web3 application programming interface
 git clone https://github.com/aionnetwork/aion_web3
 cd aion_web3
 npm install
+(optionally run lerna if any module is missing) lerna bootstrap --hoist
 ```
 
 or
