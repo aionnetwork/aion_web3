@@ -8,7 +8,7 @@
     "main": "src/index.js",
     "dependencies": {
         "aion-web3-core-helpers": "1.2.6-beta.6",
-        "underscore": "1.8.3",
+        "underscore": "1.12.1",
         "@web3-js/websocket": "^1.0.29"
     },
     "gitHead": "dd7ee9cfaba7316ff520c0e9ee1952c3538077d6"
