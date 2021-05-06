@@ -14,7 +14,7 @@
         "aion-web3-core-subscriptions": "1.2.6-beta.6",
         "aion-web3-eth-abi": "1.2.6-beta.6",
         "aion-web3-utils": "1.2.6-beta.6",
-        "underscore": "1.8.3"
+        "underscore": "1.12.1"
     },
     "gitHead": "dd7ee9cfaba7316ff520c0e9ee1952c3538077d6"
 }
